@@ -20,16 +20,6 @@ import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
 import { loadUserIp } from "../utils/helper";
 
-/**
- * This page will render after login the system(i.e home page).
- * Artists data are listed in this page.
- * Artist data can be search, filter from this page,
- * Card component is used which renders the profile card.
- * Count Card component is used which renders music platform analytics card.
- * Dropdown component is used which renders dropdown to filter the data by gender and country.
- * Error component is used which renders no artist found or error fetching data.
- */
-
 const Home = () => {
   const navigate = useNavigate();
   const [searchTitle, setSearchTitle] = React.useState("");
@@ -39,54 +29,35 @@ const Home = () => {
   const [isLoading, setLoading] = React.useState(false);
 
   const [activePlan, setActivePlan] = React.useState<any>();
-  const [subscription, setSubscription] = React.useState<any>();
-
-  const s_pay = decodeBase64(Cookies.get("s-pay") as string);
-  const user = decodeBase64(Cookies.get("s-user") as string);
-
-  const wfCodeStorage = sessionStorage.getItem("webflow-code");
-  const wfCode = JSON.parse(wfCodeStorage as string);
-
-  const sessionStorageData = sessionStorage.getItem("choosen-plan");
-  const choosenPlan = JSON.parse(sessionStorageData as string);
-
-  React.useEffect(() => {
-    if (wfCode) {
-      navigate({
-        pathname: "/callback/wb-plugin",
-        search: `code=${wfCode?.code}`,
-      });
-    }
-  }, [wfCode]);
 
   // Handle choosen plan from landing page using session storage
   const fromLandingPage = sessionStorage.getItem("from-landing-page");
   const choosenPlanFromLandingPage = JSON.parse(fromLandingPage as string);
 
-  React.useEffect(() => {
-    (async () => {
-      const countryCode = await loadUserIp();
-      if (choosenPlanFromLandingPage) {
-        navigate({
-          pathname: `/checkout/${countryCode}`,
-          search: `planId=${choosenPlanFromLandingPage?.planId}`,
-        });
-      }
-    })();
-  }, [choosenPlanFromLandingPage]);
+  // React.useEffect(() => {
+  //   (async () => {
+  //     const countryCode = await loadUserIp();
+  //     if (choosenPlanFromLandingPage) {
+  //       navigate({
+  //         pathname: `/checkout/${countryCode}`,
+  //         search: `planId=${choosenPlanFromLandingPage?.planId}`,
+  //       });
+  //     }
+  //   })();
+  // }, [choosenPlanFromLandingPage]);
 
   // Handle oauth flow for canva using session storage
   const oAuthData = sessionStorage.getItem("o-auth");
   const oAuthObj = JSON.parse(oAuthData as any);
 
-  React.useEffect(() => {
-    if (oAuthObj) {
-      navigate({
-        pathname: oAuthObj?.url?.pathname,
-        search: oAuthObj?.url?.search,
-      });
-    }
-  }, [oAuthObj]);
+  // React.useEffect(() => {
+  //   if (oAuthObj) {
+  //     navigate({
+  //       pathname: oAuthObj?.url?.pathname,
+  //       search: oAuthObj?.url?.search,
+  //     });
+  //   }
+  // }, [oAuthObj]);
 
   const [openModalAdd, setOpenModalAdd] = React.useState<boolean>(false);
   const [playerName, setPlayerName] = React.useState("");
@@ -96,8 +67,8 @@ const Home = () => {
     "halcyon" | "moderna" | "sphinx" | "prosper"
   >("halcyon");
 
-  const handleRedirect = async (id: string) => {
-    navigate({ pathname: "/detail", search: `?video=${id}` });
+  const handleRedirect = (id: string) => {
+    window.location.href = `${window.location.pathname}?page=sato-player-detail&video=${id}`;
   };
 
   const fetchSubscription = async () => {
@@ -108,53 +79,32 @@ const Home = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      setSubscription(res?.data?.subscription);
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // console.log("plan details", plans?.data);
       setActivePlan(plans.data?.plan);
-
-      // console.log("success subscriptions fetch", res.data);
-
       if (
         (res.data?.subscription?.status as string).toLowerCase() !== "active"
       ) {
-        navigate("/profile");
-        // navigate({
-        //   pathname: "/checkout",
-        //   search: `?planId=${res.data.subscription?.plan_id}&s_id=${res.data.subscription?.provider_subscription_id}`,
-        // });
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
       } else {
         Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
           expires: 30,
           secure: true,
           sameSite: "Strict",
         });
-        if (wfCode?.code) {
-          navigate({
-            pathname: "/callback/wb-plugin",
-            search: `code=${wfCode?.code}`,
-          });
-        }
       }
     } catch (error: any) {
       setLoading(false);
       console.log("error fetching subscription", error);
       if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
+        // navigate({ pathname: "/signin" });
       }
       if (error?.response?.status === 404) {
-        if (wfCode?.code) {
-          navigate({
-            pathname: "/callback/wb-plugin",
-            search: `code=${wfCode?.code}`,
-          });
-        } else {
-          navigate("/plans");
-        }
+        // navigate("/plans");
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
     }
   };
@@ -176,10 +126,10 @@ const Home = () => {
       setLoading(false);
     } catch (error: any) {
       if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
       if (error?.response?.status === 402) {
-        navigate({ pathname: "/plans" });
+        window.location.href = `${window.location.pathname}?page=sato-plans`;
       }
       setError(true);
       setLoading(false);
@@ -208,8 +158,6 @@ const Home = () => {
       const data = {
         name: playerName,
         config: config[selectedTemplate],
-        // "media_source": 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
-        // "media_type": 'm3u8',
       };
 
       const res = await axios.post("/players", data, {
@@ -219,27 +167,13 @@ const Home = () => {
       });
       setLoading(false);
       setOpenModalAdd(false);
-      await handleRedirect(res.data?.id);
-      // setTimeout(() => {
-      //   setRefetch(Math.random())
-      // }, 500)
-      // showToast()
+      handleRedirect(res.data?.id);
     } catch (error) {
       setLoading(false);
       console.log("error creating player", error);
       setErrorPlayer("");
     }
   };
-
-  // const searchData =
-  //   data &&
-  //   data.filter((item: any) => {
-  //     if (searchTitle === "") {
-  //       return item;
-  //     } else if (item.name.toLowerCase().includes(searchTitle?.toLowerCase())) {
-  //       return item;
-  //     }
-  //   });
 
   const searchData =
     data &&
@@ -259,11 +193,6 @@ const Home = () => {
           new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
         );
       });
-
-  //redirects the user to detail page when interacted with card button.
-  const handleCardClick = (id: string) => {
-    navigate({ pathname: "/detail", search: `?video=${id}` });
-  };
 
   // Needs to be removed in future
   const fetchInvoice = async () => {
@@ -308,11 +237,6 @@ const Home = () => {
 
   return (
     <div className="main-page-wrapper">
-      {/*
-        <p className="heading">
-          {`${user.name.charAt(0).toUpperCase() + user.name.slice(1)}'s Dashboard`}
-        </p>
-        */}
       <div className="search-create-container">
         <div className="w-100">
           <button
@@ -510,7 +434,7 @@ const Home = () => {
                 data={item}
                 setRefetch={setRefetch}
                 totalLength={searchData.length}
-                handleCardClick={handleCardClick}
+                handleCardClick={handleRedirect}
               />
             );
           })}
