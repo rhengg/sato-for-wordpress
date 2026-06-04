@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Dashboard",
+    "link": "/"
+  },
+  {
+    "title": "Video Library",
+    "link": "/video-library"
+  },
+  {
+    "title": "Profile",
+    "link": "/profile"
+  },
+  {
+    "title": "Billing",
+    "link": "/billing"
+  },
+  {
+    "title": "Security & Privacy",
+    "link": "/security"
+  }
+]

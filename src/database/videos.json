@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "New video One",
+    "image": "/one.jpg",
+    "color": "#FF0000"
+  },
+  {
+    "id": "2",
+    "name": "New video Two",
+    "image": "/two.jpg",
+    "color": "#00BD56"
+  },
+  {
+    "id": "3",
+    "name": "New video Three",
+    "image": "/three.jpg",
+    "color": "#660ca6"
+  },
+  {
+    "id": "4",
+    "name": "New video Four",
+    "image": "/four.jpg",
+    "color": "#daf222"
+  }
+]

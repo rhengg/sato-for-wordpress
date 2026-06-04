@@ -1,0 +1,47 @@
+.video-quota-container {
+  width: 100%;
+  border: 1px solid var(--placeholder);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  font-size: 1rem;
+}
+
+.video-quota-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: var(--textSecondary);
+}
+
+.divider {
+  /* margin: 0 2px; */
+  color: var(--textPrimary);
+}
+
+.upgrade-plan {
+  margin-left: auto;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.video-quota-progress-bar {
+  height: 8px;
+  background-color: #d5d5d5;
+  position: relative;
+}
+
+.video-quota-progress-fill {
+  height: 100%;
+  background-color: var(--primary);
+  transition: width 0.3s ease-in-out;
+}
+@media only screen and (max-width: 1590px) {
+  .video-quota-header {
+    padding: 0.5rem 1rem;
+  }
+}

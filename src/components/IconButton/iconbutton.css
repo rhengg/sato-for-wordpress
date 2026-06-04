@@ -1,0 +1,13 @@
+.icon-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.icon-button-container:hover {
+  background: var(--primaryHover);
+  /* box-shadow: 0 3px 11.6px 0 #D2BDF0; */
+}

@@ -1,0 +1,13 @@
+.pricing-module {
+  padding: 2rem;
+  border: 1px solid var(--stroke);
+  width: max-content;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+@media only screen and (max-width: 768px) {
+  .pricing-module {
+    width: 100%;
+  }
+}

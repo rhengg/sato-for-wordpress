@@ -1,0 +1,17 @@
+.size-input {
+  width: 4.5rem;
+  /* height: 1.5rem; */
+  padding: 0.2rem 0.4rem;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  /* font-size: 1.25rem; */
+  font-weight: 500;
+  color: #1D1D1D;
+  border-left: 1px solid;
+  border-left-color: #D4D4D4;
+}
+
+.size-input::placeholder {
+  color: #828282;
+}

@@ -1,0 +1,40 @@
+.plan-list {
+  width: 100%;
+  background-color: var(--surfaceVariant);
+  border: 1px solid;
+  border-color: var(--stroke);
+  border-radius: 0.5rem;
+  padding: 0rem 1.5rem;
+  box-sizing: border-box;
+  margin-top: 1rem;
+}
+
+.plan-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap; /* Allows stacking on small screens */
+}
+
+.plan-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.dot {
+  color: #666;
+  margin: 0 4px;
+}
+
+@media (max-width: 768px) {
+  .plan-details {
+    display: block;
+  }
+  .plan-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

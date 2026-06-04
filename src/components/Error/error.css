@@ -1,0 +1,8 @@
+.error-main {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  height: calc(100vh - 6rem);
+  padding: 2rem;
+  /* background: var(--surface); */
+}
