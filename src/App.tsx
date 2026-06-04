@@ -55,6 +55,7 @@ const App = () => {
     case "sato-signin":
       return <Login />;
     case "sato-player":
+      return <Home />;
     default:
       return <Home />;
   }

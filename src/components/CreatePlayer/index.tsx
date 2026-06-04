@@ -9,6 +9,7 @@ import Toast from "../Toast";
 import Modal from "../Modal";
 import ImageRadioGroup from "../ImageRadioButton";
 import playerTemplate from "../../database/playerTemplate.json";
+import createPlayerSvg from "../../assets/create-player.svg";
 
 type CreatePlayerProps = {
   width?: string;
@@ -108,38 +109,8 @@ const Index = (props: CreatePlayerProps) => {
         }}
         tabIndex={0}
       >
-        <img className="w-100" src="./create-player.svg" alt="no image found" />
+        <img className="w-100" src={createPlayerSvg} alt="create player" />;
       </div>
-      {/*
-      <div className={totalLength < 3 ? 'create-player-container' : "create-player-container-for-grid"}
-        tabIndex={0}
-        onClick={() => { setOpenModalAdd(true) }}
-      >
-        <div className='content-wrapper'>
-          <div className='create-player-btn-container'>
-            {
-              isLoading ?
-                <Loader />
-                :
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column'
-                }}>
-                  <span className="material-symbols-outlined primary"
-                    style={{ fontSize: '48px', }}
-                  >
-                    add
-                  </span>
-                  <p className='body primary'>Create New Splayer</p>
-                </div>
-            }
-          </div>
-
-        </div>
-      </div>
-*/}
 
       <Modal
         isOpen={openModalAdd}

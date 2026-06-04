@@ -84,28 +84,30 @@ const Home = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
+      console.log("/subscription", res.data);
+      console.log("/plans/id", plans.data);
+
       setActivePlan(plans.data?.plan);
-      if (
-        (res.data?.subscription?.status as string).toLowerCase() !== "active"
-      ) {
-        window.location.href = `${window.location.pathname}?page=sato-profile`;
-      } else {
-        Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
-          expires: 30,
-          secure: true,
-          sameSite: "Strict",
-        });
-      }
+      // if (
+      //   (res.data?.subscription?.status as string).toLowerCase() !== "active"
+      // ) {
+      //   window.location.href = `${window.location.pathname}?page=sato-profile`;
+      // } else {
+      //   Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
+      //     expires: 30,
+      //     secure: true,
+      //     sameSite: "Strict",
+      //   });
+      // }
     } catch (error: any) {
       setLoading(false);
       console.log("error fetching subscription", error);
-      if (error.response.status === 401) {
-        // navigate({ pathname: "/signin" });
-      }
-      if (error?.response?.status === 404) {
-        // navigate("/plans");
-        window.location.href = `${window.location.pathname}?page=sato-profile`;
-      }
+      // if (error.response.status === 401) {
+      //   window.location.href = `${window.location.pathname}?page=sato-signin`;
+      // }
+      // if (error?.response?.status === 404) {
+      //   window.location.href = `${window.location.pathname}?page=sato-profile`;
+      // }
     }
   };
 
@@ -125,12 +127,12 @@ const Home = () => {
       setData(res.data);
       setLoading(false);
     } catch (error: any) {
-      if (error.response.status === 401) {
-        window.location.href = `${window.location.pathname}?page=sato-signin`;
-      }
-      if (error?.response?.status === 402) {
-        window.location.href = `${window.location.pathname}?page=sato-plans`;
-      }
+      // if (error.response.status === 401) {
+      //   window.location.href = `${window.location.pathname}?page=sato-signin`;
+      // }
+      // if (error?.response?.status === 402) {
+      //   window.location.href = `${window.location.pathname}?page=sato-plans`;
+      // }
       setError(true);
       setLoading(false);
       console.log("error fetching player", error);

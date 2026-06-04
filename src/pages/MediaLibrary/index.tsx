@@ -9,6 +9,7 @@ import Modal from "../../components/Modal";
 import VideoQuota from "../../components/VideoQuota";
 import Table from "../../components/Table";
 import Loader from "../../components/Loader";
+import uploadVideoSvg from "../../assets/upload-video.svg";
 
 const MediaLibrary = (props: any) => {
   const { length } = props;
@@ -402,6 +403,7 @@ const MediaLibrary = (props: any) => {
                 src="./upload-video.svg"
                 alt="no image found"
               />
+              <img className="w-100" src={uploadVideoSvg} alt="upload video" />;
             </div>
             {/*
           <div style={{
