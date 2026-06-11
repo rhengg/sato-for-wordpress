@@ -1,6 +1,13 @@
 import React from "react";
 import "./demoplayer.css";
 import { VideoConfigType } from "../../pages/Detail";
+import fullscreenSvg from "../../assets/icon/fullscreen.svg";
+import playArrowSvg from "../../assets/icon/play_arrow.svg";
+import volumeUpSvg from "../../assets/icon/volume_up.svg";
+import settingsSvg from "../../assets/icon/settings.svg";
+import slowMotionVideoSvg from "../../assets/icon/slow_motion_video.svg";
+import chevronRightSvg from "../../assets/icon/chevron_right.svg";
+import logoWhitePng from "../../assets/logo-white.png";
 
 type IconButtonProp = {
   src: string;
@@ -364,7 +371,7 @@ const DemoPlayer = ({
           <IconButton
             opacity={config.playerstyle.icon_button_opacity + "%"}
             reRender={reRender}
-            src="./icon/fullscreen.svg"
+            src={fullscreenSvg}
             size={
               Number(config.playerstyle.icon_button_size) * scaledValue + "px"
             }
@@ -394,7 +401,7 @@ const DemoPlayer = ({
         <IconButton
           opacity={config.playerstyle.center_icon_button_opacity + "%"}
           reRender={reRender}
-          src="./icon/play_arrow.svg"
+          src={playArrowSvg}
           size={
             Number(config.playerstyle.center_icon_button_size) * scaledValue +
             "px"
@@ -531,7 +538,7 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
               <IconButton
                 opacity={config.playerstyle.icon_button_opacity + "%"}
                 reRender={reRender}
-                src="./icon/play_arrow.svg"
+                src={playArrowSvg}
                 size={
                   Number(config.playerstyle.icon_button_size) * scaledValue +
                   "px"
@@ -562,7 +569,7 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
               <IconButton
                 opacity={config.playerstyle.icon_button_opacity + "%"}
                 reRender={reRender}
-                src="./icon/volume_up.svg"
+                src={volumeUpSvg}
                 size={
                   Number(config.playerstyle.icon_button_size) * scaledValue +
                   "px"
@@ -617,7 +624,7 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
             >
               {!brandUploading ? (
                 <img
-                  src={logo || "./logo-white.png"}
+                  src={logo || logoWhitePng}
                   alt="no-image"
                   style={{
                     width: "100%",
@@ -641,7 +648,7 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
                 opacity={config.playerstyle.icon_button_opacity + "%"}
                 reRender={reRender}
                 onClick={() => setToggleSetting(!toggleSetting)}
-                src="./icon/settings.svg"
+                src={settingsSvg}
                 size={
                   Number(config.playerstyle.icon_button_size) * scaledValue +
                   "px"
@@ -673,57 +680,6 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
           opacity: `${config.playerstyle.settings_menu_opacity}%`,
         }}
       >
-        {/*
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            boxSizing: "border-box",
-            padding: "12px 8px",
-            width: "100%",
-            height: "50%",
-            alignItems: "center",
-            background: settingsBG1,
-          }}
-          onMouseEnter={() => settingsHoverIn1()}
-          onMouseLeave={() => settingsHoverOut1()}
-        >
-          <div style={{ display: "flex", gap: `${0.25 * scaledValue}rem` }}>
-            <img
-              style={{
-                width: `${24 * scaledValue}px`,
-                height: `${24 * scaledValue}px`,
-              }}
-              src="./icon/tune.svg"
-            ></img>
-            <p
-              style={{
-                color: config.playerstyle.settings_menu_text_color,
-                fontSize: `${0.75 * scaledValue + 0.25}rem`,
-              }}
-            >
-              Quality
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: `${0.25 * scaledValue}rem` }}>
-            <p
-              style={{
-                fontSize: `${0.5 * scaledValue + 0.25}rem`,
-                color: config.playerstyle.settings_menu_text_color,
-              }}
-            >
-              720p24
-            </p>
-            <img
-              style={{
-                width: `${24 * scaledValue}px`,
-                height: `${24 * scaledValue}px`,
-              }}
-              src="./icon/chevron_right.svg"
-            ></img>
-          </div>
-        </div>
-        */}
         <div
           style={{
             display: "flex",
@@ -744,7 +700,7 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
                 width: `${24 * scaledValue}px`,
                 height: `${24 * scaledValue}px`,
               }}
-              src="./icon/slow_motion_video.svg"
+              src={slowMotionVideoSvg}
             ></img>
             <p
               style={{
@@ -771,7 +727,7 @@ ${Number(config.playerstyle.player_controls_margin) * scaledValue}px` ||
                 width: `${24 * scaledValue}px`,
                 height: `${24 * scaledValue}px`,
               }}
-              src="./icon/chevron_right.svg"
+              src={chevronRightSvg}
             ></img>
           </div>
         </div>

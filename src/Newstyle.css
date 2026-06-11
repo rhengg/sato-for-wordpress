@@ -286,6 +286,13 @@ li::marker {
   font-family: "Satoshi-Medium";
 }
 
+.table-row-text {
+  font-size: 0.8125rem;
+  color: var(--textPrimary);
+  line-height: 120%;
+  font-family: "Satoshi-Regular";
+}
+
 .caption {
   font-size: 0.75rem;
   line-height: 120%;
@@ -324,12 +331,13 @@ li::marker {
 }
 
 .large-primary-btn {
-  padding: 0.9rem 1.5rem;
+  padding: 0.5rem 1rem;
+  height: 2.75rem;
   border-radius: 0.25rem;
   border: 0px solid var(--primary);
   background: var(--primary);
   color: var(--white);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: "Satoshi-Medium";
   cursor: pointer;
   line-height: 120%;
@@ -347,12 +355,13 @@ li::marker {
 }
 
 .large-secondary-btn {
-  padding: 0.9rem 1.5rem;
+  padding: 0.5rem 1rem;
+  height: 2.75rem;
   color: var(--textSecondary);
   background-color: var(--white);
   border-radius: 0.25rem;
   border: 1px solid var(--primary);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: "Satoshi-Medium";
   cursor: pointer;
   line-height: 120%;
@@ -372,12 +381,13 @@ li::marker {
 .large-danger-btn {
   /* height: 3.25rem; */
   /* width: max-content; */
-  padding: 0.9rem 1.5rem;
+  padding: 0.5rem 1rem;
+  height: 2.75rem;
   color: var(--negative);
   background-color: var(--white);
   border-radius: 0.25rem;
   border: 1px solid var(--negative);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: "Satoshi-Medium";
   cursor: pointer;
   line-height: 120%;
@@ -401,23 +411,6 @@ li::marker {
   /* margin: 2rem 0; */
 }
 
-/* .small-primary-btn {
-  padding: 0.5rem 1rem;
-  height: 2.25rem;
-  border-radius: 0.25rem;
-  border: 0px solid var(--primary);
-  color: var(--white);
-  background: var(--primary);
-  font-size: 0.875rem;
-  font-family: "Satoshi-Regular";
-  cursor: pointer;
-} */
-
-/* .small-primary-btn:hover {
-  background: var(--black);
-  transition: all 0.4s ease-in-out;
-} */
-
 .small-secondary-btn {
   padding: 0.25rem 0.5rem;
   color: var(--primary);
@@ -435,13 +428,13 @@ li::marker {
 }
 
 .large-navigation-btn {
-  height: 2.5rem;
-  padding: 0.5rem 1.5rem;
+  height: 2.75rem;
+  padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   border: 1px solid var(--white);
   /* background: var(--surface); */
   color: var(--black);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: "Satoshi-Regular";
   cursor: pointer;
   line-height: 1.225rem;
@@ -466,13 +459,13 @@ li::marker {
 }
 
 .large-gethelp-btn {
-  height: 2.5rem;
-  padding: 0.5rem 1.5rem;
+  height: 2.75rem;
+  padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   border: 1px solid var(--black);
   background: var(--black);
   color: var(--white);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-family: "Satoshi-Regular";
   cursor: pointer;
   line-height: 1.225rem;
@@ -484,13 +477,13 @@ li::marker {
 }
 
 .navigation-btn-active {
-  height: 2.5rem;
-  padding: 0.5rem 1.5rem;
+  height: 2.75rem;
+  padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   border: 1px solid var(--stroke);
   /* background: var(--white); */
   color: var(--black);
-  font-size: 1rem;
+  font-size: 0.875rem;
   cursor: pointer;
   line-height: 1.225rem;
   display: flex;
@@ -522,10 +515,9 @@ li::marker {
 
 .input-main {
   width: 17rem;
-  /* height: 3.25rem; */
-  /* padding: 0 1rem; */
-  padding: 0.9rem 1.5rem;
-  font-size: 1rem;
+  height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
   border-radius: 0.25rem;
   background-color: var(--surface);
   outline: none;
@@ -542,10 +534,10 @@ li::marker {
 .input-secondary {
   box-sizing: border-box;
   width: 100%;
-  height: 3.25rem;
+  height: 2.75rem;
   border-radius: 0.25rem;
   padding: 0 1rem;
-  font-size: 1rem;
+  font-size: 0.875rem;
   background-color: var(--white);
   outline: none;
   border: 1px solid;
@@ -627,7 +619,7 @@ li::marker {
 }
 
 .main-page-wrapper {
-  padding: 2.5rem 0 2rem 0;
+  padding: 1rem;
 }
 
 .home-header {
@@ -651,16 +643,12 @@ li::marker {
 }
 
 .search-create-container {
-  /* margin: 2rem 0; */
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .home-card-grid {
-  /* display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 1rem; */
   display: flex;
   flex-wrap: wrap;
   row-gap: 2.5rem;
@@ -1040,6 +1028,31 @@ li::marker {
   padding: 0 8rem;
 }
 
+.video-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.video-table th,
+.video-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.video-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background: #f9f9f9;
+}
+
 @media only screen and (max-width: 1590px) {
   .heading {
     font-size: 1.5rem;
@@ -1159,10 +1172,6 @@ li::marker {
   }
   .large-gethelp-btn {
     height: 2rem;
-  }
-  .custom-input-width {
-    width: 25rem;
-    padding-left: 2.5rem;
   }
 }
 

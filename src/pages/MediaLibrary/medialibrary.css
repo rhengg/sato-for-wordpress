@@ -27,16 +27,10 @@ td {
   padding: 1rem;
 }
 
-tr:nth-child(even) {
-  /* background-color: #f9f9f9; */
-  /* background-color: var(--surface); */
-}
-
 .desktop-text-render {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 1rem;
 }
 
 @media screen and (max-width: 768px) {

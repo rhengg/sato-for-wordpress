@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Loader from "../../components/Loader";
 import LazyImage from "../../components/LazyImage";
+import AuthLogo from "../../assets/auth_logo.svg";
 
 /**
  * This layout returns two spaces divided vertically.
@@ -23,17 +24,7 @@ const AuthLayout = ({ children }: any) => {
               />
             }
           >
-            <LazyImage src="/auth_logo.svg" alt="auth image" />
-
-            {/*
-            <img
-              src="/auth_logo.svg"
-              alt="no image found"
-              style={{ width: "100%", height: "100%" }}
-              loading="lazy"
-            />
-          */}
-
+            <LazyImage src={AuthLogo} alt="auth image" />
           </React.Suspense>
         </div>
       </div>

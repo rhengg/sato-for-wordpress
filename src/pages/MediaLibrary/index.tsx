@@ -22,19 +22,10 @@ const MediaLibrary = (props: any) => {
   const [refetch, setRefetch] = React.useState(0);
   const [activePlan, setActivePlan] = React.useState<any>();
   const [totalVideoCount, setTotalVideoCount] = React.useState<any>();
-
   const [isLoading, setLoading] = React.useState(false);
-
-  const [subscription, setSubscription] = React.useState<any>();
-
   const [file, setFile] = React.useState<any>();
-  const [videoUrl, setVideoUrl] = React.useState<any>();
-
-  const s_pay = decodeBase64(Cookies.get("s-pay") as string);
-
   const wfCodeStorage = sessionStorage.getItem("webflow-code");
   const wfCode = JSON.parse(wfCodeStorage as string);
-
   const choosenPlan = Cookies.get("choosen-plan");
 
   const fetchSubscription = async () => {
@@ -44,28 +35,16 @@ const MediaLibrary = (props: any) => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      setSubscription(res?.data?.subscription);
-
-      // console.log("success subscriptions fetch", res.data);
-
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // const planDetails = allPlans.data.find(
-      //   (item: any) => item.id === res.data.subscription.plan_id
-      // );
       setActivePlan(plans.data?.plan);
-
       if (
         (res.data?.subscription?.status as string)?.toLowerCase() !== "active"
       ) {
         navigate({ pathname: "/profile" });
-        // navigate({
-        //   pathname: "/checkout",
-        //   search: `?planId=${res.data.subscription?.plan_id}&s_id=${res.data.subscription?.provider_subscription_id}`,
-        // });
       } else {
         Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
           expires: 30,
@@ -111,10 +90,6 @@ const MediaLibrary = (props: any) => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-
-      // const planDetails = allPlans.data.find(
-      //   (item: any) => item.id === res.data.subscription.plan_id
-      // );
       setActivePlan(plans.data?.plan);
     } catch (e) {
       console.log("error", e);
@@ -161,16 +136,6 @@ const MediaLibrary = (props: any) => {
     fetchMedia();
   }, [refetch]);
 
-  // const searchData =
-  //   media &&
-  //   media.filter((item: any) => {
-  //     if (searchMedia === "") {
-  //       return item;
-  //     } else if (item.name.toLowerCase().includes(searchMedia?.toLowerCase())) {
-  //       return item;
-  //     }
-  //   });
-
   const searchData =
     media &&
     media
@@ -210,66 +175,24 @@ const MediaLibrary = (props: any) => {
 
   return (
     <>
-      {/* {(subscription?.status === "pending" ||
-        subscription?.status === "halted") && (
+      <div style={{ padding: "1rem 0" }}>
         <div
           style={{
-            // position: "absolute",
-            boxSizing: "border-box",
-            // top: 0,
-            width: "100%",
-            borderRadius: "0.25rem",
-            border: "1px solid var(--stroke)",
-            padding: "1rem",
-            marginTop: "2rem",
-            backgroundColor: "#f5fab3ff",
-            display: "flex",
-            justifyContent: "center",
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr",
+            columnGap: "1rem",
             alignItems: "center",
-            gap: "0.25rem",
+            marginBottom: "1.0rem",
           }}
         >
-          <p className="body">
-            Charge attempt towards your subscription has failed. To continue
-            with this subscription, you must
-          </p>
-          <Link
-            to={subscription?.short_url}
-            target="_blank"
+          <div
             style={{
-              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+              justifyContent: "flex-start",
             }}
-            className="primary"
           >
-            update payment method
-          </Link>
-        </div>
-      )} */}
-      <div className="main-page-wrapper">
-        {/*
-      <div style={{
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '1rem',
-      }}>
-        <div
-          style={{
-            width: "max-content",
-          }}
-        >
-          <p className="heading">Video Library</p>
-          <p className="body textSecondary"
-            style={{
-              marginTop: '0.35rem',
-              fontFamily: 'Satoshi-Regular',
-            }}
-          >Find all your uploaded videos in URL format here</p>
-        </div>
-      </div>
-      */}
-
-        <div className="search-wrapper">
-          <div className="search-create-container">
             <div className="w-100">
               <button
                 className="large-primary-btn m-100"
@@ -281,6 +204,7 @@ const MediaLibrary = (props: any) => {
                     alignItems: "center",
                     justifyContent: "center",
                     columnGap: "0.25rem",
+                    width: "max-content",
                   }}
                 >
                   <span
@@ -289,63 +213,60 @@ const MediaLibrary = (props: any) => {
                   >
                     cloud_upload
                   </span>
-                  Upload New Video
+                  <span>Upload New Video</span>
                 </div>
               </button>
             </div>
-
-            <div className="w-100" style={{ position: "relative" }}>
-              <span
-                className="material-symbols-outlined placeholder"
-                style={{
-                  position: "absolute",
-                  left: "0.75rem",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                }}
-              >
-                search
-              </span>
-              <input
-                className="input-main custom-input-width"
-                type={"text"}
-                name={"search"}
-                placeholder={"Search Video..."}
-                value={searchMedia}
-                onChange={(e) => setSearchMedia(e.target.value)}
-              />
-            </div>
-            <Modal
-              isOpen={openModalUpload}
-              setOpen={setOpenModalUpload}
-              title={``}
-              size="md"
-              // closeButton={false}
-            >
-              {/* <p className="body">Upload a video from your device</p> */}
-
-              <div
-                // style={{
-                //   margin: "2rem 0",
-                //   display: "flex",
-                //   alignItems: "center",
-                //   justifyContent: "center",
-                //   padding: "0 8rem",
-                // }}
-                className="v-picker-container"
-              >
-                <VideoPicker
-                  file={file}
-                  setFile={setFile}
-                  setVideoUrl={setVideoUrl}
-                  setRefetch={setRefetch}
-                  setOpenModalUpload={setOpenModalUpload}
-                  activePlan={activePlan}
+            <div>
+              <div className="w-100" style={{ position: "relative" }}>
+                <span
+                  className="material-symbols-outlined placeholder"
+                  style={{
+                    position: "absolute",
+                    left: "0.75rem",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  search
+                </span>
+                <input
+                  className="input-main custom-input-width"
+                  style={{
+                    borderRadius: "0.25rem",
+                    paddingLeft: "2.5rem",
+                    width: "22rem",
+                  }}
+                  type={"text"}
+                  name={"search"}
+                  placeholder={"Search Video..."}
+                  value={searchMedia}
+                  onChange={(e) => setSearchMedia(e.target.value)}
                 />
               </div>
-            </Modal>
+              <Modal
+                isOpen={openModalUpload}
+                setOpen={setOpenModalUpload}
+                title={``}
+                size="md"
+                // closeButton={false}
+              >
+                <div className="v-picker-container">
+                  <VideoPicker
+                    file={file}
+                    setFile={setFile}
+                    setVideoUrl={(e) => {
+                      console.log(e);
+                      // setVideoUrl(e);
+                    }}
+                    setRefetch={setRefetch}
+                    setOpenModalUpload={setOpenModalUpload}
+                    activePlan={activePlan}
+                  />
+                </div>
+              </Modal>
+            </div>
           </div>
-
           {activePlan?.amount >= 0 && (
             <div className="w-100">
               <VideoQuota
@@ -357,8 +278,9 @@ const MediaLibrary = (props: any) => {
             </div>
           )}
         </div>
+
         <div className="desktop-text-render">
-          <p className="subtitle-one">Uploaded Videos</p>
+          <p className="subtitle-two">Uploaded Videos</p>
           {pathname != "/video-library" && media?.length > 9 && (
             <button
               className="small-secondary-btn"
@@ -400,34 +322,11 @@ const MediaLibrary = (props: any) => {
             >
               <img
                 className="w-100"
-                src="./upload-video.svg"
+                src={uploadVideoSvg}
                 alt="no image found"
               />
               <img className="w-100" src={uploadVideoSvg} alt="upload video" />;
             </div>
-            {/*
-          <div style={{
-            width: 'max-content', position: 'relative',
-            cursor: 'pointer'
-          }}
-            onClick={() => setOpenModalUpload(true)}
-          >
-            <iframe src="https://cdn.lottielab.com/l/EHuALDwkipPNQ7.html" width="340" height="300" frameBorder="0"
-              style={{
-                pointerEvents: 'none'
-              }}
-            ></iframe>
-
-            <div style={{
-              position: 'absolute',
-              width: '100%',
-              height: '2rem',
-              bottom: 0,
-              background: 'white',
-            }}>
-            </div>
-          </div>
-      */}
           </>
         )}
       </div>

@@ -4,6 +4,7 @@ import navigation from "../../database/navigation.json";
 import Cookies from "js-cookie";
 import { useLocation, useNavigate } from "react-router-dom";
 import dockLinks from "../../database/docLinks.json";
+import satoSvg from "../../assets/sato.svg";
 
 const DetailMenu = () => {
   const { pathname } = useLocation();
@@ -35,7 +36,7 @@ const DetailMenu = () => {
           }}
         >
           <img
-            src="/sato.svg"
+            src={satoSvg}
             alt="no image found"
             style={{ width: "100%", height: "100%" }}
           />

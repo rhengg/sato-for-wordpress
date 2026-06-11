@@ -18,7 +18,8 @@ import { config } from "../utils/default-config";
 import VideoPlayerCard from "../components/PlayerCard";
 import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
-import { loadUserIp } from "../utils/helper";
+import { loadUserIp, timeAgo } from "../utils/helper";
+import Toast from "../components/Toast";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -29,6 +30,14 @@ const Home = () => {
   const [isLoading, setLoading] = React.useState(false);
 
   const [activePlan, setActivePlan] = React.useState<any>();
+  const [openModal, setOpenModal] = React.useState<boolean>(false);
+  const [openModalDelete, setOpenModalDelete] = React.useState<boolean>(false);
+  const [show, setShow] = React.useState(false);
+  const [showDelete, setShowDelete] = React.useState(false);
+  const [showCopy, setShowCopy] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+  const [duplicateData, setDuplicateData] = React.useState<any>();
+  const [deleteData, setDeleteData] = React.useState<any>();
 
   // Handle choosen plan from landing page using session storage
   const fromLandingPage = sessionStorage.getItem("from-landing-page");
@@ -139,6 +148,84 @@ const Home = () => {
     }
   };
 
+  const showToast = () => {
+    setShow(true);
+  };
+
+  const hideToast = () => {
+    setShow(false);
+  };
+
+  const showToastDelete = () => {
+    setShowDelete(true);
+  };
+
+  const hideToastDelete = () => {
+    setShowDelete(false);
+  };
+
+  const showToastCopy = () => {
+    setShowCopy(true);
+  };
+
+  const hideToastCopy = () => {
+    setShowCopy(false);
+  };
+
+  const handleCopyClipboard = async (val: string) => {
+    try {
+      await navigator.clipboard.writeText(val);
+      setCopied(true);
+    } catch (error) {
+      console.log("Failed to copy text: ", error);
+      setCopied(false);
+    }
+  };
+
+  const duplicatePlayer = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const newdata = {
+        name: duplicateData.name.concat(
+          ` copy ${Math.floor(100000 + Math.random() * 900000)}`,
+        ),
+        config: duplicateData.config,
+      };
+      await axios.post("/players", newdata, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("s-token")}`,
+        },
+      });
+      setOpenModal(false);
+      showToast();
+      setDuplicateData(null);
+      setTimeout(() => {
+        setRefetch(Math.random());
+      }, 800);
+    } catch (error) {
+      console.log("error duplicating player", error);
+    }
+  };
+
+  const deletePlayer = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      await axios.delete(`/players/${deleteData.id}`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("s-token")}`,
+        },
+      });
+      setOpenModalDelete(false);
+      showToastDelete();
+      setDeleteData(null);
+      setTimeout(() => {
+        setRefetch(Math.random());
+      }, 800);
+    } catch (error) {
+      console.log("error deleting player", error);
+    }
+  };
+
   React.useEffect(() => {
     fetchPlayer();
     videoUrlUpdate.value = "";
@@ -213,6 +300,13 @@ const Home = () => {
     }
   };
 
+  const truncate = (text: string = "", maxLength = 40): string => {
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      maxLength = 30; // mobile limit
+    }
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
+
   React.useEffect(() => {
     fetchInvoice();
   }, []);
@@ -280,6 +374,11 @@ const Home = () => {
           </span>
           <input
             className="input-main custom-input-width"
+            style={{
+              borderRadius: "0.25rem",
+              paddingLeft: "2.5rem",
+              width: "22rem",
+            }}
             type={"text"}
             name={"search"}
             placeholder={"Search Video Player Name..."}
@@ -389,7 +488,7 @@ const Home = () => {
           alignItems: "center",
           justifyContent: "space-between",
           gap: "1rem",
-          margin: "2.5rem 0 1rem 0",
+          marginTop: "1rem",
         }}
       >
         <div
@@ -397,60 +496,301 @@ const Home = () => {
             width: "max-content",
           }}
         >
-          <p className="subtitle-one">Video Players</p>
+          <p className="subtitle-two">Video Players</p>
         </div>
-        {data && data.length > 7 && (
-          <button
-            className="small-secondary-btn"
-            onClick={() => {
-              navigate("/all-players");
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "max-content",
-              }}
-            >
-              See All
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: "1.5rem" }}
-              >
-                keyboard_double_arrow_right
-              </span>
-            </div>
-          </button>
-        )}
       </div>
 
       {searchData === null || searchData.length === 0 ? (
         <CreatePlayer setRefetch={setRefetch} totalLength={searchData.length} />
       ) : (
-        <div className={searchData.length < 4 ? "home-card-grid" : "card-grid"}>
-          {searchData.slice(0, 8).map((item: any, index: number) => {
-            return (
-              <VideoPlayerCard
-                key={index}
-                data={item}
-                setRefetch={setRefetch}
-                totalLength={searchData.length}
-                handleCardClick={handleRedirect}
-              />
-            );
-          })}
-          {/*
-          {searchData.length < 4 &&
-            <CreatePlayer setRefetch={setRefetch}
-              totalLength={searchData.length}
-            />
-          }
-          */}
+        <div
+          style={{
+            height: "25rem",
+            overflowY: "auto",
+            width: "100%",
+            paddingRight: "10px",
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+              padding: "0.5rem",
+              borderRadius: "0.5rem",
+              alignItems: "center",
+              gridTemplateColumns: "2fr 1fr 2fr 1fr",
+              columnGap: "2rem",
+            }}
+          >
+            <span className="link textPrimary">Player Name</span>
+            <span className="link textPrimary">Updated at</span>
+            <span className="link textPrimary">Short Code</span>
+            <span className="link textPrimary">Actions</span>
+          </div>
+          {data.map((item: any, idx: number) => (
+            <div
+              key={item.id}
+              style={{
+                display: "grid",
+                padding: "0.5rem",
+                borderRadius: "0.5rem",
+                backgroundColor: "var(--surfaceVariant)",
+                alignItems: "center",
+                marginBottom: "1rem",
+                gridTemplateColumns: "2fr 1fr 2fr 1fr",
+                columnGap: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  gap: "1rem",
+                }}
+              >
+                <img
+                  style={{
+                    width: "100px",
+                    aspectRatio: "16/9",
+                    objectFit: "cover",
+                    borderRadius: "0.25rem",
+                    cursor: "pointer",
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      handleRedirect(item.id);
+                    }
+                  }}
+                  onClick={() => handleRedirect(item.id)}
+                  src={
+                    item.config.playerThumbnailImageUrl.replace(
+                      "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
+                      "skara-imagecontent-staging.b-cdn.net/",
+                    ) ||
+                    "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
+                  }
+                  alt={"no image found"}
+                  className="card-thumbnail"
+                />
+                <span
+                  className="filename table-row-text"
+                  onClick={() => handleRedirect(item.id)}
+                >
+                  {truncate(item.name)}
+                </span>
+              </div>
+              <span className="table-row-text">{timeAgo(item.updated_at)}</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.125rem",
+                  justifyContent: "center",
+                  background: "#FFDEB960",
+                  width: "16rem",
+                  padding: "0.5rem",
+                  borderRadius: "0.25rem",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  handleCopyClipboard(`[sato_player id="${item.id}"]`);
+                }}
+              >
+                <span className="table-row-text">
+                  {`[sato_player id="${item.id}"]`}
+                </span>
+                <span className="material-symbols-outlined">content_copy</span>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.25rem",
+                    padding: "0.25rem",
+                    borderRadius: "0.25rem",
+                    border: "1px solid var(--stroke)",
+                    color: "white",
+                    background: "var(--primary)",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setOpenModal(true);
+                    setDuplicateData(item);
+                  }}
+                >
+                  {/* <span className="material-symbols-outlined">
+                    content_copy
+                  </span> */}
+                  <span className="table-row-text" style={{ color: "white" }}>
+                    Duplicate
+                  </span>
+                </div>
+                <div
+                  style={{
+                    padding: "0.25rem",
+                    borderRadius: "0.25rem",
+                    border: "1px solid var(--stroke)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined delete-icon"
+                    onClick={() => {
+                      setOpenModalDelete(true);
+                      setDeleteData(item);
+                    }}
+                  >
+                    delete_forever
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <Modal
+            isOpen={openModal}
+            setOpen={setOpenModal}
+            title={`Duplicate player`}
+            size="sm"
+          >
+            <p className="body">Are you sure want to duplicate this player?</p>
+            <form onSubmit={duplicatePlayer}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenModal(false);
+                  }}
+                  className="large-secondary-btn"
+                  style={{
+                    width: "100%",
+                    margin: "2rem 0 0 0",
+                  }}
+                >
+                  No
+                </button>
+
+                <button
+                  type="submit"
+                  className="large-primary-btn"
+                  style={{
+                    width: "100%",
+                    margin: "2rem 0 0 0",
+                  }}
+                >
+                  Yes
+                </button>
+              </div>
+            </form>
+          </Modal>
+          <Toast show={show} hideToast={hideToast}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <span className="material-symbols-outlined positive">done</span>
+              <p className="body" style={{ marginLeft: "1rem" }}>
+                Player Copied
+              </p>
+            </div>
+          </Toast>
+          <Modal
+            isOpen={openModalDelete}
+            setOpen={setOpenModalDelete}
+            title={`Delete this video player?`}
+            size="sm"
+          >
+            <p className="body">
+              Deleting this will affect video playback on your website where it
+              might be embedded
+            </p>
+            <form onSubmit={deletePlayer}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenModalDelete(false);
+                  }}
+                  className="large-primary-btn"
+                  style={{
+                    width: "100%",
+                    margin: "2rem 0 0 0",
+                  }}
+                >
+                  No
+                </button>
+
+                <button
+                  type="submit"
+                  className="large-danger-btn"
+                  style={{
+                    width: "100%",
+                    margin: "2rem 0 0 0",
+                  }}
+                >
+                  Yes
+                </button>
+              </div>
+            </form>
+          </Modal>
+          <Toast show={showDelete} hideToast={hideToastDelete}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <span className="material-symbols-outlined positive">done</span>
+              <p className="body" style={{ marginLeft: "1rem" }}>
+                Player Deleted
+              </p>
+            </div>
+          </Toast>
+          <Toast show={showCopy} hideToast={hideToastCopy}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <span className="material-symbols-outlined positive">done</span>
+              <p className="body" style={{ marginLeft: "1rem" }}>
+                Short Code Copied
+              </p>
+            </div>
+          </Toast>
         </div>
       )}
 
-      <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "4rem" }}>
+      <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "1rem" }}>
         <MediaLibrary length={10} />
       </div>
     </div>

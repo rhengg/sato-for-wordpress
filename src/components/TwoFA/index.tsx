@@ -170,21 +170,7 @@ const Index = (props: TwoFAProps) => {
   return (
     <div style={{ paddingBottom: "2rem" }}>
       <p className="subtitle-one">Two- Factor Authentication (2FA)</p>
-      {/*
-        <span style={{ marginLeft: '0.5rem' }}>
-        {isTwoFaEnabled ?
-          <img
-            src="./enable2fa.svg"
-            alt="no image found"
-          />
-          :
-          <img
-            src="./disable2fa.svg"
-            alt="no image found"
-          />
-        }
-      </span>
-*/}
+
       {isTwoFaEnabled && (
         <>
           <p
@@ -197,37 +183,6 @@ const Index = (props: TwoFAProps) => {
             Once disabled, you will no longer require to enter the 2FA code from
             your authenticator app to log into your account.
           </p>
-          {/*
-          <div
-            style={{
-              marginTop: "0.5rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid green",
-              width: "5.5rem",
-              height: "2rem",
-              borderRadius: "3rem",
-            }}
-          >
-            <span className="material-symbols-outlined positive">done</span>
-            <p className="body positive">Active</p>
-          </div>
-        */}
-
-          {/*
-          <div style={{ marginTop: '1rem', width: 'max-content' }}>
-            <p className="link"
-              onClick={() => {
-                setOpenModalDisable2fa(true)
-                setError("")
-              }}
-              style={{
-                textDecoration: 'underline',
-                cursor: 'pointer'
-              }}>Disable Two factor</p>
-          </div>
-*/}
 
           <button
             className="large-danger-btn"

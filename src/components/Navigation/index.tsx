@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import Popover from "../Popover";
 import docLinks from "../../database/docLinks.json";
 import axios from "../../utils/axios-instance";
+import satoSvg from "../../assets/sato.svg";
 
 /**
  * Navigation component is used in home layout
@@ -71,7 +72,7 @@ const Navigation = () => {
             }}
           >
             <img
-              src="/sato.svg"
+              src={satoSvg}
               alt="no image found"
               style={{ width: "100%", height: "100%" }}
             />
@@ -252,7 +253,7 @@ const Navigation = () => {
             onClick={() => navigator("/")}
           >
             <img
-              src="/sato.svg"
+              src={satoSvg}
               alt="no image found"
               style={{ width: "100%", height: "100%" }}
             />

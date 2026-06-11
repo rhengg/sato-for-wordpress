@@ -9,6 +9,7 @@ import Loader from "../../components/Loader";
 import CountrySelect, { Country } from "../../components/CountrySelect";
 import Modal from "../../components/Modal";
 import IndianStateSelect from "../../components/IndianStateSelect";
+import SatoIcon1 from "../../assets/sato_icon1.svg";
 
 const Razorpay = () => {
   const navigate = useNavigate();
@@ -246,7 +247,7 @@ const Razorpay = () => {
         key: config.RAZORPAY_KEY,
         one_click_checkout: true,
         name: "Sato",
-        image: "/sato_icon1.svg",
+        image: SatoIcon1,
         amount: plan?.amount,
         currency: plan?.currency?.toUpperCase(),
         order_id: order_id,

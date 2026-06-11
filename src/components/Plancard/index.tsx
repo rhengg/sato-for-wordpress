@@ -6,6 +6,7 @@ import axios from "../../utils/axios-instance";
 import { decodeBase64, encodeBase64 } from "../../utils/base64";
 import Loader from "../Loader";
 import { loadUserIp } from "../../utils/helper";
+import popularSvg from "../../assets/Popular.svg";
 
 type PlancardProps = {
   id: string;
@@ -123,7 +124,7 @@ const Index = (props: PlancardProps) => {
             }}
           >
             <img
-              src={"/Popular.svg"}
+              src={popularSvg}
               alt="404 Illustration"
               style={{ width: "90px", maxWidth: 380 }}
             ></img>

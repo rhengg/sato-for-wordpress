@@ -1,6 +1,8 @@
 import React from "react";
 import "./colorpicker.css";
 import Tooltip from "../Tooltip";
+import hideSvg from "../../assets/hide.svg";
+import unhideSvg from "../../assets/unhide.svg";
 
 type ColorPickerProps = {
   name?: string;
@@ -120,14 +122,14 @@ const ColorPicker = ({
         >
           {isTransparent ? (
             <img
-              src={"/hide.svg"}
+              src={hideSvg}
               alt="unhide Illustration"
               style={{ width: "18px", height: "18px" }}
               loading="lazy"
             />
           ) : (
             <img
-              src={"/unhide.svg"}
+              src={unhideSvg}
               alt="hide Illustration"
               style={{ width: "18px", height: "18px" }}
               loading="lazy"

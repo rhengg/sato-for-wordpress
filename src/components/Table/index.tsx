@@ -11,6 +11,10 @@ import Popover from "../Popover";
 import Premium from "../PremiumIcon";
 import Loader from "../Loader";
 import { waitForVideoProcessing } from "../VideoPicker";
+import AddSvg from "../../assets/Add.svg";
+import FailedSvg from "../../assets/Failed.svg";
+import CompleteSvg from "../../assets/Complete.svg";
+import GenerateSvg from "../../assets/Generate.svg";
 
 type VideoListProps = {
   data: any;
@@ -48,8 +52,6 @@ const VideoList = (props: VideoListProps) => {
     setText(text);
     showToast();
   };
-
-  const [openModal, setOpenModal] = React.useState<boolean>(false);
 
   const handleTranscribe = async (id: string) => {
     try {
@@ -131,36 +133,11 @@ const VideoList = (props: VideoListProps) => {
 
   return (
     <div className="video-table">
-      {/*
-      <div className="mobile-text-render">
-        <p className="subtitle-one">List of your Uploaded Video</p>
-        {
-          pathname != '/vidoe-library' && data?.length > 0 &&
-          <button className="small-secondary-btn"
-            onClick={() => {
-              navigate("/video-library");
-            }}
-          >
-            <div
-              style={{ display: 'flex', alignItems: 'center', width: 'max-content' }}
-            >
-              See All
-              <span className="material-symbols-outlined"
-                style={{ fontSize: '1.5rem' }}
-              >
-                keyboard_double_arrow_right
-              </span>
-            </div>
-          </button>
-        }
-      </div>
-*/}
-
       <div className={"video-table-header"}>
-        <span className="caption textPrimary">Video name</span>
-        <span className="caption textPrimary">Uploaded at</span>
+        <span className="link textPrimary">Video name</span>
+        <span className="link textPrimary">Uploaded at</span>
         <span
-          className="caption textPrimary"
+          className="link textPrimary"
           style={{
             display: "flex",
             alignItems: "center",
@@ -173,30 +150,18 @@ const VideoList = (props: VideoListProps) => {
           )}
           Speech-to-text
         </span>
-        <span className="caption textPrimary">More</span>
+        <span className="link textPrimary">More</span>
       </div>
 
       {data.map((video: any, idx: number) => (
-        <div
-          key={idx}
-          className="video-table-row"
-          // className={
-          //   !handleClick ? "video-table-row" : "video-table-row-select-media"
-          // }
-          // style={{
-          //   gridTemplateColumns: !handleClick
-          //     ? "6fr 1fr auto auto auto"
-          //     : "6fr 1fr auto auto",
-          // }}
-        >
+        <div key={idx} className="video-table-row">
           <span
-            className="filename body textSecondary"
+            className="filename table-row-text"
             style={{
               cursor: handleClick ? "pointer" : "text",
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
-              // padding: handleClick ? '0 1rem' : '0'
             }}
             onClick={async () => {
               if (handleClick) {
@@ -212,16 +177,14 @@ const VideoList = (props: VideoListProps) => {
           >
             {handleClick && (
               <img
-                src={"/Add.svg"}
+                src={AddSvg}
                 alt="add"
                 style={{ width: "16px", maxWidth: 380 }}
               />
             )}
             {truncate(video.name)}
           </span>
-          <span className="body textSecondary">
-            {timeAgo(video.updated_at)}
-          </span>
+          <span className="table-row-text">{timeAgo(video.updated_at)}</span>
 
           <span
             style={{
@@ -234,13 +197,6 @@ const VideoList = (props: VideoListProps) => {
               alignItems: "center",
               justifyContent: "center",
               gap: "0.25rem",
-              // width: "4rem",
-              // background:
-              //   !activePlan?.metadata?.premium_features?.caption ||
-              //   video.transcription_status === "completed"
-              //     ? "rgba(18, 213,0, 0.1)"
-              //     : "rgba(248, 102, 102, 0.1)",
-              // padding: "0.25rem 0.5rem",
               borderRadius: "0.25rem",
             }}
             onClick={() => {
@@ -266,19 +222,19 @@ const VideoList = (props: VideoListProps) => {
               ) : video.transcription_status === "failed" ||
                 transcriptionFailed === video.id ? (
                 <img
-                  src={"/Failed.svg"}
+                  src={FailedSvg}
                   alt="failed"
                   style={{ width: "16px", maxWidth: 380 }}
                 />
               ) : video.transcription_status === "completed" ? (
                 <img
-                  src={"/Complete.svg"}
+                  src={CompleteSvg}
                   alt="complete"
                   style={{ width: "16px", maxWidth: 380 }}
                 />
               ) : (
                 <img
-                  src={"/Generate.svg"}
+                  src={GenerateSvg}
                   alt="add"
                   style={{ width: "80px", maxWidth: 380 }}
                 />
@@ -286,32 +242,7 @@ const VideoList = (props: VideoListProps) => {
             </div>
           </span>
 
-          {/* {!handleClick && (
-            <span
-              className="link"
-              style={{
-                cursor: !activePlan?.metadata?.premium_features?.abr
-                  ? "not-allowed"
-                  : "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-              onClick={() => {
-                if (!activePlan?.metadata?.premium_features?.abr) {
-                  return;
-                }
-                handleEncode(video?.id);
-              }}
-            >
-              Encode{" "}
-              {!activePlan?.metadata?.premium_features?.abr && (
-                <Premium smIcon={true} width="16" />
-              )}
-            </span>
-          )} */}
-
-          <span className=" body textSecondary">
+          <span className=" table-row-text">
             <div
               style={{
                 position: "relative",
@@ -348,18 +279,6 @@ const VideoList = (props: VideoListProps) => {
             </div>
           </span>
 
-          {/* {showCopy && (
-            <span className="cp-ico">
-              <span
-                className="material-symbols-outlined copy-icon"
-                onClick={() => {
-                  handleCopy(video?.url);
-                }}
-              >
-                content_copy
-              </span>
-            </span>
-          )} */}
           {/* {!handleClick && (
             <span>
               <span

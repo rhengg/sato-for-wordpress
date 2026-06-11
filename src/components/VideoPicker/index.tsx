@@ -9,6 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Premium from "../PremiumIcon";
 import Tooltip from "../Tooltip";
 import { sanitizeFileNameForS3Key } from "../../utils/helper";
+import UploadErrorSvg from "../../assets/upload-error.svg";
+import FilesIconsSvg from "../../assets/FilesIcons.svg";
 
 export const waitForVideoProcessing = async (videoId: string) => {
   const maxRetries = 20;
@@ -82,6 +84,7 @@ const VideoPicker = (props: VideoPickerProps) => {
 
   const [transcript, setTranscript] = React.useState(false);
   const [abr, setABR] = React.useState(false);
+  const [uploadLoading, setUploadLoading] = React.useState(false);
 
   React.useEffect(() => {
     const video_id =
@@ -103,6 +106,7 @@ const VideoPicker = (props: VideoPickerProps) => {
     e.preventDefault();
 
     try {
+      setUploadLoading(true);
       const res = await axios.post(
         "/videos",
         {
@@ -130,6 +134,8 @@ const VideoPicker = (props: VideoPickerProps) => {
       setTotalVideoCount(true);
       setLoading(false);
       setProgress(0);
+    } finally {
+      setUploadLoading(false);
     }
   };
 
@@ -239,82 +245,6 @@ const VideoPicker = (props: VideoPickerProps) => {
             resolve(response);
           }
         })
-        // .then(async (response) => {
-        //   const construct_video_url = new URL(
-        //     presignedPostData.fields.key,
-        //     config.VIDEO_CDN_URL,
-        //   ).toString();
-
-        //   videoUrlUpdate.value = construct_video_url;
-
-        //   const isPaidUser = Number(activePlan?.amount) > 0;
-
-        //   try {
-        //     //  FREE PLAN → skip processing
-        //     if (!isPaidUser) {
-        //       if (addSource) {
-        //         await addSource(sourceId);
-        //       }
-
-        //       setRefetch(Math.random());
-        //       setOpenModalUpload && setOpenModalUpload(false);
-        //       setLoading(false);
-        //       return resolve(response);
-        //     }
-
-        //     // PAID PLAN → run on-success + polling
-        //     const onSuccess = await axios.post("/videos/on-success", {
-        //       key: presignedPostData.fields.key,
-        //       use_caption: transcript,
-        //     });
-
-        //     const shouldProcess = transcript;
-
-        //     if (shouldProcess) {
-        //       const result = await waitForVideoProcessing(onSuccess.data?.id);
-
-        //       if (addSource) {
-        //         if (result.status === "completed") {
-        //           await addSource(sourceId, result.video);
-        //         }
-
-        //         if (result.status === "failed") {
-        //           setTranscriptionFailed(true);
-        //           setFailedVideo(result.video);
-        //           return;
-        //         }
-
-        //         if (result.status === "timeout") {
-        //           setTranscriptionFailed(true);
-        //           return;
-        //         }
-        //       } else {
-        //         if (result.status === "completed") {
-        //           setOpenModalUpload && setOpenModalUpload(false);
-        //           setRefetch(Math.random());
-        //         }
-
-        //         if (result.status === "failed" || result.status === "timeout") {
-        //           setTranscriptionFailed(true);
-        //           return;
-        //         }
-        //       }
-        //     } else {
-        //       // no processing needed
-        //       if (addSource) {
-        //         await addSource(sourceId);
-        //         setRefetch(Math.random());
-        //         setOpenModalUpload && setOpenModalUpload(false);
-        //       }
-        //     }
-
-        //     setLoading(false);
-        //     resolve(response);
-        //   } catch (err) {
-        //     console.log("processing failed or timeout", err);
-        //     resolve(response);
-        //   }
-        // })
         .catch((error: any) => {
           console.log("error while uploading", error?.response?.status);
           setLoading(false);
@@ -344,7 +274,7 @@ const VideoPicker = (props: VideoPickerProps) => {
           justifyContent: "center",
         }}
       >
-        <img className="w-100" src="./upload-error.svg" alt="no image found" />
+        <img className="w-100" src={UploadErrorSvg} alt="no image found" />
 
         {sizeExceed && (
           <>
@@ -383,9 +313,7 @@ const VideoPicker = (props: VideoPickerProps) => {
             gap: "0.5rem",
             alignItems: "center",
             justifyContent: "center",
-            // backgroundImage: "url(/border.svg)",
-            // backgroundSize: "100% 100%",
-            height: "18rem",
+            height: "max-content",
             borderRadius: "0.75rem",
             border: "1px dashed var(--primary)",
             padding: "0.5rem",
@@ -403,24 +331,20 @@ const VideoPicker = (props: VideoPickerProps) => {
               gap: "0.5rem",
               alignItems: "center",
               justifyContent: "center",
+              padding: "0.5rem 0rem",
             }}
           >
             {imageImported ? (
               <>
                 <img
-                  src={"/FilesIcons.svg"}
+                  src={FilesIconsSvg}
                   alt="FilesIcons Illustration"
                   style={{ width: 44 }}
                 />
                 <p className="body">
                   {truncate(file?.name.replace(/\s/g, "_"))}
                 </p>
-                {/*
-              {
-                limitExceedCode === 400 ? <p className="error-text">Your Video Exceeded 200mb limit</p> :
-                  <p className="label">{truncate(file?.name.replace(/\s/g, "_"))}</p>
-              }
-*/}
+
                 {loading ? (
                   <div className="videoUpload-main">
                     <div
@@ -441,14 +365,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                         }}
                       ></div>
                     </div>
-                    {/* <p
-                      className="body textPrimary"
-                      style={{ marginTop: "0.5rem" }}
-                    >
-                      {Number(progress) < 100
-                        ? `Uploading ${progress || 0}%`
-                        : "Transcribing"}
-                    </p> */}
+
                     <p
                       className="body textPrimary"
                       style={{ marginTop: "0.5rem" }}
@@ -520,13 +437,6 @@ const VideoPicker = (props: VideoPickerProps) => {
                       alignItems: "flex-start",
                       // width: "50%",
                     }}
-
-                    // style={{
-                    //   display: "flex",
-                    //   flexDirection: "column",
-                    //   gap: "1rem",
-                    //   width: "40%",
-                    // }}
                   >
                     <div
                       style={{
@@ -592,33 +502,6 @@ const VideoPicker = (props: VideoPickerProps) => {
                           />
                         </label>
                       </div>
-
-                      {/* <div
-                        style={{
-                          width: "100%",
-                          padding: "0.25rem",
-                          border: "1px solid var(--stroke)",
-                          boxSizing: "border-box",
-                        }}
-                      >
-                        <label
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={abr}
-                            onChange={(e) => setABR(e.target.checked)}
-                          />
-                          <p className="body">Encode</p>{" "}
-                          {!activePlan?.metadata?.premium_features?.abr && (
-                            <Premium smIcon={true} width="16" />
-                          )}
-                        </label>
-                      </div> */}
                     </div>
 
                     <p
@@ -651,19 +534,22 @@ const VideoPicker = (props: VideoPickerProps) => {
                       className="large-primary-btn"
                       type="submit"
                       disabled={
+                        uploadLoading &&
                         !activePlan?.metadata?.premium_features?.caption &&
                         transcript
                       }
-                      // disabled={
-                      //   !activePlan?.metadata?.premium_features?.caption ||
-                      //   !activePlan?.metadata?.premium_features?.abr
-                      // }
                       style={{
                         marginTop: "1rem",
                         width: "100%",
                       }}
                     >
-                      Upload Selected File
+                      {uploadLoading ? (
+                        <>
+                          Loading <span className="dot-loader"></span>
+                        </>
+                      ) : (
+                        "Upload Selected File"
+                      )}
                     </button>
 
                     <div style={{ width: "100%" }}>

@@ -3,7 +3,7 @@ import "./drawer.css";
 import ReactPortal from "../ReactPortal";
 import IconButton from "../IconButton";
 import { Link, useNavigate } from "react-router-dom";
-import packagejson from "../../../package.json";
+import satoSvg from "../../assets/sato.svg";
 
 type DrawerProps = {
   isVisible: boolean;
@@ -41,7 +41,7 @@ const Drawer = (props: DrawerProps) => {
               }}
             >
               <img
-                src="/sato.svg"
+                src={satoSvg}
                 alt="no image found"
                 style={{ width: "100%", height: "100%" }}
               />

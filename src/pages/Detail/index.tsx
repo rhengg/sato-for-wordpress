@@ -29,6 +29,7 @@ import LivePlayer from "../../components/LivePlayer";
 import { makeConfig } from "../../utils/makePlayerConfig";
 import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
+import CompleteSvg from "../../assets/Complete.svg";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -4001,7 +4002,7 @@ const Index = () => {
                         //   check_circle
                         // </span>
                         <img
-                          src={"/Complete.svg"}
+                          src={CompleteSvg}
                           alt="premium Illustration"
                           style={{ width: "24px", maxWidth: 380 }}
                         />
@@ -4203,7 +4204,7 @@ const Index = () => {
                     }}
                   >
                     <img
-                      src={"/Complete.svg"}
+                      src={CompleteSvg}
                       alt="premium Illustration"
                       style={{ width: "60px", maxWidth: 380 }}
                     />

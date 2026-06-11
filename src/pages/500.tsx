@@ -1,6 +1,7 @@
 import React from "react";
 import Error from "../components/Error";
 import { decodeBase64 } from "../utils/base64";
+import Error500Svg from "../assets/Error500.svg";
 
 const Error500 = () => {
   const params = new URLSearchParams(window.location.search);
@@ -35,7 +36,7 @@ const Error500 = () => {
           }}
         >
           <img
-            src="/Error500.svg"
+            src={Error500Svg}
             alt="500 Illustration"
             style={{
               width: "100%",

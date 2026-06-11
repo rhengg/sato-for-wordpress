@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Tv404Svg from "../assets/Tv404Svg.svg";
 
 const NotFound: React.FC = () => {
   return (
@@ -52,7 +53,7 @@ const NotFound: React.FC = () => {
             }}
           >
             <img
-              src={"/Tv404Svg.svg"}
+              src={Tv404Svg}
               alt="404 Illustration"
               style={{ width: "100%", maxWidth: 380 }}
             />
