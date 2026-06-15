@@ -1135,73 +1135,105 @@ const Index = () => {
 
             <div
               style={{
-                width: "100%",
                 display: "flex",
+                flexWrap: "wrap",
                 alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "2rem",
+                justifyContent: "space-between",
+                marginTop: "1.5rem",
               }}
             >
-              <p className="subtitle-one">{playerNameUpdate.value}</p>
-              <span
-                className="material-symbols-outlined"
+              <div
                 style={{
-                  fontSize: "20px",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  setOpenModalEditName(true);
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
                 }}
               >
-                edit_square
-              </span>
-              <Modal
-                isOpen={openModalEditName}
-                setOpen={setOpenModalEditName}
-                title={`Rename Player`}
-                size="sm"
-              >
-                <form
-                  onSubmit={(e) => {
-                    handleSubmit(e);
-                    setOpenModalEditName(false);
+                <p className="subtitle-two">Player Name: </p>
+                <p className="body">{playerNameUpdate.value}</p>
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    setOpenModalEditName(true);
                   }}
                 >
-                  <div style={{ marginBottom: "0.5rem" }}>
-                    <p className="input-title">Player name</p>
-                  </div>
-                  <input
-                    style={{ width: "100%" }}
-                    className="input-secondary"
-                    type={"text"}
-                    name={"videotitle"}
-                    placeholder="Enter player name"
-                    defaultValue={playerNameUpdate.value}
-                    maxLength={60}
-                    onInput={(e: any) =>
-                      (playerNameUpdate.value = e.target.value)
-                    }
-                  />
-
-                  <button
-                    type="submit"
-                    className="large-primary-btn"
-                    style={{
-                      width: "100%",
-                      margin: "2rem 0 0 0",
+                  edit_square
+                </span>
+                <Modal
+                  isOpen={openModalEditName}
+                  setOpen={setOpenModalEditName}
+                  title={`Rename Player`}
+                  size="sm"
+                >
+                  <form
+                    onSubmit={(e) => {
+                      handleSubmit(e);
+                      setOpenModalEditName(false);
                     }}
                   >
-                    Done
-                  </button>
-                </form>
-              </Modal>
+                    <div style={{ marginBottom: "0.5rem" }}>
+                      <p className="input-title">Player name</p>
+                    </div>
+                    <input
+                      style={{ width: "100%" }}
+                      className="input-secondary"
+                      type={"text"}
+                      name={"videotitle"}
+                      placeholder="Enter player name"
+                      defaultValue={playerNameUpdate.value}
+                      maxLength={60}
+                      onInput={(e: any) =>
+                        (playerNameUpdate.value = e.target.value)
+                      }
+                    />
+
+                    <button
+                      type="submit"
+                      className="large-primary-btn"
+                      style={{
+                        width: "100%",
+                        margin: "2rem 0 0 0",
+                      }}
+                    >
+                      Done
+                    </button>
+                  </form>
+                </Modal>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                  gap: "0.5rem",
+                }}
+              >
+                <p className="subtitle-two">Player ID: </p>
+                <p className="body">{videoId}</p>
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    handleCopyClipboard("embed-player-id");
+                  }}
+                >
+                  content_copy
+                </span>
+              </div>
             </div>
 
             <div
               style={{
                 width: "100%",
-                padding: "1rem",
-                marginBottom: "2rem",
+                marginTop: "1.5rem",
                 boxSizing: "border-box",
                 border: "1px solid",
                 borderColor: "var(--stroke)",
@@ -1344,340 +1376,9 @@ const Index = () => {
               </div>
             </div>
 
-            {/*demo player with preview*/}
-            <div style={{ width: "100%" }}>
-              {/*
-              <p className="body placeholder" style={{ marginBottom: "1rem" }}>
-                Click on 'Save Edits' to view the changes made to the player live in our live view below.
-              </p>
-              */}
-              {/* <DemoPlayer
-                config={videoconfigupdate.value}
-                brandUploading={brandUploading}
-                thumbnailUploading={thumbnailUploading}
-                ctaImageUploading={ctaImageUploading}
-                preview={() => setOpenModal(true)}
-                reRender={reRender}
-              /> */}
+            <div style={{ width: "100%", marginTop: "1.5rem" }}>
               {computedConfig && <LivePlayer config={computedConfig} />}
-              {/*
-              <div
-                style={{
-                  width: "100%",
-                  // border: "1px solid #f0f0f0",
-                  // padding: "0.75rem",
-                  margin: "1rem 0 2rem 0",
-                  boxSizing: "border-box",
-                  display: "flex",
-                  gap: "1rem",
-                  alignItems: "flex-start",
-                }}
-              >
-                <div
-                  style={{
-                    flex: 1
-                  }}
-                >
-                  <button
-                    className="large-secondary-btn"
-                    disabled={sourceEmpty}
-                    style={{
-                      width: "100%",
-                    }}
-                    onClick={() => setOpenModal(true)}
-                  >
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      columnGap: '0.25rem'
-                    }}>
-                      <span className="material-symbols-outlined"
-                        style={{ fontWeight: 'bold' }}>
-                        slideshow
-                      </span>
-                      Preview
-                    </div>
-                  </button>
-                </div>
-                <div
-                  style={{
-                    padding: "0 0.5rem ",
-                    flex: 3
-                  }}
-                >
-                  <p className="body placeholder">
-                    To preview your player along with your video, Click on 'Save Edits' and then this 'Preview' button.</p>
-                </div>
-
-
-              </div>
-              */}
             </div>
-
-            {/*embed content in desktop*/}
-            <div className="video-player-embeded-style get-embed-share-info-desktop">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  width: "100%",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    position: "relative",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <p className="subtitle-two textPrimary">Embed URL</p>
-                  <div
-                    style={{
-                      position: "relative",
-                    }}
-                  >
-                    <Tooltip
-                      text={
-                        "Use this to embed the player into platforms that allow embed URLs"
-                      }
-                    >
-                      <span
-                        className="material-symbols-outlined"
-                        style={{
-                          fontSize: "16px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        info
-                      </span>
-                    </Tooltip>
-                  </div>
-                </div>
-                <div className="embed-link">
-                  <textarea
-                    className="hide-scroll"
-                    id="embed-link"
-                    value={isLoadingEmbed ? "Please wait" : embedUrl}
-                    rows={5}
-                    cols={5}
-                    style={{
-                      width: "95%",
-                      height: "2rem",
-                      padding: "0.5rem",
-                      overflowY: "scroll",
-                      borderStyle: "none",
-                      borderColor: "transparent",
-                      overflow: "auto",
-                      outline: "none",
-                      border: "1px solid #f0f0f0",
-                      color: "#828282",
-                    }}
-                  ></textarea>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <IconButton
-                      // width="100%"
-                      // height="3.15rem"
-                      onClick={() => {
-                        handleCopyClipboard("embed-link");
-                      }}
-                    >
-                      <span className="material-symbols-outlined white">
-                        content_copy
-                      </span>
-                    </IconButton>
-                  </div>
-                </div>
-                {copiedLink && (
-                  <>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <span className="material-symbols-outlined positive">
-                        done
-                      </span>
-                      <p className="body" style={{ marginLeft: "1rem" }}>
-                        Copied !
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    position: "relative",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <p className="subtitle-two textPrimary">Embed code</p>
-                  <div
-                    style={{
-                      position: "relative",
-                    }}
-                  >
-                    <Tooltip
-                      text={
-                        "Use this snippet to embed the player into platforms that do not allow embed URLs, or if you are building a custom site"
-                      }
-                    >
-                      <span
-                        className="material-symbols-outlined"
-                        style={{
-                          fontSize: "16px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        info
-                      </span>
-                    </Tooltip>
-                  </div>
-                </div>
-                <div className="embed-link">
-                  <textarea
-                    className="hide-scroll"
-                    id="embed-link-code"
-                    value={isLoadingEmbed ? "Please wait" : embedCode}
-                    rows={7}
-                    cols={5}
-                    style={{
-                      width: "95%",
-                      height: "6rem",
-                      padding: "0.5rem",
-                      overflowY: "scroll",
-                      borderStyle: "none",
-                      borderColor: "transparent",
-                      overflow: "auto",
-                      outline: "none",
-                      border: "1px solid #f0f0f0",
-                      color: "#828282",
-                    }}
-                  ></textarea>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <IconButton
-                      // width="100%"
-                      // height="3.15rem"
-                      onClick={() => {
-                        handleCopyClipboard("embed-link-code");
-                      }}
-                    >
-                      <span className="material-symbols-outlined white">
-                        content_copy
-                      </span>
-                    </IconButton>
-                  </div>
-                </div>
-                {copied && (
-                  <>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <span className="material-symbols-outlined positive">
-                        done
-                      </span>
-                      <p className="body" style={{ marginLeft: "1rem" }}>
-                        Copied !
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="video-player-embeded-style get-embed-share-info-desktop">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  width: "100%",
-                }}
-              >
-                <p className="subtitle-two textPrimary">Player ID</p>
-                <div className="embed-link">
-                  <textarea
-                    className="hide-scroll"
-                    id="embed-player-id"
-                    value={isLoadingEmbed ? "Please wait" : (videoId as string)}
-                    rows={5}
-                    cols={5}
-                    style={{
-                      width: "95%",
-                      height: "2rem",
-                      padding: "0.5rem",
-                      overflowY: "scroll",
-                      borderStyle: "none",
-                      borderColor: "transparent",
-                      overflow: "auto",
-                      outline: "none",
-                      border: "1px solid #f0f0f0",
-                      color: "#828282",
-                    }}
-                  ></textarea>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => {
-                        handleCopyClipboard("embed-player-id");
-                      }}
-                    >
-                      <span className="material-symbols-outlined white">
-                        content_copy
-                      </span>
-                    </IconButton>
-                  </div>
-                </div>
-
-                {copiedPlayerId && (
-                  <>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <span className="material-symbols-outlined positive">
-                        done
-                      </span>
-                      <p className="body" style={{ marginLeft: "1rem" }}>
-                        Copied !
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div style={{ height: "1rem" }}></div>
 
             <Modal
               isOpen={openModal}
@@ -1726,87 +1427,6 @@ const Index = () => {
                 )}
               </div>
             </Modal>
-
-            {/* Delete*/}
-            {/*
-            <div className="delete-container">
-              <button
-                className='large-danger-btn'
-                onClick={() => setOpenModalRemove(true)}
-              >
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  columnGap: '0.25rem'
-                }}>
-                  <span className="material-symbols-outlined"
-                    style={{ fontWeight: 'bold' }}>
-                    delete_forever
-                  </span>
-                  Delete Player
-                </div>
-              </button>
-
-
-              <Modal
-                isOpen={openModalRemove}
-                setOpen={setOpenModalRemove}
-                title={`Delete this video player?`}
-                size='sm'
-              >
-                <p className="body">Deleting this will affect video playback on your website where it might be embedded</p>
-
-                <form onSubmit={handleRemoveVideo}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem'
-                  }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOpenModalRemove(false);
-                      }}
-                      className="large-primary-btn"
-                      style={{
-                        width: "100%",
-                        margin: "2rem 0 0 0",
-                      }}
-                    >
-                      No
-                    </button>
-
-                    <button
-                      type="submit"
-                      className="large-danger-btn"
-                      style={{
-                        width: "100%",
-                        margin: "2rem 0 0 0",
-                      }}
-                    >
-                      Yes
-                    </button>
-                  </div>
-                </form>
-              </Modal>
-
-              <Toast show={showDelete} hideToast={hideToastDelete}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start'
-                }}>
-                  <span className="material-symbols-outlined negative">
-                    delete
-                  </span>
-                  <p className='body' style={{ marginLeft: '1rem' }}>
-                    Video deleted
-                  </p>
-                </div>
-              </Toast>
-            </div>
-              */}
           </div>
         </div>
 
@@ -4396,6 +4016,7 @@ const Index = () => {
             </form>
           </Modal>
         </div>
+
         <Toast show={show} hideToast={hideToast}>
           <div
             style={{

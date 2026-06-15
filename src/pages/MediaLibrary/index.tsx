@@ -280,7 +280,12 @@ const MediaLibrary = (props: any) => {
         </div>
 
         <div className="desktop-text-render">
-          <p className="subtitle-two">Uploaded Videos</p>
+          <p
+            className="subtitle-two"
+            style={{ marginTop: "1.5rem", marginBottom: "0.5rem" }}
+          >
+            Uploaded Videos
+          </p>
           {pathname != "/video-library" && media?.length > 9 && (
             <button
               className="small-secondary-btn"

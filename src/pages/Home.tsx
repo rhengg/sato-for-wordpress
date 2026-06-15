@@ -488,7 +488,8 @@ const Home = () => {
           alignItems: "center",
           justifyContent: "space-between",
           gap: "1rem",
-          marginTop: "1rem",
+          marginTop: "1.5rem",
+          marginBottom: "0.5rem",
         }}
       >
         <div
