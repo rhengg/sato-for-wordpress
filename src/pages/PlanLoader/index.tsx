@@ -14,7 +14,6 @@ function PlansLoader() {
       .then((response) => {
         const code =
           response?.data?.countryCode?.toUpperCase() || FALLBACK_COUNTRY;
-
         navigate(`/plans/${code}`);
       })
       .catch((error) => {

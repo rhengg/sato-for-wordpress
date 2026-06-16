@@ -623,7 +623,10 @@ li::marker {
 }
 
 .main-page-wrapper {
-  padding: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .home-header {

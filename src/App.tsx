@@ -20,7 +20,6 @@ import PlansById from "./pages/PlansById";
 import CanvaAuth from "./pages/CanvaAuth";
 import ProfileLayout from "./layout/ProfileLayout";
 import AccountPage from "./pages/Account";
-import BillingPage from "./pages/Billing";
 import SecurityPrivacyPage from "./pages/SecurityPrivacy";
 import PlansLoader from "./pages/PlanLoader";
 import Paypal from "./pages/Paypal";
@@ -43,15 +42,15 @@ const App = () => {
 
   switch (page) {
     case "sato-video-library":
-      return <MediaLibrary />;
+      return (
+        <div style={{ padding: "1rem" }}>
+          <MediaLibrary />
+        </div>
+      );
     case "sato-profile":
       return <AccountPage />;
-    case "sato-billing":
-      return <BillingPage />;
     case "sato-player-detail":
       return <Detail />;
-    case "sato-plans":
-      return <PlansLoader />;
     case "sato-signin":
       return <Login />;
     case "sato-player":

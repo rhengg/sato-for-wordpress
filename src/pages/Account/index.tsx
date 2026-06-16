@@ -7,12 +7,14 @@ import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils/helper";
 import "../../pages/Profile/profile.css";
+import Invoices from "../Invoices";
 
 const AccountPage = () => {
   const navigate = useNavigate();
 
   const [subscription, setSubscription] = React.useState<any>();
-  const user = decodeBase64(Cookies.get("s-user") as string);
+  // const user = decodeBase64(Cookies.get("s-user") as string);
+  const [user, setUser] = React.useState<any>();
   const [openModalCancel, setOpenModalCancel] = React.useState<boolean>(false);
   const [loadingMedia, setLoadingMedia] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
@@ -20,6 +22,20 @@ const AccountPage = () => {
   const [loadingPlan, setLoadingPlan] = React.useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = React.useState<any>();
   const [paymentMethodDetails, setPaymentMethodDetails] = React.useState<any>();
+
+  const fetchUserDetail = async () => {
+    try {
+      const res = await axios.get("/me", {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("s-token")}`,
+        },
+      });
+      console.log("me data", res.data);
+      setUser(res.data);
+    } catch (error) {
+      console.log("error fetching user detail", error);
+    }
+  };
 
   const handleCancelSubscription = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -73,6 +89,7 @@ const AccountPage = () => {
 
   React.useEffect(() => {
     fetchSubscription();
+    fetchUserDetail();
   }, []);
 
   const fetchMedia = async () => {
@@ -126,44 +143,9 @@ const AccountPage = () => {
           margin: "0 auto",
         }}
       >
-        {/* {(subscription?.status === "pending" ||
-          subscription?.status === "halted") && (
-          <div
-            style={{
-              boxSizing: "border-box",
-              width: "100%",
-              borderRadius: "0.25rem",
-              border: "1px solid var(--stroke)",
-              padding: "1rem",
-              marginBottom: "2rem",
-              backgroundColor: "#f5fab3ff",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "0.25rem",
-            }}
-          >
-            <p className="body">
-              Charge attempt towards your subscription has failed. To continue
-              with this subscription, you must &nbsp;
-              <Link
-                to={subscription?.short_url}
-                target="_blank"
-                style={{
-                  textDecoration: "none",
-                }}
-                className="primary"
-              >
-                update payment method
-              </Link>
-            </p>
-          </div>
-        )} */}
-
         {(subscription?.status as string)?.toLowerCase() === "cancelled" && (
           <div
             style={{
-              // position: "absolute",
               boxSizing: "border-box",
               // top: 0,
               width: "100%",
@@ -328,6 +310,33 @@ const AccountPage = () => {
               )}
             </div>
           </div>
+        </div>
+
+        <div
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+          }}
+        >
+          {subscription && activePlan?.amount > 0 && (
+            <>
+              <p className="subtitle-one">Your Subscription Details</p>
+
+              <div className="profile-box" style={{ marginBottom: "2rem" }}>
+                <div>
+                  <p className="label textSecondary">Billing Cycle</p>
+                  <p className="body" style={{ marginTop: "0.5rem" }}>
+                    {formatDate(subscription.current_start)}&nbsp;-&nbsp;
+                    {formatDate(subscription.current_end)}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {paymentMethod && <div style={{ marginTop: "2rem" }}></div>}
+
+          <Invoices />
         </div>
 
         <Modal

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Error from "../components/Error";
 import CreatePlayer from "../components/CreatePlayer";
 import axios from "../utils/axios-instance";
@@ -11,18 +11,15 @@ import {
   videoTranscript,
   videoconfigupdate,
 } from "./Detail";
-import { decodeBase64, encodeBase64 } from "../utils/base64";
 import MediaLibrary from "./MediaLibrary";
 import Modal from "../components/Modal";
 import { config } from "../utils/default-config";
-import VideoPlayerCard from "../components/PlayerCard";
 import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
-import { loadUserIp, timeAgo } from "../utils/helper";
+import { timeAgo } from "../utils/helper";
 import Toast from "../components/Toast";
 
 const Home = () => {
-  const navigate = useNavigate();
   const [searchTitle, setSearchTitle] = React.useState("");
   const [data, setData] = React.useState<any>([]);
   const [error, setError] = React.useState(false);
@@ -38,43 +35,15 @@ const Home = () => {
   const [copied, setCopied] = React.useState(false);
   const [duplicateData, setDuplicateData] = React.useState<any>();
   const [deleteData, setDeleteData] = React.useState<any>();
-
-  // Handle choosen plan from landing page using session storage
-  const fromLandingPage = sessionStorage.getItem("from-landing-page");
-  const choosenPlanFromLandingPage = JSON.parse(fromLandingPage as string);
-
-  // React.useEffect(() => {
-  //   (async () => {
-  //     const countryCode = await loadUserIp();
-  //     if (choosenPlanFromLandingPage) {
-  //       navigate({
-  //         pathname: `/checkout/${countryCode}`,
-  //         search: `planId=${choosenPlanFromLandingPage?.planId}`,
-  //       });
-  //     }
-  //   })();
-  // }, [choosenPlanFromLandingPage]);
-
-  // Handle oauth flow for canva using session storage
-  const oAuthData = sessionStorage.getItem("o-auth");
-  const oAuthObj = JSON.parse(oAuthData as any);
-
-  // React.useEffect(() => {
-  //   if (oAuthObj) {
-  //     navigate({
-  //       pathname: oAuthObj?.url?.pathname,
-  //       search: oAuthObj?.url?.search,
-  //     });
-  //   }
-  // }, [oAuthObj]);
-
+  const [page, setPage] = React.useState(1);
   const [openModalAdd, setOpenModalAdd] = React.useState<boolean>(false);
   const [playerName, setPlayerName] = React.useState("");
   const [errorPlayer, setErrorPlayer] = React.useState("");
-
   const [selectedTemplate, setSelectedTemplate] = React.useState<
     "halcyon" | "moderna" | "sphinx" | "prosper"
   >("halcyon");
+  const ITEMS_PER_PAGE = 4;
+  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
 
   const handleRedirect = (id: string) => {
     window.location.href = `${window.location.pathname}?page=sato-player-detail&video=${id}`;
@@ -318,6 +287,7 @@ const Home = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          height: "100%",
         }}
       >
         <Loader
@@ -506,8 +476,6 @@ const Home = () => {
       ) : (
         <div
           style={{
-            height: "25rem",
-            overflowY: "auto",
             width: "100%",
             paddingRight: "10px",
           }}
@@ -527,137 +495,189 @@ const Home = () => {
             <span className="link textPrimary">Short Code</span>
             <span className="link textPrimary">Actions</span>
           </div>
-          {data.map((item: any, idx: number) => (
-            <div
-              key={item.id}
-              style={{
-                display: "grid",
-                padding: "0.5rem",
-                borderRadius: "0.5rem",
-                backgroundColor: "var(--surfaceVariant)",
-                alignItems: "center",
-                marginBottom: "1rem",
-                gridTemplateColumns: "2fr 1fr 2fr 1fr",
-                columnGap: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  gap: "1rem",
-                }}
-              >
-                <img
-                  style={{
-                    width: "100px",
-                    aspectRatio: "16/9",
-                    objectFit: "cover",
-                    borderRadius: "0.25rem",
-                    cursor: "pointer",
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      handleRedirect(item.id);
-                    }
-                  }}
-                  onClick={() => handleRedirect(item.id)}
-                  src={
-                    item.config.playerThumbnailImageUrl.replace(
-                      "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
-                      "skara-imagecontent-staging.b-cdn.net/",
-                    ) ||
-                    "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
-                  }
-                  alt={"no image found"}
-                  className="card-thumbnail"
-                />
-                <span
-                  className="filename table-row-text"
-                  onClick={() => handleRedirect(item.id)}
-                >
-                  {truncate(item.name)}
-                </span>
-              </div>
-              <span className="table-row-text">{timeAgo(item.updated_at)}</span>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.125rem",
-                  justifyContent: "center",
-                  background: "#FFDEB960",
-                  width: "16rem",
-                  padding: "0.5rem",
-                  borderRadius: "0.25rem",
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  handleCopyClipboard(`[sato_player id="${item.id}"]`);
-                }}
-              >
-                <span className="table-row-text">
-                  {`[sato_player id="${item.id}"]`}
-                </span>
-                <span className="material-symbols-outlined">content_copy</span>
-              </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "flex-start",
-                }}
-              >
+          <div style={{ width: "100%", height: "23rem", overflow: "auto" }}>
+            {data
+              .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+              .map((item: any, idx: number) => (
                 <div
+                  key={item.id}
                   style={{
-                    display: "flex",
+                    display: "grid",
+                    padding: "0.5rem",
+                    borderRadius: "0.5rem",
+                    backgroundColor: "var(--surfaceVariant)",
                     alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0.25rem",
-                    padding: "0.25rem",
-                    borderRadius: "0.25rem",
-                    border: "1px solid var(--stroke)",
-                    color: "white",
-                    background: "var(--primary)",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    setOpenModal(true);
-                    setDuplicateData(item);
+                    marginBottom: "1rem",
+                    gridTemplateColumns: "2fr 1fr 2fr 1fr",
+                    columnGap: "1rem",
                   }}
                 >
-                  {/* <span className="material-symbols-outlined">
-                    content_copy
-                  </span> */}
-                  <span className="table-row-text" style={{ color: "white" }}>
-                    Duplicate
-                  </span>
-                </div>
-                <div
-                  style={{
-                    padding: "0.25rem",
-                    borderRadius: "0.25rem",
-                    border: "1px solid var(--stroke)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <span
-                    className="material-symbols-outlined delete-icon"
-                    onClick={() => {
-                      setOpenModalDelete(true);
-                      setDeleteData(item);
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "flex-start",
+                      gap: "1rem",
                     }}
                   >
-                    delete_forever
+                    <img
+                      style={{
+                        width: "100px",
+                        aspectRatio: "16/9",
+                        objectFit: "cover",
+                        borderRadius: "0.25rem",
+                        cursor: "pointer",
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          handleRedirect(item.id);
+                        }
+                      }}
+                      onClick={() => handleRedirect(item.id)}
+                      src={
+                        item.config.playerThumbnailImageUrl.replace(
+                          "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
+                          "skara-imagecontent-staging.b-cdn.net/",
+                        ) ||
+                        "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
+                      }
+                      alt={"no image found"}
+                      className="card-thumbnail"
+                    />
+                    <span
+                      className="filename table-row-text"
+                      onClick={() => handleRedirect(item.id)}
+                    >
+                      {truncate(item.name)}
+                    </span>
+                  </div>
+                  <span className="table-row-text">
+                    {timeAgo(item.updated_at)}
                   </span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.125rem",
+                      justifyContent: "center",
+                      background: "#FFDEB960",
+                      width: "16rem",
+                      padding: "0.5rem",
+                      borderRadius: "0.25rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handleCopyClipboard(`[sato_player id="${item.id}"]`);
+                    }}
+                  >
+                    <span className="table-row-text">
+                      {`[sato_player id="${item.id}"]`}
+                    </span>
+                    <span className="material-symbols-outlined">
+                      content_copy
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.25rem",
+                        padding: "0.25rem",
+                        borderRadius: "0.25rem",
+                        border: "1px solid var(--stroke)",
+                        color: "white",
+                        background: "var(--primary)",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setOpenModal(true);
+                        setDuplicateData(item);
+                      }}
+                    >
+                      <span
+                        className="table-row-text"
+                        style={{ color: "white" }}
+                      >
+                        Duplicate
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        padding: "0.25rem",
+                        borderRadius: "0.25rem",
+                        border: "1px solid var(--stroke)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <span
+                        className="material-symbols-outlined delete-icon"
+                        onClick={() => {
+                          setOpenModalDelete(true);
+                          setDeleteData(item);
+                        }}
+                      >
+                        delete_forever
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              ))}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <button
+              style={{ cursor: "pointer", display: "flex" }}
+              onClick={() => setPage((p) => p - 1)}
+              disabled={page === 1}
+            >
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: "20px",
+                }}
+              >
+                chevron_left
+              </span>
+            </button>
+
+            <span>
+              {" "}
+              {page} of {totalPages}{" "}
+            </span>
+
+            <button
+              style={{ cursor: "pointer", display: "flex" }}
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page === totalPages}
+            >
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: "20px",
+                }}
+              >
+                chevron_right
+              </span>
+            </button>
+          </div>
 
           <Modal
             isOpen={openModal}
