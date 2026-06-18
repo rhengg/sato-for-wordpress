@@ -24,21 +24,45 @@ import SecurityPrivacyPage from "./pages/SecurityPrivacy";
 import PlansLoader from "./pages/PlanLoader";
 import Paypal from "./pages/Paypal";
 import Oauth from "./pages/Oauth";
+import React, { useEffect } from "react";
 
 // http://localhost/mysite/wp-admin/admin.php?page=sato-video-library
 
 const App = () => {
-  // returns true if the cookie is present, otherwise returns false
-  const isUserAuthenticated = () => {
-    const cookie = Cookies.get("s-token");
-    if (cookie) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const [token, setToken] = React.useState<string>();
+  const [loading, setLoading] = React.useState(true);
+
+  useEffect(() => {
+    const loadToken = async () => {
+      try {
+        const res = await fetch(`${window.satoConfig.apiUrl}auth-token`, {
+          headers: {
+            "X-WP-Nonce": window.satoConfig.nonce,
+          },
+        });
+
+        const data = await res.json();
+        console.log("token", data.token);
+        setToken(data.token);
+      } catch (error) {
+        console.error("error fetching token", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadToken();
+  }, []);
 
   const page = new URLSearchParams(window.location.search).get("page");
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!token) {
+    return <Login />;
+  }
 
   switch (page) {
     case "sato-video-library":

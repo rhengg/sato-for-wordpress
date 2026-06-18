@@ -49,6 +49,7 @@ const Login = () => {
   const [pin, setPin] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [visibility, setVisibility] = React.useState(false);
+  const { nonce, apiUrl } = window.satoConfig;
 
   const loginWithout2FA = async () => {
     setError("");
@@ -58,7 +59,7 @@ const Login = () => {
       password: inputPassword,
     };
     try {
-      const countryCode = await loadUserIp();
+      // const countryCode = await loadUserIp();
       const res = await axios.post("/login", userdata);
       // console.log("success login", res.data);
       Cookies.set("s-token", res.data.token, {
@@ -72,13 +73,25 @@ const Login = () => {
         sameSite: "Strict",
       });
       setLoading(false);
-      if (choosenPlan) {
-        window.location.replace(
-          `/checkout/${countryCode === "IN" ? "IN" : countryCode}?planId=${choosenPlan}&planAmount=${choosenPlanAmount}`,
-        );
-      } else {
-        window.location.replace("/");
-      }
+
+      await fetch(`${apiUrl}auth-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-WP-Nonce": nonce,
+        },
+        body: JSON.stringify({
+          token: res.data.token,
+        }),
+      });
+
+      // if (choosenPlan) {
+      //   window.location.replace(
+      //     `/checkout/${countryCode === "IN" ? "IN" : countryCode}?planId=${choosenPlan}&planAmount=${choosenPlanAmount}`,
+      //   );
+      // } else {
+      //   window.location.replace("/");
+      // }
     } catch (error: any) {
       setLoading(false);
       if (error.response.status === 404) {
