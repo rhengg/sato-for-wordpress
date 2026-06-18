@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./Newstyle.css";
 import { BrowserRouter } from "react-router-dom";
+import "@wordpress/components/build-style/style.css";
+import "@wordpress/dataviews/build-style/style.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

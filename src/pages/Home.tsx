@@ -19,9 +19,129 @@ import playerTemplate from "../database/playerTemplate.json";
 import { timeAgo } from "../utils/helper";
 import Toast from "../components/Toast";
 
+import { Button } from "@wordpress/components";
+import { SVG, Path } from "@wordpress/primitives";
+import { DataViews, View } from "@wordpress/dataviews";
+import { Stack } from "@wordpress/ui";
+
+export interface Player {
+  id: string;
+  name: string;
+  config: PlayerConfig;
+  user_id: string;
+  created_at: number;
+  updated_at: number;
+}
+
+export interface PlayerConfig {
+  videotitle: string;
+  videodescription: string;
+  playerBrandingImageUrl: string;
+  playerThumbnailImageUrl: string;
+  premium: PremiumConfig;
+  playersettings: PlayerSettings;
+  playerstyle: PlayerStyle;
+  playercontrol: PlayerControl;
+}
+
+export interface PremiumConfig {
+  layoutConfig: LayoutConfig;
+  playerCTA: PlayerCTA;
+  rapidEngage: boolean;
+  transcoding: boolean;
+  caption: boolean;
+}
+
+export interface LayoutConfig {
+  name: string;
+  controls_bg: string;
+  controls_padding: string;
+  controls_corner_radius: string;
+}
+
+export interface PlayerCTA {
+  cta: boolean;
+  url: string;
+  buttonText: string;
+  placement: string;
+  timing: string;
+  direction: string;
+  heading: string;
+  description: string;
+  imageEnable: boolean;
+  image: string;
+}
+
+export interface PlayerSettings {
+  autoplay: boolean;
+  muted: boolean;
+  loop: boolean;
+  use_as_BG_video: boolean;
+}
+
+export interface PlayerStyle {
+  text_color: string;
+  player_brand_color: string;
+  icon_color: string;
+  icon_button_color: string;
+  icon_button_opacity: string;
+  icon_button_hover_color: string;
+  center_icon_color: string;
+  center_icon_button_color: string;
+  center_icon_button_opacity: string;
+  center_icon_button_hover_color: string;
+  progress_bar_BG_color: string;
+  progress_bar_loaded_color: string;
+  progress_bar_FG_color: string;
+  progress_bar_circle_color: string;
+  progress_bar_opacity: string;
+  settings_menu_BG_color: string;
+  settings_menu_opacity: string;
+  settings_menu_BG_hover_color: string;
+  settings_menu_text_color: string;
+  tooltip_BG_color: string;
+  tooltip_opacity: string;
+  tooltip_corner_radius: string;
+  tooltip_text_color: string;
+  volume_bar_BG_color: string;
+  volume_bar_opacity: string;
+  volume_bar_FG_color: string;
+  player_corner_radius: string;
+  player_controls_margin: string;
+  bottom_bar_spacing: string;
+  icon_button_padding: string;
+  icon_button_corner_radius: string;
+  icon_button_size: string;
+  center_icon_button_padding: string;
+  center_icon_button_corner_radius: string;
+  center_icon_button_size: string;
+  progress_bar_size: string;
+  progress_bar_hover_scale: string;
+  volume_bar_size: string;
+  branding_opacity: string;
+}
+
+export interface PlayerControl {
+  branding: boolean;
+  thumbnail: boolean;
+  video_frame: boolean;
+  playpause: boolean;
+  center_playpause: boolean;
+  progress_bar: boolean;
+  time_stamp: boolean;
+  volume: boolean;
+  full_screen_icon: boolean;
+  video_name: boolean;
+  settings_menu: boolean;
+  back_button: boolean;
+  gradient: boolean;
+  osd_auto_hide: boolean;
+  scrubber: boolean;
+}
+
 const Home = () => {
   const [searchTitle, setSearchTitle] = React.useState("");
-  const [data, setData] = React.useState<any>([]);
+  const [data, setData] = React.useState<Player[]>([]);
   const [error, setError] = React.useState(false);
   const [refetch, setRefetch] = React.useState(0);
   const [isLoading, setLoading] = React.useState(false);
@@ -44,6 +164,19 @@ const Home = () => {
   >("halcyon");
   const ITEMS_PER_PAGE = 4;
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+  const [view, setView] = React.useState<View>({
+    fields: ["videotitle", "updated_at", "shortcode"],
+    filters: [],
+    groupBy: undefined,
+    layout: {},
+    mediaField: "image",
+    page: 1,
+    perPage: 5,
+    search: "",
+    showMedia: true,
+    titleField: "name",
+    type: "table",
+  });
 
   const handleRedirect = (id: string) => {
     window.location.href = `${window.location.pathname}?page=sato-player-detail&video=${id}`;
@@ -328,6 +461,7 @@ const Home = () => {
               Create New Player
             </div>
           </button>
+          <Button variant="secondary">Click Me</Button>
         </div>
 
         <div className="w-100" style={{ position: "relative" }}>
@@ -471,7 +605,7 @@ const Home = () => {
         </div>
       </div>
 
-      {searchData === null || searchData.length === 0 ? (
+      {/* {searchData === null || searchData.length === 0 ? (
         <CreatePlayer setRefetch={setRefetch} totalLength={searchData.length} />
       ) : (
         <div
@@ -809,7 +943,135 @@ const Home = () => {
             </div>
           </Toast>
         </div>
-      )}
+      )} */}
+
+      <div
+        className="--wp-dataviews-color-background"
+        style={{
+          height: "100%",
+        }}
+      >
+        <DataViews
+          actions={[
+            {
+              RenderModal: () => <div>Delete Modal</div>,
+              id: "delete",
+              isPrimary: false,
+              label: "Delete item",
+              modalFocusOnMount: "firstContentElement",
+              modalHeader: () => {
+                return "Delete???";
+              },
+              supportsBulk: false,
+            },
+            {
+              RenderModal: () => <div>Duplicate Modal</div>,
+              id: "duplicate",
+              isPrimary: false,
+              label: "Duplicate item",
+              modalFocusOnMount: "firstContentElement",
+              modalHeader: () => {
+                return "Duplicate???";
+              },
+              supportsBulk: false,
+            },
+          ]}
+          config={{
+            perPageSizes: [5, 10],
+          }}
+          data={data.filter(
+            (item) =>
+              !view.search ||
+              item.name.toLowerCase().includes(view.search.toLowerCase()),
+          )}
+          defaultLayouts={{
+            table: true,
+          }}
+          fields={[
+            {
+              id: "image",
+              label: "Image",
+              render: (data) => {
+                return (
+                  <img
+                    style={{
+                      width: "100px",
+                      aspectRatio: "16/9",
+                      objectFit: "cover",
+                      borderRadius: "0.25rem",
+                      cursor: "pointer",
+                    }}
+                    src={
+                      data.item.config.playerThumbnailImageUrl.replace(
+                        "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
+                        "skara-imagecontent-staging.b-cdn.net/",
+                      ) ||
+                      "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
+                    }
+                    alt={"no image found"}
+                    className="card-thumbnail"
+                  />
+                );
+              },
+              type: "media",
+            },
+            {
+              enableGlobalSearch: true,
+              filterBy: {
+                operators: ["contains", "notContains", "startsWith"],
+              },
+              isValid: {
+                required: true,
+              },
+              id: "name",
+              label: "Player Name",
+              type: "text",
+              getValue: ({ item }) => item.name,
+            },
+            {
+              id: "updated_at",
+              label: "Updated at",
+              type: "text",
+              getValue: ({ item }) => {
+                return timeAgo(Number(item.updated_at));
+              },
+            },
+            {
+              id: "videotitle",
+              label: "Video Title",
+              type: "text",
+              getValue: ({ item }) => {
+                return item.config.videotitle || "--";
+              },
+            },
+            {
+              id: "shortcode",
+              label: "Short Code",
+              type: "text",
+              getValue: ({ item }) => {
+                return `[sato_player id="${item.id}"]`;
+              },
+            },
+          ]}
+          getItemId={(item) => String(item.id)}
+          isItemClickable={() => true}
+          onChangeView={(item) => {
+            console.log("hehehe", item);
+            setView(item);
+          }}
+          onClickItem={(item) => {
+            handleRedirect(item.id);
+          }}
+          isLoading={data ? false : true}
+          paginationInfo={{
+            totalItems: data.length,
+            totalPages: Math.ceil(data.length / 5),
+          }}
+          searchLabel="Player Name"
+          search={true}
+          view={view}
+        />
+      </div>
 
       <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "1rem" }}>
         <MediaLibrary length={10} />

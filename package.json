@@ -12,6 +12,9 @@
   "dependencies": {
     "@preact/signals": "^1.2.2",
     "@skara-live/skara-video-player-web": "2.0.3",
+    "@wordpress/components": "^35.0.1",
+    "@wordpress/dataviews": "^16.0.1",
+    "@wordpress/primitives": "^4.48.1",
     "axios": "1.8.2",
     "buffer": "^6.0.3",
     "js-cookie": "^3.0.5",
