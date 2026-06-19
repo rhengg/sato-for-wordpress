@@ -20,9 +20,7 @@ import { timeAgo } from "../utils/helper";
 import Toast from "../components/Toast";
 
 import { Button } from "@wordpress/components";
-import { SVG, Path } from "@wordpress/primitives";
 import { DataViews, View } from "@wordpress/dataviews";
-import { Stack } from "@wordpress/ui";
 
 export interface Player {
   id: string;
@@ -162,8 +160,7 @@ const Home = () => {
   const [selectedTemplate, setSelectedTemplate] = React.useState<
     "halcyon" | "moderna" | "sphinx" | "prosper"
   >("halcyon");
-  const ITEMS_PER_PAGE = 4;
-  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+
   const [view, setView] = React.useState<View>({
     fields: ["videotitle", "updated_at", "shortcode"],
     filters: [],
@@ -177,6 +174,111 @@ const Home = () => {
     titleField: "name",
     type: "table",
   });
+
+  const applyFilters = (
+    data: Player[],
+    filters?: {
+      field?: string;
+      operator: string;
+      value?: string;
+    }[],
+  ) => {
+    if (!filters?.length) return data;
+
+    return data.filter((item) =>
+      filters.every((filter) => {
+        const field = filter.field ?? "name";
+
+        let fieldValue = "";
+
+        switch (field) {
+          case "name":
+            fieldValue = item.name ?? "";
+            break;
+
+          case "videotitle":
+            fieldValue = item.config.videotitle ?? "";
+            break;
+
+          case "updated_at":
+            fieldValue = timeAgo(Number(item.updated_at));
+            break;
+
+          default:
+            fieldValue = String(item[field as keyof Player] ?? "");
+        }
+
+        fieldValue = fieldValue.toLowerCase();
+
+        const filterValue = String(filter.value ?? "").toLowerCase();
+
+        switch (filter.operator) {
+          case "contains":
+            return fieldValue.includes(filterValue);
+
+          case "notContains":
+            return !fieldValue.includes(filterValue);
+
+          case "startsWith":
+            return fieldValue.startsWith(filterValue);
+
+          default:
+            return true;
+        }
+      }),
+    );
+  };
+
+  const modifiedData = React.useMemo(() => {
+    const search = view.search?.toLowerCase() ?? "";
+    const sort = view.sort;
+    const page = view.page ?? 1;
+    const perPage = view.perPage ?? 5;
+    let result = applyFilters(data, view.filters);
+
+    if (search) {
+      result = result.filter((item) =>
+        item.name.toLowerCase().includes(search),
+      );
+    }
+    if (sort?.field) {
+      result = [...result].sort((a, b) => {
+        let aValue: string | number = "";
+        let bValue: string | number = "";
+
+        switch (sort.field) {
+          case "name":
+            aValue = a.name ?? "";
+            bValue = b.name ?? "";
+            break;
+
+          case "videotitle":
+            aValue = a.config.videotitle ?? "";
+            bValue = b.config.videotitle ?? "";
+            break;
+
+          case "updated_at":
+            aValue = Number(a.updated_at);
+            bValue = Number(b.updated_at);
+            break;
+
+          default:
+            return 0;
+        }
+
+        const comparison =
+          typeof aValue === "number"
+            ? aValue - (bValue as number)
+            : String(aValue).localeCompare(String(bValue));
+
+        return sort.direction === "desc" ? -comparison : comparison;
+      });
+    }
+
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    return result.slice(start, end);
+  }, [data, view.search, view.filters, view.sort, view.perPage, view.page]);
 
   const handleRedirect = (id: string) => {
     window.location.href = `${window.location.pathname}?page=sato-player-detail&video=${id}`;
@@ -438,57 +540,15 @@ const Home = () => {
     <div className="main-page-wrapper">
       <div className="search-create-container">
         <div className="w-100">
-          <button
-            className="large-primary-btn m-100"
+          <Button
+            __next40pxDefaultSize={true}
+            variant="primary"
             onClick={() => {
               setOpenModalAdd(true);
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                columnGap: "0.25rem",
-              }}
-            >
-              <span
-                className="material-symbols-outlined"
-                style={{ fontWeight: "bold" }}
-              >
-                add
-              </span>
-              Create New Player
-            </div>
-          </button>
-          <Button variant="secondary">Click Me</Button>
-        </div>
-
-        <div className="w-100" style={{ position: "relative" }}>
-          <span
-            className="material-symbols-outlined placeholder"
-            style={{
-              position: "absolute",
-              left: "0.75rem",
-              top: "50%",
-              transform: "translateY(-50%)",
-            }}
-          >
-            search
-          </span>
-          <input
-            className="input-main custom-input-width"
-            style={{
-              borderRadius: "0.25rem",
-              paddingLeft: "2.5rem",
-              width: "22rem",
-            }}
-            type={"text"}
-            name={"search"}
-            placeholder={"Search Video Player Name..."}
-            value={searchTitle}
-            onChange={(e) => setSearchTitle(e.target.value)}
-          />
+            Create New Player
+          </Button>
         </div>
 
         <Modal
@@ -605,346 +665,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* {searchData === null || searchData.length === 0 ? (
-        <CreatePlayer setRefetch={setRefetch} totalLength={searchData.length} />
-      ) : (
-        <div
-          style={{
-            width: "100%",
-            paddingRight: "10px",
-          }}
-        >
-          <div
-            style={{
-              display: "grid",
-              padding: "0.5rem",
-              borderRadius: "0.5rem",
-              alignItems: "center",
-              gridTemplateColumns: "2fr 1fr 2fr 1fr",
-              columnGap: "2rem",
-            }}
-          >
-            <span className="link textPrimary">Player Name</span>
-            <span className="link textPrimary">Updated at</span>
-            <span className="link textPrimary">Short Code</span>
-            <span className="link textPrimary">Actions</span>
-          </div>
-
-          <div style={{ width: "100%", height: "23rem", overflow: "auto" }}>
-            {data
-              .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
-              .map((item: any, idx: number) => (
-                <div
-                  key={item.id}
-                  style={{
-                    display: "grid",
-                    padding: "0.5rem",
-                    borderRadius: "0.5rem",
-                    backgroundColor: "var(--surfaceVariant)",
-                    alignItems: "center",
-                    marginBottom: "1rem",
-                    gridTemplateColumns: "2fr 1fr 2fr 1fr",
-                    columnGap: "1rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                      gap: "1rem",
-                    }}
-                  >
-                    <img
-                      style={{
-                        width: "100px",
-                        aspectRatio: "16/9",
-                        objectFit: "cover",
-                        borderRadius: "0.25rem",
-                        cursor: "pointer",
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          handleRedirect(item.id);
-                        }
-                      }}
-                      onClick={() => handleRedirect(item.id)}
-                      src={
-                        item.config.playerThumbnailImageUrl.replace(
-                          "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
-                          "skara-imagecontent-staging.b-cdn.net/",
-                        ) ||
-                        "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
-                      }
-                      alt={"no image found"}
-                      className="card-thumbnail"
-                    />
-                    <span
-                      className="filename table-row-text"
-                      onClick={() => handleRedirect(item.id)}
-                    >
-                      {truncate(item.name)}
-                    </span>
-                  </div>
-                  <span className="table-row-text">
-                    {timeAgo(item.updated_at)}
-                  </span>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.125rem",
-                      justifyContent: "center",
-                      background: "#FFDEB960",
-                      width: "16rem",
-                      padding: "0.5rem",
-                      borderRadius: "0.25rem",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      handleCopyClipboard(`[sato_player id="${item.id}"]`);
-                    }}
-                  >
-                    <span className="table-row-text">
-                      {`[sato_player id="${item.id}"]`}
-                    </span>
-                    <span className="material-symbols-outlined">
-                      content_copy
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "0.25rem",
-                        padding: "0.25rem",
-                        borderRadius: "0.25rem",
-                        border: "1px solid var(--stroke)",
-                        color: "white",
-                        background: "var(--primary)",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        setOpenModal(true);
-                        setDuplicateData(item);
-                      }}
-                    >
-                      <span
-                        className="table-row-text"
-                        style={{ color: "white" }}
-                      >
-                        Duplicate
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        padding: "0.25rem",
-                        borderRadius: "0.25rem",
-                        border: "1px solid var(--stroke)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <span
-                        className="material-symbols-outlined delete-icon"
-                        onClick={() => {
-                          setOpenModalDelete(true);
-                          setDeleteData(item);
-                        }}
-                      >
-                        delete_forever
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-          >
-            <button
-              style={{ cursor: "pointer", display: "flex" }}
-              onClick={() => setPage((p) => p - 1)}
-              disabled={page === 1}
-            >
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: "20px",
-                }}
-              >
-                chevron_left
-              </span>
-            </button>
-
-            <span>
-              {" "}
-              {page} of {totalPages}{" "}
-            </span>
-
-            <button
-              style={{ cursor: "pointer", display: "flex" }}
-              onClick={() => setPage((p) => p + 1)}
-              disabled={page === totalPages}
-            >
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: "20px",
-                }}
-              >
-                chevron_right
-              </span>
-            </button>
-          </div>
-
-          <Modal
-            isOpen={openModal}
-            setOpen={setOpenModal}
-            title={`Duplicate player`}
-            size="sm"
-          >
-            <p className="body">Are you sure want to duplicate this player?</p>
-            <form onSubmit={duplicatePlayer}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpenModal(false);
-                  }}
-                  className="large-secondary-btn"
-                  style={{
-                    width: "100%",
-                    margin: "2rem 0 0 0",
-                  }}
-                >
-                  No
-                </button>
-
-                <button
-                  type="submit"
-                  className="large-primary-btn"
-                  style={{
-                    width: "100%",
-                    margin: "2rem 0 0 0",
-                  }}
-                >
-                  Yes
-                </button>
-              </div>
-            </form>
-          </Modal>
-          <Toast show={show} hideToast={hideToast}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
-              <span className="material-symbols-outlined positive">done</span>
-              <p className="body" style={{ marginLeft: "1rem" }}>
-                Player Copied
-              </p>
-            </div>
-          </Toast>
-          <Modal
-            isOpen={openModalDelete}
-            setOpen={setOpenModalDelete}
-            title={`Delete this video player?`}
-            size="sm"
-          >
-            <p className="body">
-              Deleting this will affect video playback on your website where it
-              might be embedded
-            </p>
-            <form onSubmit={deletePlayer}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpenModalDelete(false);
-                  }}
-                  className="large-primary-btn"
-                  style={{
-                    width: "100%",
-                    margin: "2rem 0 0 0",
-                  }}
-                >
-                  No
-                </button>
-
-                <button
-                  type="submit"
-                  className="large-danger-btn"
-                  style={{
-                    width: "100%",
-                    margin: "2rem 0 0 0",
-                  }}
-                >
-                  Yes
-                </button>
-              </div>
-            </form>
-          </Modal>
-          <Toast show={showDelete} hideToast={hideToastDelete}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
-              <span className="material-symbols-outlined positive">done</span>
-              <p className="body" style={{ marginLeft: "1rem" }}>
-                Player Deleted
-              </p>
-            </div>
-          </Toast>
-          <Toast show={showCopy} hideToast={hideToastCopy}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
-              <span className="material-symbols-outlined positive">done</span>
-              <p className="body" style={{ marginLeft: "1rem" }}>
-                Short Code Copied
-              </p>
-            </div>
-          </Toast>
-        </div>
-      )} */}
-
       <div
         className="--wp-dataviews-color-background"
         style={{
@@ -979,11 +699,7 @@ const Home = () => {
           config={{
             perPageSizes: [5, 10],
           }}
-          data={data.filter(
-            (item) =>
-              !view.search ||
-              item.name.toLowerCase().includes(view.search.toLowerCase()),
-          )}
+          data={modifiedData}
           defaultLayouts={{
             table: true,
           }}
@@ -1032,14 +748,21 @@ const Home = () => {
               id: "updated_at",
               label: "Updated at",
               type: "text",
+              filterBy: {
+                operators: ["contains", "notContains", "startsWith"],
+              },
               getValue: ({ item }) => {
                 return timeAgo(Number(item.updated_at));
               },
             },
+
             {
               id: "videotitle",
               label: "Video Title",
               type: "text",
+              filterBy: {
+                operators: ["contains", "notContains", "startsWith"],
+              },
               getValue: ({ item }) => {
                 return item.config.videotitle || "--";
               },
@@ -1048,6 +771,7 @@ const Home = () => {
               id: "shortcode",
               label: "Short Code",
               type: "text",
+              filterBy: false,
               getValue: ({ item }) => {
                 return `[sato_player id="${item.id}"]`;
               },

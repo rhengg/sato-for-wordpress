@@ -2,7 +2,9 @@ import React from "react";
 import "./medialibrary.css";
 import axios from "../../utils/axios-instance";
 import Cookies from "js-cookie";
-import VideoPicker from "../../components/VideoPicker";
+import VideoPicker, {
+  waitForVideoProcessing,
+} from "../../components/VideoPicker";
 import { decodeBase64, encodeBase64 } from "../../utils/base64";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
@@ -10,6 +12,11 @@ import VideoQuota from "../../components/VideoQuota";
 import Table from "../../components/Table";
 import Loader from "../../components/Loader";
 import uploadVideoSvg from "../../assets/upload-video.svg";
+import { Button, Notice } from "@wordpress/components";
+import { dispatch } from "@wordpress/data";
+import { Text } from "@wordpress/ui";
+import { DataViews, View } from "@wordpress/dataviews";
+import { timeAgo } from "../../utils/helper";
 
 const MediaLibrary = (props: any) => {
   const { length } = props;
@@ -27,6 +34,132 @@ const MediaLibrary = (props: any) => {
   const wfCodeStorage = sessionStorage.getItem("webflow-code");
   const wfCode = JSON.parse(wfCodeStorage as string);
   const choosenPlan = Cookies.get("choosen-plan");
+  const [transcriptionFailed, setTranscriptionFailed] = React.useState<
+    string | null
+  >(null);
+  const [transcriptLoadingId, setTranscriptLoadingId] = React.useState<
+    string | null
+  >(null);
+  const [showPremiumNotice, setShowPremiumNotice] = React.useState(false);
+
+  const [view, setView] = React.useState<View>({
+    fields: ["uploaded_at", "speech-to-text"],
+    filters: [],
+    groupBy: undefined,
+    layout: {},
+    page: 1,
+    perPage: 5,
+    search: "",
+    showMedia: false,
+    titleField: "videoname",
+    type: "table",
+  });
+
+  const applyFilters = (
+    // data: Player[],
+    data: any[],
+    filters?: {
+      field?: string;
+      operator: string;
+      value?: string;
+    }[],
+  ) => {
+    if (!filters?.length) return data;
+
+    return data.filter((item) =>
+      filters.every((filter) => {
+        const field = filter.field ?? "name";
+
+        let fieldValue = "";
+
+        switch (field) {
+          case "videoname":
+            fieldValue = item.name ?? "";
+            break;
+
+          case "speech-to-text":
+            fieldValue = item.config.videotitle ?? "";
+            break;
+
+          case "uploaded_at":
+            fieldValue = timeAgo(Number(item.updated_at));
+            break;
+
+          default:
+            fieldValue = String(item[field as keyof any] ?? "");
+        }
+
+        fieldValue = fieldValue.toLowerCase();
+
+        const filterValue = String(filter.value ?? "").toLowerCase();
+
+        switch (filter.operator) {
+          case "contains":
+            return fieldValue.includes(filterValue);
+
+          case "notContains":
+            return !fieldValue.includes(filterValue);
+
+          case "startsWith":
+            return fieldValue.startsWith(filterValue);
+
+          default:
+            return true;
+        }
+      }),
+    );
+  };
+
+  const modifiedData = React.useMemo(() => {
+    const search = view.search?.toLowerCase() ?? "";
+    const sort = view.sort;
+    const page = view.page ?? 1;
+    const perPage = view.perPage ?? 5;
+    let result = applyFilters(media, view.filters);
+
+    if (search) {
+      result = result.filter((item) =>
+        item.name.toLowerCase().includes(search),
+      );
+    }
+    if (sort?.field) {
+      result = [...result].sort((a, b) => {
+        let aValue: string | number = "";
+        let bValue: string | number = "";
+
+        switch (sort.field) {
+          case "videoname":
+            aValue = a.name ?? "";
+            bValue = b.name ?? "";
+            break;
+
+          case "speech-to-text":
+            aValue = a.transcription_status ?? "";
+            bValue = b.transcription_status ?? "";
+            break;
+
+          case "updated_at":
+            aValue = Number(a.updated_at);
+            bValue = Number(b.updated_at);
+            break;
+
+          default:
+            return 0;
+        }
+
+        const comparison =
+          typeof aValue === "number"
+            ? aValue - (bValue as number)
+            : String(aValue).localeCompare(String(bValue));
+
+        return sort.direction === "desc" ? -comparison : comparison;
+      });
+    }
+
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    return result.slice(start, end);
+  }, [media, view.search, view.filters, view.sort, view.perPage, view.page]);
 
   const fetchSubscription = async () => {
     try {
@@ -72,6 +205,36 @@ const MediaLibrary = (props: any) => {
     }
   };
 
+  const handleTranscribe = async (id: string) => {
+    try {
+      setTranscriptLoadingId(id);
+      const res = await axios.post(
+        `/videos/${id}/transcripts`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("s-token")}`,
+          },
+        },
+      );
+      console.log("transcribe", res.data);
+      const result = await waitForVideoProcessing(id);
+      if (result.status === "completed") {
+        setTranscriptLoadingId(null);
+        setRefetch(Math.random());
+      }
+      if (result.status === "failed") {
+        setTranscriptionFailed(id);
+        setTranscriptLoadingId(null);
+
+        return;
+      }
+    } catch (error) {
+      console.log("errror transcribe", error);
+      setTranscriptLoadingId(null);
+    }
+  };
+
   React.useEffect(() => {
     if (!length) {
       fetchSubscription();
@@ -112,11 +275,11 @@ const MediaLibrary = (props: any) => {
       });
 
       setTotalVideoCount(res?.data?.length);
-      if (length === 10) {
-        setMedia(res.data.slice(0, 10));
-      } else {
-        setMedia(res.data);
-      }
+      setMedia(res.data);
+      // if (length === 10) {
+      //   setMedia(res.data.slice(0, 10));
+      // } else {
+      // }
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
@@ -135,25 +298,6 @@ const MediaLibrary = (props: any) => {
   React.useEffect(() => {
     fetchMedia();
   }, [refetch]);
-
-  const searchData =
-    media &&
-    media
-      .filter((item: any) => {
-        if (searchMedia === "") {
-          return true;
-        } else if (
-          item.name.toLowerCase().includes(searchMedia.toLowerCase())
-        ) {
-          return true;
-        }
-        return false;
-      })
-      .sort((a: any, b: any) => {
-        return (
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-        );
-      });
 
   if (isLoading && !length && !activePlan)
     return (
@@ -194,56 +338,15 @@ const MediaLibrary = (props: any) => {
             }}
           >
             <div className="w-100">
-              <button
-                className="large-primary-btn m-100"
+              <Button
+                __next40pxDefaultSize={true}
+                variant="primary"
                 onClick={() => setOpenModalUpload(true)}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    columnGap: "0.25rem",
-                    width: "max-content",
-                  }}
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontWeight: "bold" }}
-                  >
-                    cloud_upload
-                  </span>
-                  <span>Upload New Video</span>
-                </div>
-              </button>
+                Upload New Video
+              </Button>
             </div>
             <div>
-              <div className="w-100" style={{ position: "relative" }}>
-                <span
-                  className="material-symbols-outlined placeholder"
-                  style={{
-                    position: "absolute",
-                    left: "0.75rem",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                  }}
-                >
-                  search
-                </span>
-                <input
-                  className="input-main custom-input-width"
-                  style={{
-                    borderRadius: "0.25rem",
-                    paddingLeft: "2.5rem",
-                    width: "22rem",
-                  }}
-                  type={"text"}
-                  name={"search"}
-                  placeholder={"Search Video..."}
-                  value={searchMedia}
-                  onChange={(e) => setSearchMedia(e.target.value)}
-                />
-              </div>
               <Modal
                 isOpen={openModalUpload}
                 setOpen={setOpenModalUpload}
@@ -278,7 +381,6 @@ const MediaLibrary = (props: any) => {
             </div>
           )}
         </div>
-
         <div className="desktop-text-render">
           <p
             className="subtitle-two"
@@ -286,54 +388,148 @@ const MediaLibrary = (props: any) => {
           >
             Uploaded Videos
           </p>
-          {pathname != "/video-library" && media?.length > 9 && (
-            <button
-              className="small-secondary-btn"
-              onClick={() => {
-                navigate("/video-library");
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "max-content",
-                }}
-              >
-                See All
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: "1.5rem" }}
-                >
-                  keyboard_double_arrow_right
-                </span>
-              </div>
-            </button>
-          )}
         </div>
-
-        {searchData && searchData.length > 0 ? (
-          <Table
-            data={searchData}
-            setRefetch={setRefetch}
-            activePlan={activePlan}
-          />
-        ) : (
-          <>
-            <div
-              style={{ cursor: "pointer", width: "max-content" }}
-              onClick={() => setOpenModalUpload(true)}
-              tabIndex={0}
+        {showPremiumNotice && (
+          <div style={{ margin: "0.5rem 0" }}>
+            <Notice
+              status="warning"
+              isDismissible
+              onDismiss={() => setShowPremiumNotice(false)}
+              onRemove={() => setShowPremiumNotice(false)}
+              politeness="assertive"
+              spokenMessage="Speech-to-text is available only on Premium plans."
             >
-              <img
-                className="w-100"
-                src={uploadVideoSvg}
-                alt="no image found"
-              />
-              <img className="w-100" src={uploadVideoSvg} alt="upload video" />;
-            </div>
-          </>
+              Speech-to-text is available only on Premium plans.
+            </Notice>
+          </div>
         )}
+
+        <div
+          className="--wp-dataviews-color-background"
+          style={{
+            height: "100%",
+          }}
+        >
+          <DataViews
+            actions={[
+              {
+                RenderModal: (props) => {
+                  console.log("item copy", props.items[0]);
+                  return <div>Copy Modal</div>;
+                },
+                id: "copy",
+                isPrimary: false,
+                label: "Copy Video URL",
+                modalFocusOnMount: "firstContentElement",
+                modalHeader: () => {
+                  return "Copy???";
+                },
+                supportsBulk: false,
+              },
+              {
+                RenderModal: () => <div>Delete Modal</div>,
+                id: "delete",
+                isPrimary: false,
+                label: "Delete item",
+                modalFocusOnMount: "firstContentElement",
+                modalHeader: () => {
+                  return "Delete???";
+                },
+                supportsBulk: false,
+              },
+            ]}
+            config={{
+              perPageSizes: [5, 10],
+            }}
+            data={modifiedData}
+            defaultLayouts={{
+              table: true,
+            }}
+            fields={[
+              {
+                enableGlobalSearch: true,
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                isValid: {
+                  required: true,
+                },
+                id: "videoname",
+                label: "Video Name",
+                type: "text",
+                getValue: ({ item }) => item.name,
+              },
+              {
+                id: "uploaded_at",
+                label: "Uploaded at",
+                type: "text",
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                getValue: ({ item }) => {
+                  return timeAgo(Number(item.updated_at));
+                },
+              },
+              {
+                id: "speech-to-text",
+                label: "Speech-to-text",
+                type: "text",
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                getValue: ({ item }) => {
+                  return item.transcription_status || "Generate";
+                },
+                render: ({ item }) => (
+                  <Button
+                    variant="tertiary"
+                    onClick={(e: any) => {
+                      e.stopPropagation();
+                      if (
+                        !activePlan?.metadata?.premium_features?.caption ||
+                        item.transcription_status === "completed"
+                      ) {
+                        console.log("premium click");
+                        setShowPremiumNotice(true);
+
+                        setTimeout(() => {
+                          setShowPremiumNotice(false);
+                        }, 5000);
+                        return;
+                      }
+                      handleTranscribe(item?.id);
+                    }}
+                  >
+                    {transcriptLoadingId === item.id ? (
+                      <Loader borderColor="var(--primary)" />
+                    ) : item.transcription_status === "failed" ||
+                      transcriptionFailed === item.id ? (
+                      <Text>Failed</Text>
+                    ) : item.transcription_status === "completed" ? (
+                      <Text>Completed</Text>
+                    ) : (
+                      <Text>Generate</Text>
+                    )}
+                  </Button>
+                ),
+              },
+            ]}
+            getItemId={(item) => String(item.id)}
+            isItemClickable={() => false}
+            onChangeView={(item) => {
+              console.log("hehehe", item);
+              setView(item);
+            }}
+            isLoading={media ? false : true}
+            paginationInfo={{
+              totalItems: media.length,
+              totalPages: Math.ceil(media.length / 5),
+            }}
+            searchLabel="Video Name"
+            search={true}
+            view={view}
+          />
+        </div>
       </div>
     </>
   );

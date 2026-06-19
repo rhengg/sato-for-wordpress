@@ -1,6 +1,8 @@
 :root {
-  --primary: #fe6244;
-  --primaryHover: #fe2a01;
+  /* --primary: #fe6244; */
+  --primary: #3858e9;
+  /* --primaryHover: #fe2a01; */
+  --primaryHover: #2145e6;
   --primaryVariantOne: #f1e9fc;
   --primaryVariantTwo: #fcfaff;
   --textPrimary: #1d1d1d;
