@@ -1,5 +1,6 @@
 import React from "react";
 import "./VideoQuota.css";
+import { Text, Link } from "@wordpress/ui";
 
 type VideoQuotaProps = {
   used: number;
@@ -19,12 +20,21 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
   return (
     <div className="video-quota-container">
       <div className="video-quota-header">
-        <span>{`Usage: ${used}/${total} videos`}</span>
-        <span className="divider">|</span>
-        <span>{`${maxSize} MB/video`}</span>
-        <span className="upgrade-plan" onClick={onUpgradeClick}>
-          Change Plan
-        </span>
+        <div className="video-quota-text">
+          <Text variant="body-lg">{`Usage: ${used}/${total} videos`}</Text>
+          <Text variant="body-lg"> | </Text>
+          <Text variant="body-lg">{`${maxSize} MB/video`}</Text>
+        </div>
+        <Link
+          href="#"
+          style={{
+            textDecoration: "none",
+          }}
+          tone="brand"
+          variant="default"
+        >
+          <Text variant="heading-lg">Change Plan</Text>
+        </Link>
       </div>
       <div className="video-quota-progress-bar">
         <div

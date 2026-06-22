@@ -511,6 +511,7 @@ const Home = () => {
           <Button
             __next40pxDefaultSize={true}
             variant="primary"
+            icon={"plus"}
             onClick={() => {
               setOpenModalAdd(true);
             }}
@@ -681,14 +682,14 @@ const Home = () => {
                         actionLoading === "duplicate-player" ? true : false
                       }
                     >
-                      Yes
+                      Duplicate
                     </Button>
                     <Button
                       variant="secondary"
                       __next40pxDefaultSize
                       onClick={closeModal}
                     >
-                      No
+                      Cancel
                     </Button>
                   </div>
                 </>
@@ -705,7 +706,7 @@ const Home = () => {
             {
               RenderModal: ({ items, closeModal, onActionPerformed }) => (
                 <>
-                  <Text variant="body-lg">
+                  <Text variant="body-lg" color="">
                     Deleting this will affect video playback on your website
                     where it might be embedded
                   </Text>
@@ -718,21 +719,22 @@ const Home = () => {
                     }}
                   >
                     <Button
-                      autoFocus
                       variant="primary"
-                      __next40pxDefaultSize
-                      onClick={closeModal}
-                    >
-                      No
-                    </Button>
-
-                    <Button
-                      variant="tertiary"
+                      isDestructive={true}
                       __next40pxDefaultSize
                       onClick={() => deletePlayer(items[0])}
                       isBusy={actionLoading === "delete-player" ? true : false}
                     >
-                      Yes
+                      Delete permanently
+                    </Button>
+
+                    <Button
+                      autoFocus
+                      variant="tertiary"
+                      __next40pxDefaultSize
+                      onClick={closeModal}
+                    >
+                      Cancel
                     </Button>
                   </div>
                 </>
@@ -742,7 +744,7 @@ const Home = () => {
               label: "Delete item",
               modalFocusOnMount: "firstContentElement",
               modalHeader: () => {
-                return "Delete video player?";
+                return "Delete video player permanently?";
               },
               supportsBulk: false,
             },

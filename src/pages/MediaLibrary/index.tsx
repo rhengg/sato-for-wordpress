@@ -73,7 +73,7 @@ const MediaLibrary = (props: any) => {
             break;
 
           case "speech-to-text":
-            fieldValue = item.config.videotitle ?? "";
+            fieldValue = item.transcription_status ?? "Generate";
             break;
 
           case "uploaded_at":
@@ -354,6 +354,7 @@ const MediaLibrary = (props: any) => {
                 __next40pxDefaultSize={true}
                 variant="primary"
                 onClick={() => setOpenModalUpload(true)}
+                icon={"cloud-upload"}
               >
                 Upload New Video
               </Button>
@@ -383,7 +384,14 @@ const MediaLibrary = (props: any) => {
             </div>
           </div>
           {activePlan?.amount >= 0 && (
-            <div className="w-100">
+            <div
+              className="w-100"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
               <VideoQuota
                 used={totalVideoCount}
                 total={activePlan?.total_video_upload_limit}
@@ -465,20 +473,21 @@ const MediaLibrary = (props: any) => {
                       }}
                     >
                       <Button
-                        onClick={closeModal}
-                        autoFocus
-                        __next40pxDefaultSize
                         variant="primary"
-                      >
-                        No
-                      </Button>
-                      <Button
-                        variant="tertiary"
+                        isDestructive={true}
                         __next40pxDefaultSize
                         onClick={() => deleteAssets(items[0])}
                         isBusy={actionLoading === "delete-video"}
                       >
-                        Yes
+                        Delete permanently
+                      </Button>
+                      <Button
+                        onClick={closeModal}
+                        autoFocus
+                        __next40pxDefaultSize
+                        variant="tertiary"
+                      >
+                        Cancel
                       </Button>
                     </div>
                   </>
@@ -488,7 +497,7 @@ const MediaLibrary = (props: any) => {
                 label: "Delete item",
                 modalFocusOnMount: "firstContentElement",
                 modalHeader: () => {
-                  return "Delete video?";
+                  return "Delete video permanently?";
                 },
                 supportsBulk: false,
               },
@@ -538,6 +547,15 @@ const MediaLibrary = (props: any) => {
                 render: ({ item }) => (
                   <Button
                     variant="tertiary"
+                    style={{
+                      color:
+                        item.transcription_status === "failed" ||
+                        transcriptionFailed === item.id
+                          ? "#CC1818"
+                          : item.transcription_status === "completed"
+                            ? "#4AB866"
+                            : "revert-layer",
+                    }}
                     onClick={(e: any) => {
                       e.stopPropagation();
                       if (
@@ -559,9 +577,9 @@ const MediaLibrary = (props: any) => {
                       <Loader borderColor="var(--primary)" />
                     ) : item.transcription_status === "failed" ||
                       transcriptionFailed === item.id ? (
-                      <Text>Failed</Text>
+                      <Text color="#cc1818">Failed</Text>
                     ) : item.transcription_status === "completed" ? (
-                      <Text>Completed</Text>
+                      <Text color="#4ab866">Completed</Text>
                     ) : (
                       <Text>Generate</Text>
                     )}
