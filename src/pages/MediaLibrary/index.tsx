@@ -5,27 +5,22 @@ import Cookies from "js-cookie";
 import VideoPicker, {
   waitForVideoProcessing,
 } from "../../components/VideoPicker";
-import { decodeBase64, encodeBase64 } from "../../utils/base64";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { encodeBase64 } from "../../utils/base64";
+import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
 import VideoQuota from "../../components/VideoQuota";
-import Table from "../../components/Table";
 import Loader from "../../components/Loader";
-import uploadVideoSvg from "../../assets/upload-video.svg";
 import { Button, Notice } from "@wordpress/components";
-import { dispatch } from "@wordpress/data";
 import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
 import { timeAgo } from "../../utils/helper";
+import config from "../../config";
 
 const MediaLibrary = (props: any) => {
-  const { length } = props;
+  const { length, showNotice } = props;
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const [openModalUpload, setOpenModalUpload] = React.useState<boolean>(false);
-
   const [media, setMedia] = React.useState([]);
-  const [searchMedia, setSearchMedia] = React.useState("");
   const [refetch, setRefetch] = React.useState(0);
   const [activePlan, setActivePlan] = React.useState<any>();
   const [totalVideoCount, setTotalVideoCount] = React.useState<any>();
@@ -41,7 +36,7 @@ const MediaLibrary = (props: any) => {
     string | null
   >(null);
   const [showPremiumNotice, setShowPremiumNotice] = React.useState(false);
-
+  const [actionLoading, setActionLoading] = React.useState<string>();
   const [view, setView] = React.useState<View>({
     fields: ["uploaded_at", "speech-to-text"],
     filters: [],
@@ -276,20 +271,16 @@ const MediaLibrary = (props: any) => {
 
       setTotalVideoCount(res?.data?.length);
       setMedia(res.data);
-      // if (length === 10) {
-      //   setMedia(res.data.slice(0, 10));
-      // } else {
-      // }
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
       console.log("error fetching media", error);
-      if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
-      }
-      if (error?.response?.status === 402) {
-        navigate({ pathname: "/plans" });
-      }
+      // if (error.response.status === 401) {
+      //   navigate({ pathname: "/signin" });
+      // }
+      // if (error?.response?.status === 402) {
+      //   navigate({ pathname: "/plans" });
+      // }
     } finally {
       setLoading(false);
     }
@@ -298,6 +289,27 @@ const MediaLibrary = (props: any) => {
   React.useEffect(() => {
     fetchMedia();
   }, [refetch]);
+
+  const deleteAssets = async (item: any) => {
+    try {
+      setActionLoading("delete-video");
+      await axios.delete(`/videos/${item.id}`, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("s-token")}`,
+        },
+      });
+      showNotice({ status: "success", text: "Video deleted!" });
+      setRefetch(Math.random());
+    } catch (error) {
+      console.log("error deleting asset", error);
+      showNotice({
+        status: "error",
+        text: "Error while deleting video",
+      });
+    } finally {
+      setActionLoading(undefined);
+    }
+  };
 
   if (isLoading && !length && !activePlan)
     return (
@@ -413,27 +425,70 @@ const MediaLibrary = (props: any) => {
           <DataViews
             actions={[
               {
-                RenderModal: (props) => {
-                  console.log("item copy", props.items[0]);
-                  return <div>Copy Modal</div>;
-                },
-                id: "copy",
+                id: "copy_url",
                 isPrimary: false,
                 label: "Copy Video URL",
                 modalFocusOnMount: "firstContentElement",
-                modalHeader: () => {
-                  return "Copy???";
-                },
                 supportsBulk: false,
+                callback(items, context) {
+                  try {
+                    const construct_video_url = new URL(
+                      items[0].url,
+                      config.VIDEO_CDN_URL,
+                    ).toString();
+                    navigator.clipboard.writeText(construct_video_url);
+                    showNotice({
+                      status: "success",
+                      text: "Video URL copied!",
+                    });
+                  } catch (error) {
+                    showNotice({
+                      status: "error",
+                      text: "Error copying Video URL!",
+                    });
+                  }
+                },
               },
               {
-                RenderModal: () => <div>Delete Modal</div>,
+                RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                  <>
+                    <Text variant="body-lg">
+                      Deleting this video will permanently remove it from your
+                      video library.
+                    </Text>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <Button
+                        onClick={closeModal}
+                        autoFocus
+                        __next40pxDefaultSize
+                        variant="primary"
+                      >
+                        No
+                      </Button>
+                      <Button
+                        variant="tertiary"
+                        __next40pxDefaultSize
+                        onClick={() => deleteAssets(items[0])}
+                        isBusy={actionLoading === "delete-video"}
+                      >
+                        Yes
+                      </Button>
+                    </div>
+                  </>
+                ),
                 id: "delete",
                 isPrimary: false,
                 label: "Delete item",
                 modalFocusOnMount: "firstContentElement",
                 modalHeader: () => {
-                  return "Delete???";
+                  return "Delete video?";
                 },
                 supportsBulk: false,
               },

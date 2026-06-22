@@ -1,7 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Error from "../components/Error";
-import CreatePlayer from "../components/CreatePlayer";
 import axios from "../utils/axios-instance";
 import Cookies from "js-cookie";
 import Loader from "../components/Loader";
@@ -17,9 +15,8 @@ import { config } from "../utils/default-config";
 import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
 import { timeAgo } from "../utils/helper";
-import Toast from "../components/Toast";
-
-import { Button } from "@wordpress/components";
+import { Button, Snackbar } from "@wordpress/components";
+import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
 
 export interface Player {
@@ -137,29 +134,25 @@ export interface PlayerControl {
   scrubber: boolean;
 }
 
+export interface NoticeType {
+  status: "info" | "warning" | "success" | "error";
+  text: string;
+}
+
 const Home = () => {
-  const [searchTitle, setSearchTitle] = React.useState("");
   const [data, setData] = React.useState<Player[]>([]);
   const [error, setError] = React.useState(false);
   const [refetch, setRefetch] = React.useState(0);
   const [isLoading, setLoading] = React.useState(false);
-
   const [activePlan, setActivePlan] = React.useState<any>();
-  const [openModal, setOpenModal] = React.useState<boolean>(false);
-  const [openModalDelete, setOpenModalDelete] = React.useState<boolean>(false);
-  const [show, setShow] = React.useState(false);
-  const [showDelete, setShowDelete] = React.useState(false);
-  const [showCopy, setShowCopy] = React.useState(false);
-  const [copied, setCopied] = React.useState(false);
-  const [duplicateData, setDuplicateData] = React.useState<any>();
-  const [deleteData, setDeleteData] = React.useState<any>();
-  const [page, setPage] = React.useState(1);
   const [openModalAdd, setOpenModalAdd] = React.useState<boolean>(false);
   const [playerName, setPlayerName] = React.useState("");
   const [errorPlayer, setErrorPlayer] = React.useState("");
   const [selectedTemplate, setSelectedTemplate] = React.useState<
     "halcyon" | "moderna" | "sphinx" | "prosper"
   >("halcyon");
+  const [notice, setNotice] = React.useState<NoticeType>();
+  const [actionLoading, setActionLoading] = React.useState<string>();
 
   const [view, setView] = React.useState<View>({
     fields: ["videotitle", "updated_at", "shortcode"],
@@ -352,81 +345,52 @@ const Home = () => {
     }
   };
 
-  const showToast = () => {
-    setShow(true);
+  const showNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
   };
 
-  const hideToast = () => {
-    setShow(false);
-  };
-
-  const showToastDelete = () => {
-    setShowDelete(true);
-  };
-
-  const hideToastDelete = () => {
-    setShowDelete(false);
-  };
-
-  const showToastCopy = () => {
-    setShowCopy(true);
-  };
-
-  const hideToastCopy = () => {
-    setShowCopy(false);
-  };
-
-  const handleCopyClipboard = async (val: string) => {
+  const duplicatePlayer = async (item: Player) => {
     try {
-      await navigator.clipboard.writeText(val);
-      setCopied(true);
-    } catch (error) {
-      console.log("Failed to copy text: ", error);
-      setCopied(false);
-    }
-  };
-
-  const duplicatePlayer = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    try {
+      setActionLoading("duplicate-player");
       const newdata = {
-        name: duplicateData.name.concat(
+        name: item.name.concat(
           ` copy ${Math.floor(100000 + Math.random() * 900000)}`,
         ),
-        config: duplicateData.config,
+        config: item.config,
       };
       await axios.post("/players", newdata, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      setOpenModal(false);
-      showToast();
-      setDuplicateData(null);
-      setTimeout(() => {
-        setRefetch(Math.random());
-      }, 800);
+      showNotice({ status: "success", text: "Video player duplicated!" });
+      setRefetch(Math.random());
     } catch (error) {
+      showNotice({ status: "error", text: "Error duplicating video player!" });
       console.log("error duplicating player", error);
+    } finally {
+      setActionLoading(undefined);
     }
   };
 
-  const deletePlayer = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const deletePlayer = async (item: Player) => {
     try {
-      await axios.delete(`/players/${deleteData.id}`, {
+      setActionLoading("delete-player");
+      await axios.delete(`/players/${item.id}`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      setOpenModalDelete(false);
-      showToastDelete();
-      setDeleteData(null);
-      setTimeout(() => {
-        setRefetch(Math.random());
-      }, 800);
+      showNotice({ status: "success", text: "Video player deleted!" });
+      setRefetch(Math.random());
     } catch (error) {
       console.log("error deleting player", error);
+      showNotice({ status: "error", text: "Error deleting video player!" });
+    } finally {
+      setActionLoading(undefined);
     }
   };
 
@@ -467,25 +431,6 @@ const Home = () => {
       setErrorPlayer("");
     }
   };
-
-  const searchData =
-    data &&
-    data
-      .filter((item: any) => {
-        if (searchTitle === "") {
-          return true;
-        } else if (
-          item.name.toLowerCase().includes(searchTitle.toLowerCase())
-        ) {
-          return true;
-        }
-        return false;
-      })
-      .sort((a: any, b: any) => {
-        return (
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-        );
-      });
 
   // Needs to be removed in future
   const fetchInvoice = async () => {
@@ -538,6 +483,29 @@ const Home = () => {
 
   return (
     <div className="main-page-wrapper">
+      {notice && (
+        <div
+          style={{
+            position: "fixed",
+            top: "2%",
+            left: "50%",
+            zIndex: "9999",
+            transform: "translate(0%,50%)",
+          }}
+        >
+          <Snackbar
+            politeness="polite"
+            onDismiss={() => {
+              setNotice(undefined);
+            }}
+            onRemove={() => {
+              setNotice(undefined);
+            }}
+          >
+            {notice.text}
+          </Snackbar>
+        </div>
+      )}
       <div className="search-create-container">
         <div className="w-100">
           <Button
@@ -674,24 +642,107 @@ const Home = () => {
         <DataViews
           actions={[
             {
-              RenderModal: () => <div>Delete Modal</div>,
-              id: "delete",
+              id: "copy_code",
               isPrimary: false,
-              label: "Delete item",
+              label: "Copy Short Code",
               modalFocusOnMount: "firstContentElement",
-              modalHeader: () => {
-                return "Delete???";
-              },
               supportsBulk: false,
+              callback(items, context) {
+                try {
+                  navigator.clipboard.writeText(
+                    `[sato_player id="${items[0].id}"]`,
+                  );
+                  showNotice({ status: "success", text: "Code copied!" });
+                } catch (error) {
+                  showNotice({ status: "error", text: "Error copying code!" });
+                }
+              },
             },
             {
-              RenderModal: () => <div>Duplicate Modal</div>,
+              RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                <>
+                  <Text variant="body-lg">
+                    Are you sure want to duplicate this player?
+                  </Text>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    <Button
+                      autoFocus
+                      variant="primary"
+                      __next40pxDefaultSize
+                      onClick={() => duplicatePlayer(items[0])}
+                      isBusy={
+                        actionLoading === "duplicate-player" ? true : false
+                      }
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      __next40pxDefaultSize
+                      onClick={closeModal}
+                    >
+                      No
+                    </Button>
+                  </div>
+                </>
+              ),
               id: "duplicate",
               isPrimary: false,
               label: "Duplicate item",
               modalFocusOnMount: "firstContentElement",
               modalHeader: () => {
-                return "Duplicate???";
+                return "Duplicate player?";
+              },
+              supportsBulk: false,
+            },
+            {
+              RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                <>
+                  <Text variant="body-lg">
+                    Deleting this will affect video playback on your website
+                    where it might be embedded
+                  </Text>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1rem",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    <Button
+                      autoFocus
+                      variant="primary"
+                      __next40pxDefaultSize
+                      onClick={closeModal}
+                    >
+                      No
+                    </Button>
+
+                    <Button
+                      variant="tertiary"
+                      __next40pxDefaultSize
+                      onClick={() => deletePlayer(items[0])}
+                      isBusy={actionLoading === "delete-player" ? true : false}
+                    >
+                      Yes
+                    </Button>
+                  </div>
+                </>
+              ),
+              id: "delete",
+              isPrimary: false,
+              label: "Delete item",
+              modalFocusOnMount: "firstContentElement",
+              modalHeader: () => {
+                return "Delete video player?";
               },
               supportsBulk: false,
             },
@@ -798,7 +849,7 @@ const Home = () => {
       </div>
 
       <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "1rem" }}>
-        <MediaLibrary length={10} />
+        <MediaLibrary length={10} showNotice={showNotice} />
       </div>
     </div>
   );
