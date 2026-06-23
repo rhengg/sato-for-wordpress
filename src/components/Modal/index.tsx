@@ -11,6 +11,7 @@ type ModalProps = {
   handleClickEvent?: Function;
   size?: "sm" | "md" | "lg";
   closeButton?: boolean;
+  modalWidth?: string;
 };
 
 const Modal = (props: ModalProps) => {
@@ -19,30 +20,12 @@ const Modal = (props: ModalProps) => {
     setOpen,
     title,
     children,
-    handleClickEvent,
     size,
     closeButton = true,
+    modalWidth = "50vw",
   } = props;
 
-  // const [width, setWidth] = React.useState("300px");
-  // const [height, setHeight] = React.useState("180px");
-
-  // React.useEffect(() => {
-  //   if (size === "sm") {
-  //     setWidth("480px");
-  //     setHeight("auto");
-  //   }
-  //   if (size == "md") {
-  //     setWidth("768px");
-  //     setHeight("auto");
-  //   }
-  //   if (size == "lg") {
-  //     setWidth("1200px");
-  //     setHeight("auto");
-  //   }
-  // }, []);
-
-  const [width, setWidth] = React.useState("90vw");
+  const [width, setWidth] = React.useState("60vw");
 
   React.useEffect(() => {
     if (size === "sm") {
@@ -56,20 +39,6 @@ const Modal = (props: ModalProps) => {
     }
   }, [size]);
 
-  // React.useEffect(() => {
-  //   const updateValue = () => {
-  //     if (window.innerWidth <= 768) {
-  //       setWidth("96vw");
-  //       setHeight("auto");
-  //     }
-  //   };
-
-  //   updateValue();
-  //   window.addEventListener("resize", updateValue);
-
-  //   return () => window.removeEventListener("resize", updateValue);
-  // }, []);
-
   React.useEffect(() => {
     const closeOnEscapeKey = (e: any) =>
       e.key === "Escape" ? setOpen(false) : null;
@@ -81,19 +50,15 @@ const Modal = (props: ModalProps) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (): void => {
-    if (handleClickEvent) handleClickEvent();
-  };
-
   return (
     <ReactPortal wrapperId="react-portal-modal-container">
       <div className="centered">
-        {/* <div className="modal" style={{ width: width, height: height }}> */}
         <div
           className="modal"
           style={{
-            width: "90vw",
+            width: modalWidth,
             maxWidth: width,
+            minWidth: "410px",
             maxHeight: "90vh",
           }}
         >

@@ -551,9 +551,9 @@ const MediaLibrary = (props: any) => {
                       color:
                         item.transcription_status === "failed" ||
                         transcriptionFailed === item.id
-                          ? "#CC1818"
+                          ? "var(--negative)"
                           : item.transcription_status === "completed"
-                            ? "#4AB866"
+                            ? "var(--positive)"
                             : "revert-layer",
                     }}
                     onClick={(e: any) => {
@@ -577,9 +577,9 @@ const MediaLibrary = (props: any) => {
                       <Loader borderColor="var(--primary)" />
                     ) : item.transcription_status === "failed" ||
                       transcriptionFailed === item.id ? (
-                      <Text color="#cc1818">Failed</Text>
+                      <Text color="var(--negative)">Failed</Text>
                     ) : item.transcription_status === "completed" ? (
-                      <Text color="#4ab866">Completed</Text>
+                      <Text color="var(--positive)">Completed</Text>
                     ) : (
                       <Text>Generate</Text>
                     )}

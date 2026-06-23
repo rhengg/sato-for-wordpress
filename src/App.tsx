@@ -77,6 +77,8 @@ const App = () => {
       return <Detail />;
     case "sato-signin":
       return <Login />;
+    case "sato-pricing":
+      return <Plans />;
     case "sato-player":
       return <Home />;
     default:

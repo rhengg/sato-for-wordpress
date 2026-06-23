@@ -391,7 +391,7 @@ const Login = () => {
                 textDecoration: "none",
               }}
             >
-              <p className="link">Forgot password ?</p>
+              <p className="sato-link">Forgot password ?</p>
             </Link>
           </div>
 

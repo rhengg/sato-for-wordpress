@@ -1,8 +1,14 @@
 :root {
-  /* --primary: #fe6244; */
-  --primary: #3858e9;
-  /* --primaryHover: #fe2a01; */
-  --primaryHover: #2145e6;
+  --primary: #fe6244;
+  --primaryHover: #fe2a01;
+  --wp-components-color-accent: #fe6244;
+  --wp-components-color-accent-darker-10: #fe2a01;
+  --wp-components-color-accent-darker-20: #d82600;
+  --wp-admin-theme-color: #fe6244;
+  --wp-admin-theme-color-darker-10: #fe2a01;
+  --wp-admin-theme-color-darker-20: #d82600;
+  --wpds-color-fg-interactive-brand: #fe2a01;
+
   --primaryVariantOne: #f1e9fc;
   --primaryVariantTwo: #fcfaff;
   --textPrimary: #1d1d1d;
@@ -24,29 +30,6 @@
   padding: 0;
   margin: 0;
 }
-/**
- * @license
- *
- * Font Family: Satoshi
- * Designed by: Deni Anggara
- * URL: https://www.fontshare.com/fonts/satoshi
- * © 2023 Indian Type Foundry
- *
- * Font Styles:
- * Satoshi Variable(Variable font)
- * Satoshi Variable Italic(Variable font)
- * Satoshi Light
- * Satoshi Light Italic
- * Satoshi Regular
- * Satoshi Italic
- * Satoshi Medium
- * Satoshi Medium Italic
- * Satoshi Bold
- * Satoshi Bold Italic
- * Satoshi Black
- * Satoshi Black Italic
- *
-*/
 
 @font-face {
   font-family: "Satoshi-Variable";
@@ -305,31 +288,31 @@ li::marker {
   font-family: "Satoshi-Medium";
 }
 
-.link {
+.sato-link {
   font-size: 0.875rem;
   color: var(--primary);
   line-height: 120%;
   font-family: "Satoshi-Medium";
 }
 
-.link:hover {
+.sato-link:hover {
   color: var(--primaryHover);
   transition: all 0.4s ease-in-out;
 }
 
-.link-secondary {
+.sato-link-secondary {
   font-size: 1rem;
   color: #45474b;
   line-height: 120%;
   font-family: "Satoshi-Regular";
 }
 
-.link-secondary:hover {
+.sato-link-secondary:hover {
   color: var(--primaryHover);
   transition: all 0.4s ease-in-out;
 }
 
-.link-active {
+.sato-link-active {
   font-size: 1rem;
   color: var(--primary);
   line-height: 120%;

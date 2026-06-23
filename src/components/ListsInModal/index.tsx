@@ -5,7 +5,7 @@ import config from "../../config";
 type ListsInModalProps = {
   item: any;
   setRefetch: React.Dispatch<React.SetStateAction<number>>;
-  handleClick: () => void
+  handleClick: () => void;
 };
 
 const ListsInModal = (props: ListsInModalProps) => {
@@ -27,15 +27,19 @@ const ListsInModal = (props: ListsInModalProps) => {
     <>
       <tr>
         <td>
-          <p className="link"
+          <p
+            className="sato-link"
             style={{
-              cursor: 'pointer'
+              cursor: "pointer",
             }}
-            onClick={() => { handleClick() }}
-          >{name}</p>
+            onClick={() => {
+              handleClick();
+            }}
+          >
+            {name}
+          </p>
         </td>
-        <td
-        >
+        <td>
           <p className="body">
             {new Date(created_at * 1000).toLocaleDateString("en-IN")}
           </p>

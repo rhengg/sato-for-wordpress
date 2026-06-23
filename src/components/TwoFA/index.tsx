@@ -389,7 +389,7 @@ const Index = (props: TwoFAProps) => {
                 </div>
                 <p className="label">{recoveryCode}</p>
                 <p
-                  className="link"
+                  className="sato-link"
                   onClick={downloadFile}
                   style={{ cursor: "pointer" }}
                 >

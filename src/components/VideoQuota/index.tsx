@@ -25,14 +25,7 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
           <Text variant="body-lg"> | </Text>
           <Text variant="body-lg">{`${maxSize} MB/video`}</Text>
         </div>
-        <Link
-          href="#"
-          style={{
-            textDecoration: "none",
-          }}
-          tone="brand"
-          variant="default"
-        >
+        <Link className="sato-link" href="#" variant="unstyled">
           <Text variant="heading-lg">Change Plan</Text>
         </Link>
       </div>

@@ -299,7 +299,7 @@ const Navigation = () => {
                         padding: "0.35rem 0 0.5rem 1rem",
                       }}
                     >
-                      <p className="link-secondary">Settings</p>
+                      <p className="sato-link-secondary">Settings</p>
                       <span className="material-symbols-outlined nav-icon">
                         keyboard_arrow_up
                       </span>

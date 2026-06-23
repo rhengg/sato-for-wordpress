@@ -90,3 +90,8 @@
     /* height: 2.75rem; */
   }
 }
+@media only screen and (max-width: 1280px) {
+  .videoUpload-main {
+    width: 65%;
+  }
+}

@@ -570,7 +570,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                           <p className="body" style={{ textAlign: "center" }}>
                             or{" "}
                             <span
-                              className="link-active"
+                              className="sato-link-active"
                               style={{
                                 cursor: "pointer",
                               }}

@@ -134,10 +134,10 @@ const VideoList = (props: VideoListProps) => {
   return (
     <div className="video-table">
       <div className={"video-table-header"}>
-        <span className="link textPrimary">Video name</span>
-        <span className="link textPrimary">Uploaded at</span>
+        <span className="sato-link textPrimary">Video name</span>
+        <span className="sato-link textPrimary">Uploaded at</span>
         <span
-          className="link textPrimary"
+          className="sato-link textPrimary"
           style={{
             display: "flex",
             alignItems: "center",
@@ -150,7 +150,7 @@ const VideoList = (props: VideoListProps) => {
           )}
           Speech-to-text
         </span>
-        <span className="link textPrimary">More</span>
+        <span className="sato-link textPrimary">More</span>
       </div>
 
       {data.map((video: any, idx: number) => (
