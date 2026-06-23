@@ -173,7 +173,7 @@
 textarea {
   border-radius: 0.25rem;
   resize: vertical;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   font-family: "Satoshi-Regular";
 }
 
@@ -263,7 +263,7 @@ li::marker {
 }
 
 .body {
-  font-size: 1rem;
+  font-size: 0.8125rem;
   line-height: 120%;
   font-family: "Satoshi-Regular";
 }
@@ -301,7 +301,7 @@ li::marker {
 }
 
 .sato-link-secondary {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: #45474b;
   line-height: 120%;
   font-family: "Satoshi-Regular";
@@ -313,7 +313,7 @@ li::marker {
 }
 
 .sato-link-active {
-  font-size: 1rem;
+  font-size: 0.875rem;
   color: var(--primary);
   line-height: 120%;
   font-family: "Satoshi-Regular";
@@ -487,7 +487,7 @@ li::marker {
   border: 0px solid var(--primary);
   background: var(--white);
   color: var(--black);
-  font-size: 1rem;
+  font-size: 0.875rem;
   cursor: pointer;
   line-height: 1.225rem;
   display: flex;
@@ -574,7 +574,7 @@ li::marker {
   background: transparent;
   color: var(--white);
   font-family: "Satoshi-Bold";
-  font-size: 1rem;
+  font-size: 0.8125rem;
   border-radius: 0.25rem;
   border: none;
   outline: none;
@@ -589,7 +589,7 @@ li::marker {
 .notnow-btn {
   background: transparent;
   color: var(--negative);
-  font-size: 1rem;
+  font-size: 0.8125rem;
   border-radius: 0.25rem;
   border: none;
   outline: none;
@@ -605,13 +605,6 @@ li::marker {
   align-items: center;
   gap: 1.5rem;
   box-sizing: border-box;
-}
-
-.main-page-wrapper {
-  padding-top: 2rem;
-  padding-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }
 
 .home-header {
@@ -796,7 +789,6 @@ li::marker {
   justify-content: center;
   height: calc(100vh - 98px);
   overflow-y: scroll;
-  padding-left: 3rem;
 }
 
 .delete-container {
@@ -815,13 +807,14 @@ li::marker {
   display: flex;
   align-items: center;
   gap: 1rem;
-  height: 3.25rem;
-  width: 100%; /* make it full width */
+  height: 2.5rem;
+  padding-inline-start: 1rem;
+  width: 100%;
 }
 
 .detail-sub-container-child {
   box-sizing: border-box;
-  padding: 0 8rem 0 0;
+  padding-right: 8rem;
   width: 100%;
   height: 100%;
 }
@@ -1064,13 +1057,13 @@ li::marker {
   }
 
   .body {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
   .link-secondary {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
   .link-active {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
   .large-primary-btn {
     padding: 0.5rem 1rem;
@@ -1239,9 +1232,7 @@ li::marker {
 
   .detail-sub-container-2 {
     width: 100%;
-    padding: 0;
     height: auto;
-    /* height: fit-content; */
   }
 
   .delete-container {
@@ -1338,9 +1329,9 @@ li::marker {
   /* width: 100%; */
   /* } */
   .large-primary-btn {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
   .large-secondary-btn {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
 }

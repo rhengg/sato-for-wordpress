@@ -477,7 +477,7 @@ const MediaLibrary = (props: any) => {
                         isDestructive={true}
                         __next40pxDefaultSize
                         onClick={() => deleteAssets(items[0])}
-                        isBusy={actionLoading === "delete-video"}
+                        isBusy={actionLoading === "delete-video" ? true : false}
                       >
                         Delete permanently
                       </Button>
@@ -579,7 +579,7 @@ const MediaLibrary = (props: any) => {
                       transcriptionFailed === item.id ? (
                       <Text color="var(--negative)">Failed</Text>
                     ) : item.transcription_status === "completed" ? (
-                      <Text color="var(--positive)">Completed</Text>
+                      <Text color="var(--positive)">Generated</Text>
                     ) : (
                       <Text>Generate</Text>
                     )}

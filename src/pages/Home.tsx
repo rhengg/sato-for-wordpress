@@ -16,8 +16,11 @@ import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
 import { timeAgo } from "../utils/helper";
 import { Button, Snackbar } from "@wordpress/components";
+import { Icon, copy } from "@wordpress/icons";
 import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
+import DetailMenu from "../components/DetailMenu";
+import Tooltip from "../components/Tooltip";
 
 export interface Player {
   id: string;
@@ -155,7 +158,7 @@ const Home = () => {
   const [actionLoading, setActionLoading] = React.useState<string>();
 
   const [view, setView] = React.useState<View>({
-    fields: ["videotitle", "updated_at", "shortcode"],
+    fields: ["videotitle", "shortcode", "updated_at"],
     filters: [],
     groupBy: undefined,
     layout: {},
@@ -482,7 +485,8 @@ const Home = () => {
   if (error) return <Error errorMessage="Error fetching data" />;
 
   return (
-    <div className="main-page-wrapper">
+    <div>
+      <DetailMenu />
       {notice && (
         <div
           style={{
@@ -706,7 +710,7 @@ const Home = () => {
             {
               RenderModal: ({ items, closeModal, onActionPerformed }) => (
                 <>
-                  <Text variant="body-lg" color="">
+                  <Text variant="body-lg">
                     Deleting this will affect video playback on your website
                     where it might be embedded
                   </Text>
@@ -827,6 +831,53 @@ const Home = () => {
               filterBy: false,
               getValue: ({ item }) => {
                 return `[sato_player id="${item.id}"]`;
+              },
+              render: (data) => {
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      marginInlineEnd: "1rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        border: "1px solid var(--stroke)",
+                        borderRadius: "4px",
+                        background: "var(--surface)",
+                        padding: "10px",
+                        fontFamily: "monospace",
+                        whiteSpace: "nowrap",
+                        width: "23rem",
+                      }}
+                    >
+                      <Text variant="body-md">{`[sato_player id="${data.item.id}"]`}</Text>
+                    </div>
+                    <Button
+                      icon={copy}
+                      label="Copy Short Code"
+                      showTooltip
+                      onClick={() => {
+                        try {
+                          navigator.clipboard.writeText(
+                            `[sato_player id="${data.item.id}"]`,
+                          );
+                          showNotice({
+                            status: "success",
+                            text: "Code copied!",
+                          });
+                        } catch (error) {
+                          showNotice({
+                            status: "error",
+                            text: "Error copying code!",
+                          });
+                        }
+                      }}
+                    ></Button>
+                  </div>
+                );
               },
             },
           ]}

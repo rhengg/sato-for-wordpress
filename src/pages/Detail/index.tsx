@@ -30,6 +30,7 @@ import { makeConfig } from "../../utils/makePlayerConfig";
 import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
 import CompleteSvg from "../../assets/Complete.svg";
+import { Button } from "@wordpress/components";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -1277,27 +1278,14 @@ const Index = () => {
                   }}
                   className="w-100"
                 >
-                  <button
-                    className="large-primary-btn m-100"
+                  <Button
+                    __next40pxDefaultSize={true}
+                    variant="primary"
+                    icon={"plus"}
                     onClick={() => setOpenModalUpload(true)}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        columnGap: "0.25rem",
-                      }}
-                    >
-                      <span
-                        className="material-symbols-outlined"
-                        style={{ fontWeight: "bold" }}
-                      >
-                        add
-                      </span>
-                      Add Video
-                    </div>
-                  </button>
+                    Add Video
+                  </Button>
                 </div>
 
                 <Modal
@@ -1376,7 +1364,15 @@ const Index = () => {
               </div>
             </div>
 
-            <div style={{ width: "100%", marginTop: "1.5rem" }}>
+            <div
+              style={{
+                width: "95%",
+                marginTop: "1.5rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               {computedConfig && <LivePlayer config={computedConfig} />}
             </div>
 
