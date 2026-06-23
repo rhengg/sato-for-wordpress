@@ -833,7 +833,6 @@ const Home = () => {
           getItemId={(item) => String(item.id)}
           isItemClickable={() => true}
           onChangeView={(item) => {
-            console.log("hehehe", item);
             setView(item);
           }}
           onClickItem={(item) => {

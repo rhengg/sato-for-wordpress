@@ -133,7 +133,7 @@ const MediaLibrary = (props: any) => {
             bValue = b.transcription_status ?? "";
             break;
 
-          case "updated_at":
+          case "uploaded_at":
             aValue = Number(a.updated_at);
             bValue = Number(b.updated_at);
             break;
@@ -590,7 +590,6 @@ const MediaLibrary = (props: any) => {
             getItemId={(item) => String(item.id)}
             isItemClickable={() => false}
             onChangeView={(item) => {
-              console.log("hehehe", item);
               setView(item);
             }}
             isLoading={media ? false : true}
