@@ -262,6 +262,13 @@ li::marker {
   color: var(--textPrimary);
 }
 
+.subtitle-three {
+  font-size: 1rem;
+  line-height: 120%;
+  font-family: "Satoshi-Medium";
+  color: var(--textPrimary);
+}
+
 .body {
   font-size: 0.8125rem;
   line-height: 120%;
@@ -280,6 +287,14 @@ li::marker {
   color: var(--textPrimary);
   line-height: 120%;
   font-family: "Satoshi-Regular";
+}
+
+.sato-action-icon {
+  font-size: 20px;
+  cursor: pointer;
+}
+.sato-action-icon:hover {
+  color: var(--primaryHover);
 }
 
 .caption {

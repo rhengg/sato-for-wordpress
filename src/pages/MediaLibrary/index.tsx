@@ -403,7 +403,7 @@ const MediaLibrary = (props: any) => {
         </div>
         <div className="desktop-text-render">
           <p
-            className="subtitle-two"
+            className="subtitle-three"
             style={{ marginTop: "1.5rem", marginBottom: "0.5rem" }}
           >
             Uploaded Videos

@@ -1150,7 +1150,7 @@ const Index = () => {
                   gap: "0.5rem",
                 }}
               >
-                <p className="subtitle-two">Player Name: </p>
+                <p className="subtitle-three">Player Name: </p>
                 <p className="body">{playerNameUpdate.value}</p>
                 <span
                   className="material-symbols-outlined"
@@ -1214,7 +1214,7 @@ const Index = () => {
                   gap: "0.5rem",
                 }}
               >
-                <p className="subtitle-two">Player ID: </p>
+                <p className="subtitle-three">Player ID: </p>
                 <p className="body">{videoId}</p>
                 <span
                   className="material-symbols-outlined"
@@ -1242,7 +1242,7 @@ const Index = () => {
               }}
             >
               <div style={{ marginBottom: "0.5rem" }}>
-                <p className="subtitle-two">Video name</p>
+                <p className="subtitle-three">Video name</p>
               </div>
               <div
                 className="upload-container"

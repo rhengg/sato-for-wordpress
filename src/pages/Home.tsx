@@ -634,7 +634,7 @@ const Home = () => {
             width: "max-content",
           }}
         >
-          <p className="subtitle-two">Video Players</p>
+          <p className="subtitle-three">Video Players</p>
         </div>
       </div>
 
@@ -855,27 +855,30 @@ const Home = () => {
                     >
                       <Text variant="body-md">{`[sato_player id="${data.item.id}"]`}</Text>
                     </div>
-                    <Button
-                      icon={copy}
-                      label="Copy Short Code"
-                      showTooltip
-                      onClick={() => {
-                        try {
-                          navigator.clipboard.writeText(
-                            `[sato_player id="${data.item.id}"]`,
-                          );
-                          showNotice({
-                            status: "success",
-                            text: "Code copied!",
-                          });
-                        } catch (error) {
-                          showNotice({
-                            status: "error",
-                            text: "Error copying code!",
-                          });
-                        }
-                      }}
-                    ></Button>
+
+                    <Tooltip text="Copy Short Code">
+                      <span
+                        className="material-symbols-outlined sato-action-icon"
+                        onClick={() => {
+                          try {
+                            navigator.clipboard.writeText(
+                              `[sato_player id="${data.item.id}"]`,
+                            );
+                            showNotice({
+                              status: "success",
+                              text: "Code copied!",
+                            });
+                          } catch (error) {
+                            showNotice({
+                              status: "error",
+                              text: "Error copying code!",
+                            });
+                          }
+                        }}
+                      >
+                        content_copy
+                      </span>
+                    </Tooltip>
                   </div>
                 );
               },
