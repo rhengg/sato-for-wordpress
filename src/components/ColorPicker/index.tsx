@@ -3,6 +3,8 @@ import "./colorpicker.css";
 import Tooltip from "../Tooltip";
 import hideSvg from "../../assets/hide.svg";
 import unhideSvg from "../../assets/unhide.svg";
+import { ColorPicker as WpColorPicker } from "@wordpress/components";
+import PortalPopover from "../PortalPopover";
 
 type ColorPickerProps = {
   name?: string;
@@ -20,8 +22,9 @@ const ColorPicker = ({
   tooltipText,
 }: ColorPickerProps) => {
   const [newValue, setNewValue] = React.useState(value);
+  const [colorPickerVisibility, setColorPickerVisibility] =
+    React.useState("none");
 
-  // sync with parent
   React.useEffect(() => {
     setNewValue(value);
   }, [value]);
@@ -32,6 +35,14 @@ const ColorPicker = ({
   };
 
   const isTransparent = newValue === "transparent";
+
+  const toggleColorPicker = () => {
+    if (colorPickerVisibility === "none") {
+      setColorPickerVisibility("block");
+    } else {
+      setColorPickerVisibility("none");
+    }
+  };
 
   return (
     <div
@@ -68,27 +79,66 @@ const ColorPicker = ({
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "0.5rem",
-          padding: "0.05rem 0.5rem",
           borderRadius: "0.25rem",
           border: "1px solid #585858",
           backgroundColor: "var(--white)",
-          opacity: isTransparent ? 0.5 : 1,
-          // width: "11rem",
         }}
       >
-        {/* Color input */}
-        <input
-          className="color-picker-input"
-          type="color"
-          name={name}
-          value={isTransparent ? "#000000" : newValue}
-          onChange={(e) => {
-            handleColorChange(e.target.value); // this will override transparent
+        <div
+          style={{
+            position: "relative",
+            width: "25px",
+            padding: "0.05rem 0.25rem",
           }}
-        />
+        >
+          <PortalPopover
+            position="top"
+            trigger={
+              <div
+                className="pointerDiv"
+                style={{
+                  width: "1.25rem",
+                  height: "1.25rem",
+                  borderRadius: "0.25rem",
+                  border: "1px solid var(--stroke)",
+                  background: isTransparent
+                    ? `
+              linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0.8),
+                rgba(0, 0, 0, 0)
+              ),
+              linear-gradient(45deg, #d0d0d0 25%, transparent 25%),
+              linear-gradient(-45deg, #d0d0d0 25%, transparent 25%),
+              linear-gradient(45deg, transparent 75%, #d0d0d0 75%),
+              linear-gradient(-45deg, transparent 75%, #d0d0d0 75%)
+            `
+                    : newValue,
+                  backgroundSize: isTransparent
+                    ? "100% 100%, 10px 10px, 10px 10px, 10px 10px, 10px 10px"
+                    : "auto auto",
+                  backgroundPosition: isTransparent
+                    ? "0 0, 0 0, 0 5px, 5px -5px, -5px 0"
+                    : "0% 0%",
+                }}
+              />
+            }
+          >
+            <WpColorPicker
+              style={{
+                backgroundColor: "#FFFFFF",
+                boxShadow:
+                  "0 0 0 1px #ccc, 0 2px 3px #0000000d, 0 4px 5px #0000000a, 0 12px 12px #00000008, 0 16px 16px #00000005",
+                borderRadius: "0.25rem",
+                boxSizing: "border-box",
+              }}
+              color={isTransparent ? "#000000" : newValue}
+              onChange={handleColorChange}
+              enableAlpha
+            />
+          </PortalPopover>
+        </div>
 
-        {/* Hex / transparent text input */}
         <input
           className="color-hex-input body"
           name={name}
@@ -106,7 +156,6 @@ const ColorPicker = ({
           maxLength={12}
         />
 
-        {/* Transparent toggle */}
         <button
           type="button"
           className="transparent-btn"
@@ -118,6 +167,7 @@ const ColorPicker = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            width: "1.5rem",
           }}
         >
           {isTransparent ? (
@@ -135,7 +185,6 @@ const ColorPicker = ({
               loading="lazy"
             />
           )}
-          {/* ⦸ */}
         </button>
       </div>
     </div>

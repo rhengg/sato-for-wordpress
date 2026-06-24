@@ -14,40 +14,78 @@ type SizePickerProps = {
 const Index = (props: SizePickerProps) => {
   const { label, name, value, onChange, tooltipText, disabled } = props;
 
+  // const rendericon = () => {
+  //   if (name?.includes("margin")) {
+  //     return <span className="material-symbols-outlined">padding</span>;
+  //   }
+  //   if (name?.includes("opacity")) {
+  //     return <span className="material-symbols-outlined">opacity</span>;
+  //   }
+  //   if (name?.includes("padding")) {
+  //     return <span className="material-symbols-outlined">padding</span>;
+  //   }
+  //   if (name?.includes("radius")) {
+  //     return <span className="material-symbols-outlined">rounded_corner</span>;
+  //   }
+  //   if (name?.includes("spacing")) {
+  //     return <span className="material-symbols-outlined">toast</span>;
+  //   }
+  //   if (name?.includes("size")) {
+  //     return <span className="material-symbols-outlined">arrows_output</span>;
+  //   }
+  //   if (name?.includes("height")) {
+  //     return <span className="material-symbols-outlined">height</span>;
+  //   }
+  //   if (name?.includes("scale")) {
+  //     return <span className="material-symbols-outlined">expand</span>;
+  //   }
+  // };
+
   const rendericon = () => {
-    if (name?.includes("margin")) {
-      return <span className="material-symbols-outlined">padding</span>;
-    }
-    if (name?.includes("opacity")) {
-      return <span className="material-symbols-outlined">opacity</span>;
-    }
-    if (name?.includes("padding")) {
-      return <span className="material-symbols-outlined">padding</span>;
-    }
-    if (name?.includes("radius")) {
-      return <span className="material-symbols-outlined">rounded_corner</span>;
-    }
-    if (name?.includes("spacing")) {
-      return <span className="material-symbols-outlined">toast</span>;
-    }
-    if (name?.includes("size")) {
-      return <span className="material-symbols-outlined">arrows_output</span>;
-    }
-    if (name?.includes("height")) {
-      return <span className="material-symbols-outlined">height</span>;
-    }
-    if (name?.includes("scale")) {
-      return <span className="material-symbols-outlined">expand</span>;
-    }
+    const icons: Record<string, string> = {
+      margin: "padding",
+      opacity: "opacity",
+      padding: "padding",
+      radius: "rounded_corner",
+      spacing: "toast",
+      size: "arrows_output",
+      height: "height",
+      scale: "expand",
+    };
+
+    const icon = Object.entries(icons).find(([key]) =>
+      name?.includes(key),
+    )?.[1];
+
+    return icon ? (
+      <span
+        className="material-symbols-outlined"
+        style={{ width: "25px", padding: "0.05rem 0.25rem" }}
+      >
+        {icon}
+      </span>
+    ) : null;
   };
 
   const renderUnit = () => {
     if (name?.includes("scale")) {
-      return <p className="label">x</p>;
+      return (
+        <p className="label" style={{ width: "1.5rem" }}>
+          x
+        </p>
+      );
     } else if (name?.includes("opacity")) {
-      return <p className="label">%</p>;
+      return (
+        <p className="label" style={{ width: "1.5rem" }}>
+          %
+        </p>
+      );
     } else {
-      return <p className="label">px</p>;
+      return (
+        <p className="label" style={{ width: "1.5rem" }}>
+          px
+        </p>
+      );
     }
   };
 
@@ -96,12 +134,8 @@ const Index = (props: SizePickerProps) => {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
-          gap: "0.5rem",
-          padding: "0 0.5rem",
           borderRadius: "0.25rem",
           border: "1px solid #585858",
-          width: "9.25rem",
           backgroundColor: "var(--white)",
           opacity: disabled ? 0.5 : 1,
         }}
@@ -112,15 +146,11 @@ const Index = (props: SizePickerProps) => {
           className="size-input body"
           type="number"
           name={name}
-          // defaultValue={value}
           value={value ?? ""}
           min={"0"}
           max={"300"}
           step={"any"}
           disabled={disabled}
-          // value={value}
-          // onChange={onChange}
-          // onInput={onChange}
           onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.target.value.length > 3) {
               e.target.value = e.target.value.slice(0, 3);

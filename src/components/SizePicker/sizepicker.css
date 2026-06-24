@@ -1,17 +1,16 @@
 .size-input {
-  width: 4.5rem;
-  /* height: 1.5rem; */
-  padding: 0.2rem 0.4rem;
-  background-color: transparent;
-  outline: none;
-  border: none;
-  /* font-size: 1.25rem; */
+  width: 5.25rem;
+  min-height: 0 !important;
+  padding: 0.2rem 0.4rem !important;
+  background-color: transparent !important;
+  outline: none !important;
+  border: none !important;
   font-weight: 500;
-  color: #1D1D1D;
-  border-left: 1px solid;
-  border-left-color: #D4D4D4;
+  color: #1d1d1d !important;
+  border-left: 1px solid !important;
+  border-left-color: #d4d4d4 !important;
 }
 
 .size-input::placeholder {
-  color: #828282;
+  color: #828282 !important;
 }
