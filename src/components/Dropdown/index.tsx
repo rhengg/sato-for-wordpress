@@ -2,6 +2,7 @@ import React from "react";
 import "./dropdown.css";
 import Tooltip from "../Tooltip";
 import Premium from "../PremiumIcon";
+import { Button, DropdownMenu } from "@wordpress/components";
 
 type Option = {
   label: string;
@@ -9,7 +10,6 @@ type Option = {
 };
 
 type DropdownProps = {
-  name?: string;
   value?: string;
   onChange: (val: string) => void;
   label?: string;
@@ -22,22 +22,36 @@ const Dropdown = ({
   value = "",
   onChange,
   label,
-  name,
   tooltipText,
   options = [],
   disabled,
 }: DropdownProps) => {
   const [newValue, setNewValue] = React.useState(value);
-
-  // sync with parent
-  React.useEffect(() => {
-    setNewValue(value);
-  }, [value]);
+  const [open, setOpen] = React.useState(false);
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const selectedOption = options.find((opt) => opt.value === newValue);
 
   const handleChange = (val: string) => {
     setNewValue(val);
     onChange?.(val);
   };
+
+  React.useEffect(() => {
+    setNewValue(value);
+  }, [value]);
+
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div
@@ -69,40 +83,59 @@ const Dropdown = ({
             </span>
           </Tooltip>
         )}
-        {/* <div style={{ position: "relative" }}>
-          {disabled && <Premium top="0%" />}
-        </div> */}
       </div>
 
       {/* Dropdown */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-          padding: "0 0.5rem",
-          borderRadius: "0.25rem",
-          border: "1px solid #585858",
-          backgroundColor: "var(--white)",
-          width: "9.25rem",
-        }}
-      >
-        <select
-          className="dropdown-input body"
-          name={name}
-          value={newValue}
-          onChange={(e) => handleChange(e.target.value)}
+      <div ref={wrapperRef} style={{ position: "relative" }}>
+        <Button
+          ref={wrapperRef}
+          __next40pxDefaultSize={true}
+          type="button"
           disabled={disabled}
+          variant="secondary"
+          icon={"arrow-down"}
           style={{
-            cursor: disabled ? "not-allowed" : "pointer",
+            width: "9.25rem",
+            height: "100%",
+            justifyContent: "space-between",
           }}
+          iconPosition="right"
+          onClick={() => setOpen((prev) => !prev)}
         >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+          {selectedOption?.label ?? "Select"}
+        </Button>
+
+        {open && (
+          <ul
+            style={{
+              position: "absolute",
+              top: "calc(100% + 4px)",
+              left: 0,
+              right: 0,
+              margin: 0,
+              padding: "0.25rem 0",
+              listStyle: "none",
+              background: "var(--white)",
+              border: "1px solid #585858",
+              borderRadius: "0.25rem",
+              boxShadow: "0 2px 8px rgba(0,0,0,.15)",
+              zIndex: 1000,
+            }}
+          >
+            {options.map((opt) => (
+              <li
+                key={opt.value}
+                onClick={() => {
+                  handleChange(opt.value);
+                  setOpen(false);
+                }}
+                className="dropdown-option body"
+              >
+                {opt.label}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

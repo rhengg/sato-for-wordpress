@@ -1456,60 +1456,29 @@ const Index = () => {
                   gap: "1rem",
                 }}
               >
-                <button
+                <Button
+                  __next40pxDefaultSize={true}
+                  variant="primary"
                   type="submit"
-                  className="large-primary-btn"
                   disabled={disableSaveButon}
-                  style={{ flex: 1 }}
+                  style={{ flex: 1, justifyContent: "center" }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      columnGap: "0.25rem",
-                    }}
-                  >
-                    Save Edits
-                  </div>
-                </button>
+                  Save Edits
+                </Button>
 
-                <button
+                <Button
+                  __next40pxDefaultSize={true}
+                  variant="secondary"
                   type="button"
-                  className="large-secondary-btn"
-                  disabled={sourceEmpty}
-                  style={{ flex: 1 }}
-                  onClick={() => setOpenModal(true)}
+                  icon={"controls-repeat"}
+                  style={{ flex: 1, justifyContent: "center" }}
+                  onClick={() => {
+                    setOpenModalReset(true);
+                  }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      columnGap: "0.25rem",
-                    }}
-                  >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontWeight: "bold", fontSize: "1.25rem" }}
-                    >
-                      slideshow
-                    </span>
-                    Preview
-                  </div>
-                </button>
+                  Reset Default
+                </Button>
               </div>
-
-              {/*
-              <button
-                type="reset"
-                className="large-secondary-btn"
-                style={{ flex: 1 }}
-                onClick={resetDefault}
-              >
-                Reset Default
-              </button>
-            */}
             </div>
 
             <div
@@ -3137,13 +3106,8 @@ const Index = () => {
                     value={
                       videoconfigupdate.value?.premium?.playerCTA?.placement
                     }
-                    // onChange={(val: any) => {
-                    //   videoconfigupdate.value.premium.playerCTA.placement = val;
-                    //   setDisableSaveButton(false);
-                    // }}
                     onChange={(val: any) => {
                       const value = val;
-
                       videoconfigupdate.value = {
                         ...videoconfigupdate.value,
                         premium: {
@@ -3158,7 +3122,6 @@ const Index = () => {
                       setDisableSaveButton(false);
                     }}
                     options={[
-                      { label: "Select", value: "" },
                       { label: "Top Left", value: "top-left" },
                       { label: "Top Center", value: "top-center" },
                       { label: "Top Right", value: "top-right" },
@@ -3174,10 +3137,6 @@ const Index = () => {
                       !activePlan?.metadata?.premium_features?.playerCTA?.timing
                     }
                     value={videoconfigupdate.value?.premium?.playerCTA?.timing}
-                    // onChange={(val: any) => {
-                    //   videoconfigupdate.value.premium.playerCTA.timing = val;
-                    //   setDisableSaveButton(false);
-                    // }}
                     onChange={(val: any) => {
                       const value = val;
 
@@ -3195,7 +3154,6 @@ const Index = () => {
                       setDisableSaveButton(false);
                     }}
                     options={[
-                      { label: "Select", value: "" },
                       { label: "Preroll", value: "pre" },
                       { label: "Midroll", value: "mid" },
                       { label: "Postroll", value: "post" },
@@ -3211,10 +3169,6 @@ const Index = () => {
                     value={
                       videoconfigupdate.value?.premium?.playerCTA?.direction
                     }
-                    // onChange={(val: any) => {
-                    //   videoconfigupdate.value.premium.playerCTA.direction = val;
-                    //   setDisableSaveButton(false);
-                    // }}
                     onChange={(val: any) => {
                       const value = val;
 
@@ -3232,7 +3186,6 @@ const Index = () => {
                       setDisableSaveButton(false);
                     }}
                     options={[
-                      { label: "Select", value: "" },
                       { label: "Vertical", value: "vertical" },
                       { label: "Horizontal", value: "horizontal" },
                     ]}
@@ -3652,31 +3605,6 @@ const Index = () => {
                 </div>
               </Accordion>
             </div>
-
-            <button
-              className="large-secondary-btn"
-              type="button"
-              onClick={() => {
-                setOpenModalReset(true);
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  columnGap: "0.25rem",
-                }}
-              >
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontWeight: "bold" }}
-                >
-                  cached
-                </span>
-                Reset Default
-              </div>
-            </button>
           </form>
 
           <Modal

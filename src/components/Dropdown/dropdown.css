@@ -1,7 +1,13 @@
-.dropdown-input {
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0.25rem;
-  width: 100%;
+.dropdown-option {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.dropdown-option:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.dropdown-option:active {
+  opacity: 0.9;
 }
