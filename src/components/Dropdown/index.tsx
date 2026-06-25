@@ -93,7 +93,8 @@ const Dropdown = ({
           type="button"
           disabled={disabled}
           variant="secondary"
-          icon={"arrow-down"}
+          icon={open ? "arrow-up-alt2" : "arrow-down-alt2"}
+          iconSize={14}
           style={{
             width: "9.25rem",
             height: "100%",
