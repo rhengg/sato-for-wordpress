@@ -95,12 +95,11 @@ const ColorPicker = ({
             position="top"
             trigger={
               <div
-                className="pointerDiv"
                 style={{
                   width: "1.25rem",
                   height: "1.25rem",
                   borderRadius: "0.25rem",
-                  border: "1px solid var(--stroke)",
+                  border: "1px solid var(--strokeSecondary)",
                   background: isTransparent
                     ? `
               linear-gradient(

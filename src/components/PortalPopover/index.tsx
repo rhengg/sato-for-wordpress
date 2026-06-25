@@ -150,9 +150,6 @@ const PortalPopover: React.FC<PortalPopoverProps> = ({
     <>
       <div
         ref={triggerRef}
-        style={{
-          display: "inline-flex",
-        }}
         onClick={() => {
           if (!open) {
             setActualPosition(position);
