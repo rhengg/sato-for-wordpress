@@ -106,7 +106,7 @@ const Plans = () => {
     );
 
   return (
-    <div className="main-page-wrapper mobile-page-wrapper">
+    <div className="main-page-wrapper">
       <div className="plan-header-container">
         <div
           className="plan-description-wrapper"
@@ -129,7 +129,6 @@ const Plans = () => {
             gap: "1rem",
           }}
         >
-          {/* <p className="body primary"> {"\uD83C\uDF0E"} For Everyone Else</p> */}
           <p className={!toggle ? "body primary" : "body"}>Monthly</p>
           <label className="toggle-container">
             <input
@@ -144,9 +143,6 @@ const Plans = () => {
             />
             <span className="toggle-circle"></span>
           </label>
-          {/* <p className="body primary">
-          {"\uD83C\uDDEE\uD83C\uDDF3"} For Indian Customers
-        </p> */}
           <p className={toggle ? "body primary" : "body"}>
             Yearly{" "}
             <span style={{ color: "var(--textPrimary)" }}>
@@ -156,17 +152,7 @@ const Plans = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "start",
-          justifyContent: "center",
-          gap: "2rem",
-          marginTop: "3rem",
-          padding: "0 1rem",
-        }}
-      >
+      <div className="plan-container-grid">
         {plans
           // .slice(0, 1)
           .filter((i: any) => i.plan.amount === 0)

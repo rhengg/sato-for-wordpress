@@ -92,11 +92,11 @@ const Index = (props: PlancardProps) => {
       style={{
         position: "relative",
         height: "54rem",
-        // backgroundColor:
-        //   Number(amout) === 0 ? "var(--white)" : "var(--surface)",
         border: "1px solid",
         borderColor:
-          planName.toLowerCase() === "pro" ? "var(--primary)" : "var(--stroke)",
+          planName.toLowerCase() === "pro"
+            ? "var(--primary)"
+            : "var(--strokeSecondary)",
       }}
     >
       <div style={{ padding: "2rem" }}>

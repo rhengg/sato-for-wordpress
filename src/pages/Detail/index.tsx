@@ -9,8 +9,6 @@ import SizePicker from "../../components/SizePicker";
 import Toast from "../../components/Toast";
 import ImagePicker from "../../components/ImagePicker";
 import config from "../../config";
-import DemoPlayer from "../../components/DemoPlayer";
-import IconButton from "../../components/IconButton";
 import Modal from "../../components/Modal";
 import Loader from "../../components/Loader";
 import VideoPicker, {
@@ -21,7 +19,6 @@ import { config as playerconfig } from "../../utils/default-config";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "../../components/Table";
 import DetailMenu from "../../components/DetailMenu";
-import Tooltip from "../../components/Tooltip";
 import ImageRadioGroup from "../../components/ImageRadioButton";
 import playerTemplate from "../../database/playerTemplate.json";
 import Dropdown from "../../components/Dropdown";
@@ -31,6 +28,7 @@ import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
 import CompleteSvg from "../../assets/Complete.svg";
 import { Button } from "@wordpress/components";
+import { Input } from "@wordpress/ui";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -1251,27 +1249,18 @@ const Index = () => {
                   boxSizing: "border-box",
                 }}
               >
-                <div
+                <Input
+                  disabled
+                  value={
+                    videoUrlUpdate?.value
+                      ? truncate(getFileName(videoUrlUpdate.value))
+                      : "Add a video to the player from video library or upload a new one."
+                  }
                   style={{
                     flex: 2,
-                    boxSizing: "border-box",
-                    border: "1px solid",
-                    borderColor: videoUrlUpdate.value
-                      ? `var(--surface)`
-                      : `var(--stroke)`,
-                    backgroundColor: videoUrlUpdate.value
-                      ? "var(--surface)"
-                      : "transparent",
-                    borderRadius: "0.25rem",
+                    paddingInlineStart: "1rem",
                   }}
-                  className="upload-content w-100"
-                >
-                  <p className="caption textSecondary">
-                    {videoUrlUpdate?.value
-                      ? truncate(getFileName(videoUrlUpdate.value))
-                      : "Add a video to the player from video library or upload a new one."}
-                  </p>
-                </div>
+                ></Input>
                 <div
                   style={{
                     flex: 1,
@@ -1291,30 +1280,15 @@ const Index = () => {
                 <Modal
                   isOpen={openModalUpload}
                   setOpen={setOpenModalUpload}
-                  // title={``}
                   size="md"
                 >
                   <div
                     style={{
-                      // marginTop: "2rem",
                       maxHeight: "34rem",
                       overflowY: "scroll",
                     }}
                   >
-                    {/* <p className="body">
-                      Upload a video from your device or select an already
-                      uploaded video
-                    </p> */}
-                    <div
-                      className="v-p-conainer"
-                      // style={{
-                      //   marginBottom: "2rem",
-                      //   display: "flex",
-                      //   alignItems: "center",
-                      //   justifyContent: "center",
-                      //   padding: "0 8rem",
-                      // }}
-                    >
+                    <div className="v-p-conainer">
                       <VideoPicker
                         file={file}
                         setFile={setFile}
@@ -1324,13 +1298,7 @@ const Index = () => {
                           setReRender(u);
                         }}
                         activePlan={activePlan}
-                        // setOpenModalUpload={setOpenUpload}
                         setOpenModalUpload={setOpenModalUpload}
-                        // handleSetUrl={async () => {
-                        //   setOpenModalUpload(false);
-                        //   await addSource(sourceId);
-                        //   setRefetch(Math.random());
-                        // }}
                         addSource={addSource} //  pass directly
                         sourceId={sourceId} //  pass id
                       />
@@ -1481,288 +1449,6 @@ const Index = () => {
               </div>
             </div>
 
-            <div
-              style={{ marginBottom: "1rem" }}
-              className="get-embed-share-info"
-            >
-              <Accordion
-                active={active}
-                handleToggle={handleToggle}
-                header="Get Embed & Share Info"
-                id="get-embed-share-info"
-                icon="frame_source"
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <div className="video-player-embeded-style">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                        width: "100%",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          position: "relative",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <p className="subtitle-two textPrimary">Embed URL</p>
-                        <div
-                          style={{
-                            position: "relative",
-                          }}
-                        >
-                          <Tooltip
-                            text={
-                              "Use this to embed the player into platforms that allow embed URLs"
-                            }
-                          >
-                            <span
-                              className="material-symbols-outlined"
-                              style={{
-                                fontSize: "16px",
-                                cursor: "pointer",
-                              }}
-                            >
-                              info
-                            </span>
-                          </Tooltip>
-                        </div>
-                      </div>
-                      <div className="embed-link">
-                        <textarea
-                          className="hide-scroll"
-                          id="embed-link"
-                          value={isLoadingEmbed ? "Please wait" : embedUrl}
-                          rows={5}
-                          cols={5}
-                          style={{
-                            width: "95%",
-                            height: "2rem",
-                            padding: "0.5rem",
-                            overflowY: "scroll",
-                            borderStyle: "none",
-                            borderColor: "transparent",
-                            overflow: "auto",
-                            outline: "none",
-                            border: "1px solid #f0f0f0",
-                            color: "#828282",
-                          }}
-                        ></textarea>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <IconButton
-                            // width="100%"
-                            // height="3.15rem"
-                            onClick={() => {
-                              handleCopyClipboard("embed-link");
-                            }}
-                          >
-                            <span className="material-symbols-outlined white">
-                              content_copy
-                            </span>
-                          </IconButton>
-                        </div>
-                      </div>
-                      {copiedLink && (
-                        <>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "flex-start",
-                            }}
-                          >
-                            <span className="material-symbols-outlined positive">
-                              done
-                            </span>
-                            <p className="body" style={{ marginLeft: "1rem" }}>
-                              Copied !
-                            </p>
-                          </div>
-                        </>
-                      )}
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          position: "relative",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <p className="subtitle-two textPrimary">Embed code</p>
-                        <div
-                          style={{
-                            position: "relative",
-                          }}
-                        >
-                          <Tooltip
-                            text={
-                              "Use this snippet to embed the player into platforms that do not allow embed URLs, or if you are building a custom site"
-                            }
-                          >
-                            <span
-                              className="material-symbols-outlined"
-                              style={{
-                                fontSize: "16px",
-                                cursor: "pointer",
-                              }}
-                            >
-                              info
-                            </span>
-                          </Tooltip>
-                        </div>
-                      </div>
-                      <div className="embed-link">
-                        <textarea
-                          className="hide-scroll"
-                          id="embed-link-code"
-                          value={isLoadingEmbed ? "Please wait" : embedCode}
-                          rows={7}
-                          cols={5}
-                          style={{
-                            width: "95%",
-                            height: "6rem",
-                            padding: "0.5rem",
-                            overflowY: "scroll",
-                            borderStyle: "none",
-                            borderColor: "transparent",
-                            overflow: "auto",
-                            outline: "none",
-                            border: "1px solid #f0f0f0",
-                            color: "#828282",
-                          }}
-                        ></textarea>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <IconButton
-                            // width="100%"
-                            // height="3.15rem"
-                            onClick={() => {
-                              handleCopyClipboard("embed-link-code");
-                            }}
-                          >
-                            <span className="material-symbols-outlined white">
-                              content_copy
-                            </span>
-                          </IconButton>
-                        </div>
-                      </div>
-                      {copied && (
-                        <>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "flex-start",
-                            }}
-                          >
-                            <span className="material-symbols-outlined positive">
-                              done
-                            </span>
-                            <p className="body" style={{ marginLeft: "1rem" }}>
-                              Copied !
-                            </p>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <div className="video-player-embeded-style">
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                        width: "100%",
-                      }}
-                    >
-                      <p className="subtitle-two textPrimary">Player ID</p>
-                      <div className="embed-link">
-                        <textarea
-                          className="hide-scroll"
-                          id="embed-player-id"
-                          value={
-                            isLoadingEmbed ? "Please wait" : (videoId as string)
-                          }
-                          rows={5}
-                          cols={5}
-                          style={{
-                            width: "95%",
-                            height: "2rem",
-                            padding: "0.5rem",
-                            overflowY: "scroll",
-                            borderStyle: "none",
-                            borderColor: "transparent",
-                            overflow: "auto",
-                            outline: "none",
-                            border: "1px solid #f0f0f0",
-                            color: "#828282",
-                          }}
-                        ></textarea>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          }}
-                        >
-                          <IconButton
-                            onClick={() => {
-                              handleCopyClipboard("embed-player-id");
-                            }}
-                          >
-                            <span className="material-symbols-outlined white">
-                              content_copy
-                            </span>
-                          </IconButton>
-                        </div>
-                      </div>
-
-                      {copiedPlayerId && (
-                        <>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "flex-start",
-                            }}
-                          >
-                            <span className="material-symbols-outlined positive">
-                              done
-                            </span>
-                            <p className="body" style={{ marginLeft: "1rem" }}>
-                              Copied !
-                            </p>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Accordion>
-            </div>
             <div style={{ marginBottom: "1rem" }}>
               <Accordion
                 active={active}
