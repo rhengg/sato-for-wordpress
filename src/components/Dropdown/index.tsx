@@ -97,7 +97,6 @@ const Dropdown = ({
           iconSize={14}
           style={{
             width: "9.25rem",
-            height: "100%",
             justifyContent: "space-between",
           }}
           iconPosition="right"

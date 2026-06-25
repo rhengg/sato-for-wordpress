@@ -535,6 +535,11 @@ li::marker {
   color: var(--placeholder);
 }
 
+.input-main:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--primary) !important;
+}
+
 .input-secondary {
   box-sizing: border-box;
   width: 100%;
@@ -556,6 +561,10 @@ li::marker {
 .input-secondary:disabled {
   background-color: var(--surface);
   border-color: var(--surface);
+}
+.input-secondary:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--primary) !important;
 }
 
 .input-title {

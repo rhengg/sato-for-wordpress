@@ -9,6 +9,7 @@ import { Buffer } from "buffer";
 import Tooltip from "../Tooltip";
 import Premium from "../PremiumIcon";
 import { sanitizeFileNameForS3Key } from "../../utils/helper";
+import { Button } from "@wordpress/components";
 
 type ImagePickerType = {
   onChange: (val: string) => void;
@@ -35,6 +36,7 @@ const ImagePicker = ({
 
   const [showErrorMessage, setShowErrorMessage] = React.useState("");
   const [validationError, setValidationError] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // this support only 16/9 aspect ratio image
   // const lowerRange = 1.7;
@@ -276,39 +278,26 @@ const ImagePicker = ({
               : truncate(fileName.replace(/\s/g, "_"))}
           </p>
           <label style={{ width: "100%" }} htmlFor={pickerId}>
-            <div
-              className="imageUpload-button"
+            <Button
+              __next40pxDefaultSize
+              variant="primary"
+              disabled={disabled}
+              isBusy={isLoading}
+              icon={"cloud-upload"}
               style={{
-                cursor: disabled ? "not-allowed" : "pointer",
+                width: "100%",
+                justifyContent: "center",
               }}
+              onClick={() => fileInputRef.current?.click()}
             >
-              {isLoading ? (
-                <Loader borderBottom="#000000" borderColor="#f0f0f0" />
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    columnGap: "0.25rem",
-                  }}
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontWeight: "bold" }}
-                  >
-                    cloud_upload
-                  </span>
-                  {uploadedUrl ? "Change" : "Upload"}
-                </div>
-              )}
-            </div>
+              {uploadedUrl ? "Change" : "Upload"}
+            </Button>
           </label>
           <input
+            ref={fileInputRef}
             type="file"
             id={pickerId}
             style={{ display: "none" }}
-            // accept="image/*"
             accept=".jpg,.jpeg,.png,image/jpeg,image/png"
             onChange={(e) => handleImageSelection(e)}
             disabled={disabled}

@@ -3505,51 +3505,6 @@ const Index = () => {
                     }}
                   />
 
-                  {/* <SizePicker
-                    label={"Bottom Padding"}
-                    name={"bottom-padding"}
-                    disabled={!activePlan?.metadata?.premium_features?.caption}
-                    // @ts-ignore
-                    value={
-                      videoconfigupdate?.value.captionSettings
-                        ?.captionFromBottom
-                    }
-                    onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
-                      videoconfigupdate.value = {
-                        ...videoconfigupdate.value,
-                        captionSettings: {
-                          ...videoconfigupdate.value.captionSettings,
-                          captionFromBottom: e.target.value,
-                        },
-                      };
-
-                      setDisableSaveButton(false);
-                    }}
-                  /> */}
-
-                  {/* <SizePicker
-                    label={"Font size"}
-                    name={"font-size"}
-                    disabled={!activePlan?.metadata?.premium_features?.caption}
-                    // @ts-ignore
-                    value={
-                      videoconfigupdate?.value.captionSettings?.captionFontSize
-                    }
-                    onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
-                      videoconfigupdate.value = {
-                        ...videoconfigupdate.value,
-                        captionSettings: {
-                          ...videoconfigupdate.value.captionSettings,
-                          captionFontSize: e.target.value,
-                        },
-                      };
-
-                      setDisableSaveButton(false);
-                    }}
-                  /> */}
-
                   <div
                     style={{
                       display: "flex",
@@ -3564,6 +3519,7 @@ const Index = () => {
                       style={{
                         display: "flex",
                         alignItems: "center",
+                        gap: "0.25rem",
                       }}
                     >
                       {!!videoTranscript.value && (
@@ -3576,9 +3532,8 @@ const Index = () => {
                           style={{ width: "24px", maxWidth: 380 }}
                         />
                       )}
-                      <button
-                        className="large-primary-btn"
-                        type="button"
+                      <Button
+                        variant="primary"
                         disabled={
                           !activePlan?.metadata?.premium_features?.caption ||
                           !!videoTranscript.value ||
@@ -3598,8 +3553,7 @@ const Index = () => {
                         }
                       >
                         Generate
-                        {/* {!!videoTranscript.value ? "Genereted" : "Generate"} */}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
