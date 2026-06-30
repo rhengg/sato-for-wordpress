@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import { signal } from "@preact/signals";
 import SEOcard from "../../components/SEOcard";
 import SizePicker from "../../components/SizePicker";
-import Toast from "../../components/Toast";
 import ImagePicker from "../../components/ImagePicker";
 import config from "../../config";
 import Modal from "../../components/Modal";
@@ -27,8 +26,9 @@ import { makeConfig } from "../../utils/makePlayerConfig";
 import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
 import CompleteSvg from "../../assets/Complete.svg";
-import { Button } from "@wordpress/components";
+import { Button, Snackbar } from "@wordpress/components";
 import { Input } from "@wordpress/ui";
+import { NoticeType } from "../Home";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -234,40 +234,18 @@ export const videoconfigupdate = signal<VideoConfigType>({
   },
 });
 
-// export type VideoConfigType = typeof videoconfigupdate.value;
-
-/**
- * Returns the detail page.
- * URLSearchParams named artist is used to filter the data.
- * DetailTable component is used which renders the music platform analytics card.
- * The entire page renders a profile card, an about card and analytics table.
- */
-
 const Index = () => {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const videoId = params.get("video");
   const [error, setError] = React.useState("");
-
   const [activePlan, setActivePlan] = React.useState<any>();
-
   const [disableSaveButon, setDisableSaveButton] = React.useState(true);
-  const [token, setToken] = React.useState("");
   const [selectedExtension, setSelectedExtension] =
     React.useState<string>("mp4");
-  const [mediaTypeName, setMediaTypeName] = React.useState("");
-  const [show, setShow] = React.useState(false);
-  const [showDelete, setShowDelete] = React.useState(false);
   const [reRender, setReRender] = React.useState(0);
-  const [copied, setCopied] = React.useState(false);
-  const [copiedLink, setCopiedLink] = React.useState(false);
-  const [copiedPlayerId, setCopiedPlayerId] = React.useState(false);
-  const [isLoadingEmbed, setLoadingEmbed] = React.useState(false);
   const [isLoadingPlayerData, setLoadingPlayerData] = React.useState(true);
   const [loadingSource, setLoadingSource] = React.useState(true);
-  const [openModal, setOpenModal] = React.useState<boolean>(false);
-  const [embedUrl, setEmbedUrl] = React.useState("");
-  const [sourceEmpty, setSourceEmpty] = React.useState(false);
   const [sourceId, setSourceId] = React.useState<any>("");
   const [openModalUpload, setOpenModalUpload] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
@@ -276,21 +254,14 @@ const Index = () => {
   const [openModalEditName, setOpenModalEditName] =
     React.useState<boolean>(false);
   const [openModalReset, setOpenModalReset] = React.useState<boolean>(false);
-  const [videoUrlFromModal, setVideoUrlFromModal] =
-    React.useState<boolean>(false);
-
   const [livePlayerConfig, setLivePlayerConfig] = React.useState<any>();
-
   const [openModalChooseTemplate, setOpenModalChooseTemplate] =
     React.useState<boolean>(false);
-
   const [transcriptModal, setTranscriptModal] = React.useState(false);
   const [transcriptionFailed, setTranscriptionFailed] = React.useState(false);
   const [transcriptLoading, setTranscriptLoading] = React.useState(false);
   const [transcriptComplete, setTranscriptComplete] = React.useState(false);
-
   const [sources, setSources] = React.useState([]);
-
   const [premiumModal, setPremiumModal] = React.useState<{
     open: boolean;
     title: string;
@@ -300,15 +271,22 @@ const Index = () => {
   });
   const [openModalTemplateConfirm, setOpenModalTemplateConfirm] =
     React.useState(false);
-
   const [selectedTemplate, setSelectedTemplate] = React.useState<
     "halcyon" | "moderna" | "sphinx" | "prosper"
   >("halcyon");
+  const [notice, setNotice] = React.useState<NoticeType>();
+  const [active, setActive] = React.useState<string[]>(["video-playback"]);
+
+  const showNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
+  };
 
   // transcribe video
   const handleTranscribe = async (id: string) => {
     try {
-      console.log("id", id);
       setTranscriptLoading(true);
       const res = await axios.post(
         `/videos/${id}/transcripts`,
@@ -319,93 +297,30 @@ const Index = () => {
           },
         },
       );
-      console.log("transcribe", res.data);
       const result = await waitForVideoProcessing(id);
       if (result.status === "completed") {
         await addSource(sourceId, result.video);
         setTranscriptComplete(true);
-        // const plan = await fetchSubscription();
-        // await fetchPlayer(plan);
+        showNotice({ status: "success", text: "Video transcripted!" });
         setTranscriptLoading(false);
         setRefetch(Math.random());
       }
       if (result.status === "failed") {
         setTranscriptionFailed(true);
         setTranscriptLoading(false);
-
+        showNotice({ status: "error", text: "Video transcription fail!" });
         return;
       }
     } catch (error) {
-      console.log("errror transcribe", error);
       setError("error-transcribing-video");
     } finally {
       setTranscriptLoading(false);
     }
   };
 
-  // delete video
-  const handleRemoveVideo = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    try {
-      const res = await axios.delete(`/players/${videoId}`, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
-        },
-      });
-      // console.log('delete', res);
-      showToastDelete();
-      setTimeout(() => {
-        navigate("/");
-      }, 800);
-    } catch (error) {
-      console.log("error deleting video: ", error);
-    }
-  };
-
   React.useEffect(() => {
     videoUrlExtensionUpdate.value = selectedExtension as string;
-
-    if (selectedExtension === "hls") {
-      setMediaTypeName("hls");
-    } else {
-      setMediaTypeName("mp4");
-    }
-    // console.log("selectedExtension", selectedExtension);
   }, [selectedExtension]);
-
-  const showToast = () => {
-    setShow(true);
-  };
-
-  const hideToast = () => {
-    setShow(false);
-  };
-
-  const showToastDelete = () => {
-    setShowDelete(true);
-  };
-
-  const hideToastDelete = () => {
-    setShowDelete(false);
-  };
-
-  const generateToken = async (player_id: string) => {
-    setLoadingEmbed(true);
-    try {
-      // const res = await axios.get(`/players/${player_id}/tokens`, {
-      //   headers: {
-      //     Authorization: `Bearer ${Cookies.get("s-token")}`,
-      //   },
-      // });
-      // console.log('token generated', res);
-      generateCode(`${config.BASE_URL}/players/embed/${player_id}`);
-      // setToken(res.data.token);
-      setLoadingEmbed(false);
-    } catch (error) {
-      setLoadingEmbed(false);
-      console.log("error", error);
-    }
-  };
 
   const fetchPlayer = async (plan: any) => {
     setLoadingPlayerData(true);
@@ -416,7 +331,6 @@ const Index = () => {
         },
       });
       const playerById = res.data.filter((item: any) => item.id === videoId);
-      // console.log("playerById", playerById);
       setLivePlayerConfig(
         makeConfig(
           playerById[0]?.config,
@@ -612,8 +526,6 @@ const Index = () => {
       setSelectedTemplate(
         playerById[0]?.config?.premium?.layoutConfig?.name || "halcyon",
       );
-
-      await generateToken(videoId as string);
       setLoadingPlayerData(false);
     } catch (error: any) {
       setLoadingPlayerData(false);
@@ -627,30 +539,6 @@ const Index = () => {
     }
   };
 
-  // const fetchSource = async () => {
-  //   try {
-  //     const res = await axios.get(`/players/${videoId}/sources`, {
-  //       headers: {
-  //         Authorization: `Bearer ${Cookies.get("s-token")}`,
-  //       },
-  //     });
-
-  //     if (Object.values(res.data).length === 0) {
-  //       // console.log("res source", res.data);
-  //       setSourceEmpty(true);
-  //     }
-  //     // console.log('fetching source', res);
-  //     videoUrlUpdate.value = res.data[0]?.url as string;
-  //     videoUrlExtensionUpdate.value = res.data[0]?.media_type;
-  //     videoTranscript.value = res.data[0]?.transcripts?.auto;
-  //     setSelectedExtension(res.data[0]?.media_type);
-  //     setSourceId(res.data[0]?.id);
-  //   } catch (error) {
-  //     console.log("error fetching source", error);
-  //     // setSourceEmpty(false)
-  //   }
-  // };
-
   const fetchSource = async () => {
     try {
       const res = await axios.get(`/players/${videoId}/sources`, {
@@ -658,26 +546,16 @@ const Index = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-
       const sources = res.data || [];
-
-      //  Proper empty check
       if (sources.length === 0) {
-        setSourceEmpty(true);
-        setSourceId(undefined); // important
-        return; // stop here
+        setSourceId(undefined);
+        return;
       }
-
-      //  If data exists
-      setSourceEmpty(false);
       setSources(sources);
-
       const firstSource = sources[0];
-
       videoUrlUpdate.value = firstSource?.url;
       videoUrlExtensionUpdate.value = firstSource?.media_type;
       videoTranscript.value = firstSource?.transcripts?.auto;
-
       setSelectedExtension(firstSource?.media_type);
       setSourceId(firstSource?.id);
       setLoadingSource(false);
@@ -725,61 +603,6 @@ const Index = () => {
     fetchSource();
   }, [refetch]);
 
-  const [embedCode, setEmbedCode] = React.useState("loading ...");
-
-  // const addSource = async (sourceId: string, mediaItem: any) => {
-  //   console.log("mediaItem", mediaItem);
-
-  //   const transcriptionUrl = mediaItem?.transcription_url;
-  //   const transcodedUrls = mediaItem?.playback_url;
-
-  //   const data = {
-  //     url: videoUrlUpdate.value,
-  //     // media_type: videoUrlExtensionUpdate.value,
-  //     media_type: selectedExtension || "mp4",
-  //     transcripts: {
-  //       auto:
-  //         transcriptionUrl &&
-  //         new URL(transcriptionUrl, config.VIDEO_CDN_URL).toString(),
-  //     },
-  //     transcoded_urls: {
-  //       auto:
-  //         transcodedUrls &&
-  //         new URL(transcodedUrls, config.VIDEO_CDN_URL).toString(),
-  //     },
-  //   };
-
-  //   console.log("add", data);
-
-  //   try {
-  //     if (sourceEmpty) {
-  //       console.log("adding source", sourceEmpty);
-
-  //       const res = await axios.post(`/players/${videoId}/sources`, data, {
-  //         headers: {
-  //           Authorization: `Bearer ${Cookies.get("s-token")}`,
-  //         },
-  //       });
-  //       setSourceEmpty(false);
-  //       // console.log('source added', res);
-  //     } else {
-  //       console.log("updating source", sourceEmpty);
-  //       const res = await axios.put(
-  //         `/players/${videoId}/sources/${sourceId}`,
-  //         data,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${Cookies.get("s-token")}`,
-  //           },
-  //         },
-  //       );
-  //       // console.log('source updated', res);
-  //     }
-  //   } catch (error) {
-  //     console.log("error adding source", error);
-  //   }
-  // };
-
   const addSource = async (sourceId?: string, mediaItem?: any) => {
     const transcriptionUrl = mediaItem?.transcription_url;
     const transcodedUrls = mediaItem?.playback_url;
@@ -800,7 +623,6 @@ const Index = () => {
     };
 
     try {
-      //  ALWAYS rely on actual sources
       if (!sources || sources.length === 0) {
         console.log("adding source");
 
@@ -825,12 +647,9 @@ const Index = () => {
 
   const resetDefault = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    setLoadingEmbed(true);
     const data = {
       name: playerNameUpdate.value,
       config: playerconfig[selectedTemplate],
-      // "media_source": videoUrlUpdate.value,
-      // "media_type": videoUrlExtensionUpdate.value
     };
     try {
       const res = await axios.put(`/players/${videoId}`, data, {
@@ -838,15 +657,15 @@ const Index = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      showToast();
-      setLoadingEmbed(false);
+      showNotice({ status: "success", text: "Player reset to default!" });
       setOpenModalReset(false);
-      // reload with fresh plan
       const plan = await fetchSubscription();
       await fetchPlayer(plan);
     } catch (error) {
-      setLoadingEmbed(false);
-      console.log("error updating video", error);
+      showNotice({
+        status: "error",
+        text: "Error while resetting to default!",
+      });
     }
   };
 
@@ -856,51 +675,22 @@ const Index = () => {
   };
 
   const updatePlayer = async () => {
-    setLoadingEmbed(true);
     const data = {
       name: playerNameUpdate.value,
       config: videoconfigupdate.value,
     };
     try {
-      const res = await axios.put(`/players/${videoId}`, data, {
+      await axios.put(`/players/${videoId}`, data, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // await addSource(sourceId);
-      // console.log('update', res);
-      showToast();
-      setLoadingEmbed(false);
+      showNotice({ status: "success", text: "Player updated!" });
       setDisableSaveButton(true);
     } catch (error) {
-      setLoadingEmbed(false);
-      console.log("error updating video", error);
+      showNotice({ status: "error", text: "Error updating player!" });
     }
   };
-
-  const generateCode = (url: string) => {
-    setEmbedUrl(url);
-    let snipet = `<iframe
-            title="${videoconfigupdate.value.videotitle || "Video title"}"
-            width="100%"
-            height="100%"
-            loading="lazy"
-            frameborder="0"
-            allowfullscreen
-            src="${url}"
-            style="border: none; outline: none; padding: 0; margin: 0;  cursor: pointer;"
-        >
-         <meta name="description" content="${
-           videoconfigupdate.value.videodescription || "Video description"
-         }">
-        </iframe> 
-       `;
-    setEmbedCode(snipet);
-  };
-
-  const [brandUploading, setBrandUploading] = React.useState(false);
-  const [thumbnailUploading, setThumbnailUploading] = React.useState(false);
-  const [ctaImageUploading, setCTAImageUploading] = React.useState(false);
 
   const handlePlayerThumbnailOnChange = async (val: string) => {
     let image = new URL(val, config.IMAGE_CDN_URL).toString();
@@ -912,6 +702,7 @@ const Index = () => {
       await fetchImage(image, 3); // retry up to 3 times
     } catch (error) {
       console.log("Image fetch failed after retries", error);
+      showNotice({ status: "error", text: "Error updating thumbnail!" });
     } finally {
       setReRender(Math.random() * 1000);
     }
@@ -927,6 +718,7 @@ const Index = () => {
       await fetchImage(image, 3); //  retry up to 3 times
     } catch (error) {
       console.log("Image fetch failed after retries", error);
+      showNotice({ status: "error", text: "Error updating brand!" });
     } finally {
       setReRender(Math.random() * 1000);
     }
@@ -935,78 +727,26 @@ const Index = () => {
   const handlePlayerCTAImageOnChange = async (val: string) => {
     const premium = videoconfigupdate.value.premium;
     const playerCTA = premium?.playerCTA;
-
     if (!playerCTA) return;
-
     let image = new URL(val, config.IMAGE_CDN_URL).toString();
     console.log("cta image", image);
-
     playerCTA.image = image;
     playerCTA.imageEnable = true;
-
     await updatePlayer();
     try {
       await fetchImage(image, 3); //  retry up to 3 times
     } catch (error) {
       console.log("Image fetch failed after retries", error);
+      showNotice({ status: "error", text: "Error updating CTA image!" });
     } finally {
       setReRender(Math.random() * 1000);
     }
   };
 
-  const handleCopyClipboard = async (val: string) => {
-    setCopied(false);
-    setCopiedLink(false);
-    setCopiedPlayerId(false);
-    // hideCopyT()
-    console.log("val", val);
-
-    try {
-      const element = document.querySelector(`#${val}`);
-      console.log("element", element);
-
-      // @ts-ignore
-      element?.select();
-      // @ts-ignore
-      element?.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      if (val === "embed-link-code") {
-        setCopied(true);
-      } else if (val === "embed-player-id") {
-        setCopiedPlayerId(true);
-      } else {
-        setCopiedLink(true);
-      }
-    } catch (err) {
-      console.error("Failed to copy: ", err);
-      setCopied(false);
-      setCopiedLink(false);
-      setCopiedPlayerId(false);
-    }
-  };
-
-  const handleMediaTypeSelection = (val: string) => {
-    if (val === "hls") {
-      setSelectedExtension("hls");
-    } else {
-      setSelectedExtension("mp4");
-    }
-  };
-
-  // const [active, setActive] = React.useState<string | null>('playback-behavior');
-
-  // const handleToggle = (id: string) => {
-  //   setActive(prev => (prev === id ? null : id));
-  // };
-
-  const [active, setActive] = React.useState<string[]>(["video-playback"]);
-
   const handleToggle = (id: string) => {
     if (active.includes(id)) {
-      // close it
       setActive(active.filter((item) => item !== id));
     } else {
-      // open it
       setActive([...active, id]);
     }
   };
@@ -1016,8 +756,6 @@ const Index = () => {
     return parts[parts.length - 1];
   };
 
-  // const truncate = (text: string, maxLength = 50): string =>
-  //   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   const truncate = (text: string = "", maxLength = 50): string => {
     if (typeof window !== "undefined" && window.innerWidth <= 768) {
       maxLength = 30; // mobile limit
@@ -1036,14 +774,13 @@ const Index = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // reload with fresh plan
       const plan = await fetchSubscription();
       await fetchPlayer(plan);
-      showToast();
+      showNotice({ status: "success", text: "Theme updated!" });
       setOpenModalChooseTemplate(false);
       setError("");
     } catch (error) {
-      console.log("error updating layout", error);
+      showNotice({ status: "error", text: "Error updating theme!" });
     }
   };
 
@@ -1065,9 +802,7 @@ const Index = () => {
       );
 
       const plan = planRes.data?.plan || null;
-
       setActivePlan(plan);
-
       return plan;
     } catch (error) {
       console.log("error subscription", error);
@@ -1085,8 +820,6 @@ const Index = () => {
   }, []);
 
   const computedConfig = React.useMemo(() => {
-    // console.log("reRender", reRender);
-
     if (reRender === 0) {
       if (livePlayerConfig) {
         return livePlayerConfig;
@@ -1126,6 +859,29 @@ const Index = () => {
 
   return (
     <div className="detail-main">
+      {notice && (
+        <div
+          style={{
+            position: "fixed",
+            top: "2%",
+            left: "50%",
+            zIndex: "9999",
+            transform: "translate(0%,50%)",
+          }}
+        >
+          <Snackbar
+            politeness="polite"
+            onDismiss={() => {
+              setNotice(undefined);
+            }}
+            onRemove={() => {
+              setNotice(undefined);
+            }}
+          >
+            {notice.text}
+          </Snackbar>
+        </div>
+      )}
       <div className="detail-container">
         {/* left side */}
         <div className="detail-sub-container-2 hide-scroll">
@@ -1221,7 +977,15 @@ const Index = () => {
                     cursor: "pointer",
                   }}
                   onClick={() => {
-                    handleCopyClipboard("embed-player-id");
+                    try {
+                      navigator.clipboard.writeText(`${videoId}`);
+                      showNotice({ status: "success", text: "Copied!" });
+                    } catch (error) {
+                      showNotice({
+                        status: "error",
+                        text: "Error copying!",
+                      });
+                    }
                   }}
                 >
                   content_copy
@@ -1292,15 +1056,14 @@ const Index = () => {
                       <VideoPicker
                         file={file}
                         setFile={setFile}
-                        setVideoUrl={setVideoUrlFromModal}
                         setRefetch={(u) => {
                           setRefetch(u);
                           setReRender(u);
                         }}
                         activePlan={activePlan}
                         setOpenModalUpload={setOpenModalUpload}
-                        addSource={addSource} //  pass directly
-                        sourceId={sourceId} //  pass id
+                        addSource={addSource}
+                        sourceId={sourceId}
                       />
                     </div>
 
@@ -1343,54 +1106,6 @@ const Index = () => {
             >
               {computedConfig && <LivePlayer config={computedConfig} />}
             </div>
-
-            <Modal
-              isOpen={openModal}
-              setOpen={setOpenModal}
-              title={`Player Preview`}
-              size="lg"
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {sourceEmpty ? (
-                  <p className="subtitle-one">
-                    Set a video URL to preview your changes.
-                  </p>
-                ) : (
-                  <div
-                    style={{
-                      width: "100%",
-                      aspectRatio: "16/9",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      loading="lazy"
-                      src={embedUrl}
-                      allowFullScreen
-                      frameBorder={"0"}
-                      style={{
-                        border: "none",
-                        outline: "none",
-                        padding: "0",
-                        margin: "0",
-                        cursor: "pointer",
-                        aspectRatio: "16/9",
-                      }}
-                    ></iframe>
-                  </div>
-                )}
-              </div>
-            </Modal>
           </div>
         </div>
 
@@ -2887,7 +2602,7 @@ const Index = () => {
                         handlePlayerCTAImageOnChange(val);
                       }}
                       label="Upload Image"
-                      setImageUploading={setCTAImageUploading}
+                      // setImageUploading={setCTAImageUploading}
                       uploadedUrl={
                         videoconfigupdate.value.premium?.playerCTA?.image
                       }
@@ -2984,16 +2699,8 @@ const Index = () => {
                     boxSizing: "border-box",
                   }}
                 >
-                  {/* <div style={{ marginBottom: "1rem" }}>
-                    <p className="subtitle-two">Title & Description</p>
-                  </div> */}
-
                   <SEOcard
-                    id={videoId as string}
                     title={videoconfigupdate.value.videotitle}
-                    description={videoconfigupdate.value.videodescription}
-                    embedCode={embedCode}
-                    removeVideo={true}
                     setReRender={setReRender}
                     setDisableSaveButton={setDisableSaveButton}
                   />
@@ -3033,16 +2740,6 @@ const Index = () => {
                     }}
                   />
 
-                  {/* <div
-                    style={{
-                      marginBottom: "1rem",
-                      paddingTop: "1rem",
-                      borderTop: "1px solid var(--stroke)",
-                    }}
-                  >
-                    <p className="subtitle-two">Thumbnail</p>
-                  </div> */}
-
                   <div style={{ width: "100%" }}>
                     <ImagePicker
                       onChange={(val: any) => {
@@ -3050,7 +2747,6 @@ const Index = () => {
                         setDisableSaveButton(false);
                       }}
                       label="Upload Thumbnail"
-                      setImageUploading={setThumbnailUploading}
                       tooltipText="For best results, upload an image that matches the aspect ratio of the video player you create"
                       uploadedUrl={
                         videoconfigupdate.value.playerThumbnailImageUrl
@@ -3073,7 +2769,6 @@ const Index = () => {
                           e.target.checked;
                         setDisableSaveButton(false);
                       } else {
-                        console.log("upload image");
                         setError("upload-thumbnail-error");
                       }
                     }}
@@ -3109,11 +2804,9 @@ const Index = () => {
                         setDisableSaveButton(false);
                       }}
                       label="Upload Logo"
-                      setImageUploading={setBrandUploading}
                       uploadedUrl={
                         videoconfigupdate.value.playerBrandingImageUrl
                       }
-                      // tooltipText="Support JPG and PNG formats only."
                     />
                   </div>
 
@@ -3580,21 +3273,6 @@ const Index = () => {
             </form>
           </Modal>
         </div>
-
-        <Toast show={show} hideToast={hideToast}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            <span className="material-symbols-outlined positive">done</span>
-            <p className="body" style={{ marginLeft: "1rem" }}>
-              Player Updated
-            </p>
-          </div>
-        </Toast>
       </div>
     </div>
   );

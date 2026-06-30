@@ -14,7 +14,7 @@ import { Button } from "@wordpress/components";
 type ImagePickerType = {
   onChange: (val: string) => void;
   label: string;
-  setImageUploading: any;
+  setImageUploading?: any;
   tooltipText?: string;
   validationRequired?: boolean;
   disabled?: boolean;

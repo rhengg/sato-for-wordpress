@@ -48,7 +48,7 @@ export const waitForVideoProcessing = async (videoId: string) => {
 type VideoPickerProps = {
   file: any;
   setFile: React.Dispatch<React.SetStateAction<any>>;
-  setVideoUrl: React.Dispatch<React.SetStateAction<any>>;
+  setVideoUrl?: React.Dispatch<React.SetStateAction<any>>;
   setRefetch: React.Dispatch<React.SetStateAction<number>>;
   setOpenModalUpload?: React.Dispatch<React.SetStateAction<boolean>>;
   handleSetUrl?: any;
