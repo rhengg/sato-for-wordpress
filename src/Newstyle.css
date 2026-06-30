@@ -315,6 +315,12 @@ li::marker {
   transition: all 0.4s ease-in-out;
 }
 
+.sato-link:focus {
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px)
+    var(--primaryHover) !important;
+  color: var(--primaryHover);
+}
+
 .sato-link-secondary {
   font-size: 0.875rem;
   color: #45474b;

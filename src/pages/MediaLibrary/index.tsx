@@ -37,6 +37,7 @@ const MediaLibrary = (props: any) => {
   >(null);
   const [showPremiumNotice, setShowPremiumNotice] = React.useState(false);
   const [actionLoading, setActionLoading] = React.useState<string>();
+  const [countryCode, setCountryCode] = React.useState("US");
   const [view, setView] = React.useState<View>({
     fields: ["uploaded_at", "speech-to-text"],
     filters: [],
@@ -311,6 +312,20 @@ const MediaLibrary = (props: any) => {
     }
   };
 
+  React.useEffect(() => {
+    axios
+      .get(config.IP_API)
+      .then((response) => {
+        const code = response?.data?.countryCode?.toUpperCase();
+        if (code) {
+          setCountryCode(code);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching country:", error);
+      });
+  }, []);
+
   if (isLoading && !length && !activePlan)
     return (
       <div
@@ -396,7 +411,12 @@ const MediaLibrary = (props: any) => {
                 used={totalVideoCount}
                 total={activePlan?.total_video_upload_limit}
                 maxSize={activePlan?.per_video_upload_limit}
-                onUpgradeClick={() => navigate("/plans")}
+                onChangePlanClick={() => {
+                  window.open(
+                    `https://app.satoplayer.com/plans/${countryCode}`,
+                    "_blank",
+                  );
+                }}
               />
             </div>
           )}

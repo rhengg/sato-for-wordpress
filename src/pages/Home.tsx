@@ -16,11 +16,11 @@ import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
 import { timeAgo } from "../utils/helper";
 import { Button, Snackbar } from "@wordpress/components";
-import { Icon, copy } from "@wordpress/icons";
 import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
 import DetailMenu from "../components/DetailMenu";
 import Tooltip from "../components/Tooltip";
+import { encodeBase64 } from "../utils/base64";
 
 export interface Player {
   id: string;
@@ -293,30 +293,26 @@ const Home = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      console.log("/subscription", res.data);
-      console.log("/plans/id", plans.data);
-
       setActivePlan(plans.data?.plan);
-      // if (
-      //   (res.data?.subscription?.status as string).toLowerCase() !== "active"
-      // ) {
-      //   window.location.href = `${window.location.pathname}?page=sato-profile`;
-      // } else {
-      //   Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
-      //     expires: 30,
-      //     secure: true,
-      //     sameSite: "Strict",
-      //   });
-      // }
+      if (
+        (res.data?.subscription?.status as string).toLowerCase() !== "active"
+      ) {
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
+      } else {
+        Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
+          expires: 30,
+          secure: true,
+          sameSite: "Strict",
+        });
+      }
     } catch (error: any) {
       setLoading(false);
-      console.log("error fetching subscription", error);
-      // if (error.response.status === 401) {
-      //   window.location.href = `${window.location.pathname}?page=sato-signin`;
-      // }
-      // if (error?.response?.status === 404) {
-      //   window.location.href = `${window.location.pathname}?page=sato-profile`;
-      // }
+      if (error.response.status === 401) {
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
+      }
+      if (error?.response?.status === 404) {
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
+      }
     }
   };
 
@@ -336,15 +332,11 @@ const Home = () => {
       setData(res.data);
       setLoading(false);
     } catch (error: any) {
-      // if (error.response.status === 401) {
-      //   window.location.href = `${window.location.pathname}?page=sato-signin`;
-      // }
-      // if (error?.response?.status === 402) {
-      //   window.location.href = `${window.location.pathname}?page=sato-plans`;
-      // }
+      if (error.response.status === 401 || error.response.status === 402) {
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
+      }
       setError(true);
       setLoading(false);
-      console.log("error fetching player", error);
     }
   };
 
@@ -373,7 +365,6 @@ const Home = () => {
       setRefetch(Math.random());
     } catch (error) {
       showNotice({ status: "error", text: "Error duplicating video player!" });
-      console.log("error duplicating player", error);
     } finally {
       setActionLoading(undefined);
     }
@@ -390,7 +381,6 @@ const Home = () => {
       showNotice({ status: "success", text: "Video player deleted!" });
       setRefetch(Math.random());
     } catch (error) {
-      console.log("error deleting player", error);
       showNotice({ status: "error", text: "Error deleting video player!" });
     } finally {
       setActionLoading(undefined);
@@ -430,7 +420,6 @@ const Home = () => {
       handleRedirect(res.data?.id);
     } catch (error) {
       setLoading(false);
-      console.log("error creating player", error);
       setErrorPlayer("");
     }
   };
@@ -445,7 +434,6 @@ const Home = () => {
         },
       });
     } catch (error) {
-      console.log("error fetching media", error);
       setLoading(false);
     } finally {
       setLoading(false);

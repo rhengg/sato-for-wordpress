@@ -87,40 +87,14 @@ const Invoices = (props: any) => {
             width: "max-content",
           }}
         >
-          <p className={pathname != "/invoices" ? "subtitle-one" : "heading"}>
-            Your Payment Receipts
-          </p>
+          <p className="subtitle-two">Your Payment Receipts</p>
         </div>
-        {/* {pathname != "/invoices" && data && data.length > 4 && (
-          <button
-            className="small-secondary-btn"
-            onClick={() => {
-              navigate("/invoices");
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "max-content",
-              }}
-            >
-              See All
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: "1.5rem" }}
-              >
-                keyboard_double_arrow_right
-              </span>
-            </div>
-          </button>
-        )} */}
       </div>
 
       <p
         className="label textSecondary"
         style={{
-          marginTop: "1rem",
+          marginTop: "0.5rem",
         }}
       >
         All your payment receipts are listed here.
@@ -148,12 +122,6 @@ const Invoices = (props: any) => {
               >
                 <div className="plan-details">
                   <span className="body">{inv.plan_name}</span>
-                  {/* 
-                <span className="dot">•</span>
-                <span className="label">
-                  Billing Cycle: {formatDate(inv.billing_start)} -{" "}
-                  {formatDate(inv.billing_end)}
-                </span> */}
                   <span className="dot">•</span>
                   {inv.status === "paid" ? (
                     <span
@@ -168,29 +136,24 @@ const Invoices = (props: any) => {
                 </div>
 
                 <Link
-                  // to={inv.short_url}
                   to={new URL(inv.short_url, config.IMAGE_CDN_URL).toString()}
                   target="_blank"
                   style={{
                     textDecoration: "none",
-                    // fontWeight: "bold",
                   }}
-                  className="primary"
+                  className="sato-link"
                 >
                   View
                 </Link>
-
-                {/* <button
-                className="large-primary-btn"
-                onClick={() => handleDownload(inv.short_url)}
-              >
-                {inv.status === "paid" ? "View" : "Pay now"}
-              </button> */}
               </div>
             ))}
         </div>
       ) : (
-        <p className="body">No receipts found</p>
+        <div className="plan-list">
+          <p className="body" style={{ padding: "1rem 0" }}>
+            No receipts found
+          </p>
+        </div>
       )}
     </div>
   );

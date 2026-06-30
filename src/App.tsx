@@ -25,6 +25,7 @@ import PlansLoader from "./pages/PlanLoader";
 import Paypal from "./pages/Paypal";
 import Oauth from "./pages/Oauth";
 import React, { useEffect } from "react";
+import Loader from "./components/Loader";
 
 // http://localhost/mysite/wp-admin/admin.php?page=sato-video-library
 
@@ -57,7 +58,23 @@ const App = () => {
   const page = new URLSearchParams(window.location.search).get("page");
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <Loader
+          height="64px"
+          width="64px"
+          borderColor="#f0f0f0"
+          borderBottom="#000000"
+        />
+      </div>
+    );
   }
 
   if (!token) {

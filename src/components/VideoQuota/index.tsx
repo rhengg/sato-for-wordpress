@@ -6,14 +6,14 @@ type VideoQuotaProps = {
   used: number;
   total: number;
   maxSize: string;
-  onUpgradeClick: () => void;
+  onChangePlanClick: () => void;
 };
 
 const VideoQuota: React.FC<VideoQuotaProps> = ({
   used,
   total,
   maxSize,
-  onUpgradeClick,
+  onChangePlanClick,
 }) => {
   const percentage = (used / total) * 100;
 
@@ -25,9 +25,14 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
           <Text variant="body-lg"> | </Text>
           <Text variant="body-lg">{`${maxSize} MB/video`}</Text>
         </div>
-        <Link className="sato-link" href="#" variant="unstyled">
-          <Text variant="heading-lg">Change Plan</Text>
-        </Link>
+        <Text
+          variant="heading-lg"
+          className="sato-link"
+          style={{ cursor: "pointer" }}
+          onClick={onChangePlanClick}
+        >
+          Change Plan
+        </Text>
       </div>
       <div className="video-quota-progress-bar">
         <div

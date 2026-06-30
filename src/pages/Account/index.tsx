@@ -8,10 +8,12 @@ import Modal from "../../components/Modal";
 import { formatDate } from "../../utils/helper";
 import "../../pages/Profile/profile.css";
 import Invoices from "../Invoices";
+import DetailMenu from "../../components/DetailMenu";
+import config from "../../config";
 
 const AccountPage = () => {
   const navigate = useNavigate();
-
+  const [countryCode, setCountryCode] = React.useState("US");
   const [subscription, setSubscription] = React.useState<any>();
   // const user = decodeBase64(Cookies.get("s-user") as string);
   const [user, setUser] = React.useState<any>();
@@ -40,12 +42,11 @@ const AccountPage = () => {
   const handleCancelSubscription = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.delete(`/subscriptions`, {
+      await axios.delete(`/subscriptions`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // console.log("cancel", res.data);
       setOpenModalCancel(false);
       await fetchSubscription();
     } catch (error) {
@@ -114,6 +115,17 @@ const AccountPage = () => {
 
   React.useEffect(() => {
     fetchMedia();
+    axios
+      .get(config.IP_API)
+      .then((response) => {
+        const code = response?.data?.countryCode?.toUpperCase();
+        if (code) {
+          setCountryCode(code);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching country:", error);
+      });
   }, []);
 
   if (!user || loadingMedia)
@@ -136,80 +148,65 @@ const AccountPage = () => {
 
   return (
     <>
-      <div
-        style={{
-          // padding: "24px",
-          maxWidth: "900px",
-          margin: "0 auto",
-        }}
-      >
-        {(subscription?.status as string)?.toLowerCase() === "cancelled" && (
-          <div
-            style={{
-              boxSizing: "border-box",
-              // top: 0,
-              width: "100%",
-              borderRadius: "0.25rem",
-              border: "1px solid var(--stroke)",
-              padding: "1rem",
-              marginBottom: "2rem",
-              backgroundColor: "#f5fab3ff",
-              display: "flex",
-              // justifyContent: "center",
-              alignItems: "center",
-              gap: "0.25rem",
-            }}
-          >
-            <p className="body">
-              Your subscription has been cancelled. To continue using Sato, you
-              must&nbsp;
-              <Link
-                to={"/plans"}
-                style={{
-                  textDecoration: "none",
-                }}
-                className="primary"
-              >
-                subscribe to a plan
-              </Link>
-            </p>
-          </div>
-        )}
+      <DetailMenu />
 
-        {(subscription?.status as string)?.toLowerCase() === "created" && (
-          <div
-            style={{
-              boxSizing: "border-box",
-              width: "100%",
-              borderRadius: "0.25rem",
-              border: "1px solid var(--stroke)",
-              padding: "1rem",
-              marginBottom: "2rem",
-              backgroundColor: "#f5fab3ff",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.25rem",
-            }}
-          >
-            <p className="body">
-              Subscription to {activePlan?.name} was abandoned.&nbsp;
-              <Link
-                to={"/plans"}
-                style={{
-                  textDecoration: "none",
-                }}
-                className="primary"
-              >
-                Complete now
-              </Link>
-            </p>
-          </div>
-        )}
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        {(subscription?.status as string)?.toLowerCase() === "cancelled" ||
+          ((subscription?.status as string)?.toLowerCase() === "created" && (
+            <div
+              style={{
+                boxSizing: "border-box",
+                width: "100%",
+                borderRadius: "0.25rem",
+                border: "1px solid var(--stroke)",
+                padding: "1rem",
+                marginBottom: "2rem",
+                backgroundColor: "#f5fab3ff",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.25rem",
+              }}
+            >
+              {(subscription?.status as string)?.toLowerCase() ===
+                "cancelled" && (
+                <p className="body">
+                  Your subscription has been cancelled. To continue using Sato,
+                  you must&nbsp;
+                  <Link
+                    to={`https://app.satoplayer.com/plans/${countryCode}`}
+                    style={{
+                      textDecoration: "none",
+                    }}
+                    target="_blank"
+                    className="sato-link"
+                  >
+                    subscribe to a plan
+                  </Link>
+                </p>
+              )}
+              {(subscription?.status as string)?.toLowerCase() ===
+                "created" && (
+                <p className="body">
+                  Subscription to {activePlan?.name} was abandoned.&nbsp;
+                  <Link
+                    to={`https://app.satoplayer.com/plans/${countryCode}`}
+                    style={{
+                      textDecoration: "none",
+                    }}
+                    target="_blank"
+                    className="sato-link"
+                  >
+                    Complete now
+                  </Link>
+                </p>
+              )}
+            </div>
+          ))}
 
-        <p className="subtitle-one">Your Profile</p>
+        <p className="subtitle-two">Your Profile</p>
         <div
           style={{
-            marginTop: "2rem",
+            marginTop: "0.5rem",
           }}
         >
           <div className="profile-box">
@@ -260,12 +257,13 @@ const AccountPage = () => {
                 ></span>
                 <span className="primary" style={{ cursor: "pointer" }}>
                   <Link
-                    to={"/plans"}
+                    to={`https://app.satoplayer.com/plans/${countryCode}`}
                     style={{
                       textDecoration: "none",
                       fontWeight: "bold",
                     }}
-                    className="primary"
+                    target="_blank"
+                    className="sato-link"
                   >
                     Change Plan
                   </Link>
@@ -319,9 +317,8 @@ const AccountPage = () => {
           }}
         >
           {subscription && activePlan?.amount > 0 && (
-            <>
-              <p className="subtitle-one">Your Subscription Details</p>
-
+            <div style={{ marginTop: "2rem" }}>
+              <p className="subtitle-two">Your Subscription Details</p>
               <div className="profile-box" style={{ marginBottom: "2rem" }}>
                 <div>
                   <p className="label textSecondary">Billing Cycle</p>
@@ -331,12 +328,12 @@ const AccountPage = () => {
                   </p>
                 </div>
               </div>
-            </>
+            </div>
           )}
 
-          {paymentMethod && <div style={{ marginTop: "2rem" }}></div>}
-
-          <Invoices />
+          <div style={{ marginTop: "2rem" }}>
+            <Invoices />
+          </div>
         </div>
 
         <Modal
