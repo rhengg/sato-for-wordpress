@@ -173,7 +173,7 @@ const MediaLibrary = (props: any) => {
       if (
         (res.data?.subscription?.status as string)?.toLowerCase() !== "active"
       ) {
-        navigate({ pathname: "/profile" });
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
       } else {
         Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
           expires: 30,
@@ -184,19 +184,10 @@ const MediaLibrary = (props: any) => {
     } catch (error: any) {
       console.log("error in subscription", error);
       if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
       if (error?.response?.status === 404) {
-        if (wfCode?.code) {
-          navigate({
-            pathname: "/callback/wb-plugin",
-            search: `code=${wfCode?.code}`,
-          });
-        } else if (choosenPlan) {
-          console.log("chh", choosenPlan);
-        } else {
-          navigate("/plans");
-        }
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
     }
   };

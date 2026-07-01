@@ -39,12 +39,11 @@ const Profile = () => {
   const handleCancelSubscription = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.delete(`/subscriptions`, {
+      await axios.delete(`/subscriptions`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // console.log("cancel", res.data);
       setOpenModalCancel(false);
       await fetchSubscription();
     } catch (error) {
@@ -65,7 +64,7 @@ const Profile = () => {
       console.log("error fetching media", error);
       setLoadingMedia(false);
       if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
     } finally {
       setLoadingMedia(false);
@@ -85,7 +84,6 @@ const Profile = () => {
         },
       });
       setSubscription(res?.data?.subscription);
-      // console.log("success subscriptions fetch", res.data);
       setPaymentMethod(res?.data?.subscription?.payment_method);
       setPaymentMethodDetails(res?.data?.payment_method);
 
@@ -94,16 +92,13 @@ const Profile = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // const planDetails = allPlans.data.find(
-      //   (item: any) => item.id === res.data.subscription.plan_id
-      // );
       setActivePlan(plans.data);
       setLoadingPlan(false);
     } catch (error: any) {
       console.log("error in subscription", error);
       setLoadingPlan(false);
       if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
     } finally {
       setLoadingPlan(false);

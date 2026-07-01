@@ -531,10 +531,10 @@ const Index = () => {
       setLoadingPlayerData(false);
       console.log("error fetching player", error);
       if (error.response.status === 401) {
-        navigate({ pathname: "/signin" });
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
       if (error?.response?.status === 402) {
-        navigate({ pathname: "/plans" });
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
     }
   };
@@ -907,7 +907,7 @@ const Index = () => {
                 <p className="subtitle-three">Player Name: </p>
                 <p className="body">{playerNameUpdate.value}</p>
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined m-icon"
                   style={{
                     fontSize: "20px",
                     cursor: "pointer",
@@ -971,7 +971,7 @@ const Index = () => {
                 <p className="subtitle-three">Player ID: </p>
                 <p className="body">{videoId}</p>
                 <span
-                  className="material-symbols-outlined"
+                  className="material-symbols-outlined m-icon"
                   style={{
                     fontSize: "20px",
                     cursor: "pointer",

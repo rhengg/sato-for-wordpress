@@ -440,13 +440,6 @@ const Home = () => {
     }
   };
 
-  const truncate = (text: string = "", maxLength = 40): string => {
-    if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      maxLength = 30; // mobile limit
-    }
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
-  };
-
   React.useEffect(() => {
     fetchInvoice();
   }, []);
@@ -781,9 +774,11 @@ const Home = () => {
               filterBy: {
                 operators: ["contains", "notContains", "startsWith"],
               },
-              isValid: {
-                required: true,
-              },
+              render: ({ item }) => (
+                <Text className="sato-dataview-cell" variant="body-md">
+                  {item.name}
+                </Text>
+              ),
               id: "name",
               label: "Player Name",
               type: "text",

@@ -92,7 +92,7 @@ const Invoices = (props: any) => {
       </div>
 
       <p
-        className="label textSecondary"
+        className="caption textSecondary"
         style={{
           marginTop: "0.5rem",
         }}
