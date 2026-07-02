@@ -1,6 +1,4 @@
 import React from "react";
-import { decodeBase64 } from "../../utils/base64";
-import Cookies from "js-cookie";
 import Loader from "../../components/Loader";
 import axios from "../../utils/axios-instance";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,15 +13,11 @@ const AccountPage = ({ token }: { token: string }) => {
   const navigate = useNavigate();
   const [countryCode, setCountryCode] = React.useState("US");
   const [subscription, setSubscription] = React.useState<any>();
-  // const user = decodeBase64(Cookies.get("s-user") as string);
   const [user, setUser] = React.useState<any>();
   const [openModalCancel, setOpenModalCancel] = React.useState<boolean>(false);
   const [loadingMedia, setLoadingMedia] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
   const [activePlan, setActivePlan] = React.useState<any>();
-  const [loadingPlan, setLoadingPlan] = React.useState<boolean>(false);
-  const [paymentMethod, setPaymentMethod] = React.useState<any>();
-  const [paymentMethodDetails, setPaymentMethodDetails] = React.useState<any>();
 
   const fetchUserDetail = async () => {
     try {
@@ -32,7 +26,6 @@ const AccountPage = ({ token }: { token: string }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("me data", res.data);
       setUser(res.data);
     } catch (error) {
       console.log("error fetching user detail", error);
@@ -56,35 +49,24 @@ const AccountPage = ({ token }: { token: string }) => {
 
   const fetchSubscription = async () => {
     try {
-      setLoadingPlan(true);
       const res = await axios.get(`/subscriptions`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setSubscription(res?.data?.subscription);
-      // console.log("success subscriptions fetch", res.data);
-      setPaymentMethod(res?.data?.subscription?.payment_method);
-      setPaymentMethodDetails(res?.data?.payment_method);
 
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      // const planDetails = allPlans.data.find(
-      //   (item: any) => item.id === res.data.subscription.plan_id
-      // );
       setActivePlan(plans.data.plan);
-      setLoadingPlan(false);
     } catch (error: any) {
       console.log("error in subscription", error);
-      setLoadingPlan(false);
       if (error.response.status === 401) {
         navigate({ pathname: "/signin" });
       }
-    } finally {
-      setLoadingPlan(false);
     }
   };
 

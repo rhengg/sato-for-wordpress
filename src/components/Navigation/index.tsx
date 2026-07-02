@@ -19,9 +19,7 @@ import satoSvg from "../../assets/sato.svg";
 const Navigation = () => {
   const navigator = useNavigate();
   const { pathname } = useLocation();
-
   const [visible, setVisible] = React.useState(false);
-  const user = decodeBase64(Cookies.get("s-user") as string);
 
   // removes the cookie and redirects to login page
   const handleSignOut = async () => {
@@ -32,18 +30,14 @@ const Navigation = () => {
         },
       });
       // console.log("logout", res.data);
-      Cookies.remove("s-token");
       Cookies.remove("splay-token");
-      Cookies.remove("s-user");
       Cookies.remove("s_subs");
       Cookies.remove("s-pay");
       sessionStorage.removeItem("choosen-plan");
       window.location.replace("/signin");
     } catch (e) {
       console.log("error login", e);
-      Cookies.remove("s-token");
       Cookies.remove("splay-token");
-      Cookies.remove("s-user");
       Cookies.remove("s_subs");
       Cookies.remove("s-pay");
       window.location.replace("/signin");

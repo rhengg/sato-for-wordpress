@@ -1,12 +1,28 @@
-import { decodeBase64 } from "../../utils/base64";
-import Cookies from "js-cookie";
 import TwoFA from "../../components/TwoFA";
 import DeleteAccount from "../../components/DeleteAccount";
-import packagejson from "../../../package.json";
 import Loader from "../../components/Loader";
+import React from "react";
+import axios from "../../utils/axios-instance";
 
-const SecurityPrivacyPage = () => {
-  const user = decodeBase64(Cookies.get("s-user") as string);
+const SecurityPrivacyPage = ({ token }: { token: string }) => {
+  const [user, setUser] = React.useState<any>();
+
+  const fetchUserDetail = async () => {
+    try {
+      const res = await axios.get("/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(res.data);
+    } catch (error) {
+      console.log("error fetching user detail", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchUserDetail();
+  }, []);
 
   if (!user)
     return (
@@ -29,20 +45,13 @@ const SecurityPrivacyPage = () => {
   return (
     <div
       style={{
-        // padding: "24px",
         maxWidth: "900px",
         margin: "0 auto",
       }}
     >
-      <TwoFA email={user.email} enabled={user.twoFAEnabled} />
+      <TwoFA email={user.email} enabled={user.twoFAEnabled} token={token} />
 
       <DeleteAccount email={user.email} />
-
-      {/* <div className="version-container-profile">
-        <p className="label" style={{ marginTop: "0.5rem" }}>
-          Version {packagejson.version}
-        </p>
-      </div> */}
     </div>
   );
 };

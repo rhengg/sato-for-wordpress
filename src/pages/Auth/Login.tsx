@@ -19,6 +19,19 @@ const Login = () => {
   const [visibility, setVisibility] = React.useState(false);
   const { nonce, apiUrl } = window.satoConfig;
 
+  const setTokenOnWpConfig = async (token: string) => {
+    await fetch(`${apiUrl}auth-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-WP-Nonce": nonce,
+      },
+      body: JSON.stringify({
+        token: token,
+      }),
+    });
+  };
+
   const loginWithout2FA = async () => {
     setLoading(true);
     const userdata = {
@@ -27,26 +40,7 @@ const Login = () => {
     };
     try {
       const res = await axios.post("/login", userdata);
-      // Cookies.set("s-token", res.data.token, {
-      //   expires: 30,
-      //   secure: true,
-      //   sameSite: "Strict",
-      // });
-      await fetch(`${apiUrl}auth-token`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-WP-Nonce": nonce,
-        },
-        body: JSON.stringify({
-          token: res.data.token,
-        }),
-      });
-      Cookies.set("s-user", encodeBase64(res.data.user), {
-        expires: 30,
-        secure: true,
-        sameSite: "Strict",
-      });
+      setTokenOnWpConfig(res.data.token);
       setLoading(false);
       window.location.reload();
     } catch (error: any) {
@@ -134,17 +128,8 @@ const Login = () => {
     };
     try {
       const res = await axios.post("/login", userdata);
-      // Cookies.set("s-token", res.data.token, {
-      //   expires: 30,
-      //   secure: true,
-      //   sameSite: "Strict",
-      // });
-      Cookies.set("s-user", encodeBase64(res.data.user), {
-        expires: 30,
-        secure: true,
-        sameSite: "Strict",
-      });
-      window.location.href = `${window.location.pathname}?page=sato-player`;
+      setTokenOnWpConfig(res.data.token);
+      window.location.reload();
     } catch (error: any) {
       if (
         error.response.status === 401 &&

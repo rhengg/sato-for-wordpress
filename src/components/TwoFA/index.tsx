@@ -8,13 +8,13 @@ import Loader from "../Loader";
 type TwoFAProps = {
   email: string;
   enabled: boolean;
+  token: string;
 };
 
 const Index = (props: TwoFAProps) => {
-  const { email, enabled } = props;
+  const { email, enabled, token } = props;
   const [openModalDisable2fa, setOpenModalDisable2fa] =
     React.useState<boolean>(false);
-
   const [openModal, setOpenModal] = React.useState<boolean>(false);
   const [pin, setPin] = React.useState<string>("");
   const [image, setImage] = React.useState("");
@@ -23,11 +23,24 @@ const Index = (props: TwoFAProps) => {
   const [isTwoFaEnabled, setTwoFaEnabled] = React.useState(false);
   const [verified2FA, setVerified2FA] = React.useState(false);
   const [recoveryCode, setRecoveryCode] = React.useState("");
+  const [user, setUser] = React.useState<any>();
 
-  const user = decodeBase64(Cookies.get("s-user") as string);
+  const fetchUserDetail = async () => {
+    try {
+      const res = await axios.get("/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(res.data);
+    } catch (error) {
+      console.log("error fetching user detail", error);
+    }
+  };
 
   React.useEffect(() => {
     reqQR();
+    fetchUserDetail();
   }, []);
 
   const reqQR = async () => {
@@ -40,16 +53,12 @@ const Index = (props: TwoFAProps) => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // console.log("qr", res.data);
       const dataURI = URL.createObjectURL(res.data);
-      // console.log("dataURI", dataURI);
-
       setImage(dataURI);
       setLoading(false);
       setTwoFaEnabled(false);
     } catch (error: any) {
       setLoading(false);
-      // console.log("error qr", error?.response?.status);
       setError("");
       if (error?.response?.status === 409) {
         setTwoFaEnabled(true);
@@ -75,15 +84,8 @@ const Index = (props: TwoFAProps) => {
           },
         },
       );
-      // console.log("verify", res);
       setVerified2FA(true);
       setRecoveryCode(res?.data?.recovery_code);
-      // setTimeout(() => {
-      //   Cookies.remove("s-token");
-      //   Cookies.remove("splay-token");
-      //   Cookies.remove("user");
-      //   window.location.replace("/login");
-      // }, 1500);
     } catch (error: any) {
       if (error.response.status === 401) {
         setError("invalid-passcode");
@@ -117,15 +119,8 @@ const Index = (props: TwoFAProps) => {
       });
 
       setLoading(false);
-      // setTimeout(() => {
-      //   Cookies.remove("s-token");
-      //   Cookies.remove("splay-token");
-      //   Cookies.remove("user");
-      //   window.location.replace("/login");
-      // }, 1500);
       setOpenModalDisable2fa(false);
       await reqQR();
-      // window.location.reload();
     } catch (error: any) {
       setLoading(false);
       if (error.response.status === 401) {
@@ -177,7 +172,6 @@ const Index = (props: TwoFAProps) => {
             className="label textSecondary"
             style={{
               marginTop: "1rem",
-              // fontFamily: 'Satoshi-Regular',
             }}
           >
             Once disabled, you will no longer require to enter the 2FA code from
