@@ -4,10 +4,10 @@ import axios from "../../utils/axios-instance";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils/helper";
-import "../../pages/Profile/profile.css";
 import Invoices from "../Invoices";
 import DetailMenu from "../../components/DetailMenu";
 import config from "../../config";
+import { Button } from "@wordpress/components";
 
 const AccountPage = ({ token }: { token: string }) => {
   const navigate = useNavigate();
@@ -15,9 +15,11 @@ const AccountPage = ({ token }: { token: string }) => {
   const [subscription, setSubscription] = React.useState<any>();
   const [user, setUser] = React.useState<any>();
   const [openModalCancel, setOpenModalCancel] = React.useState<boolean>(false);
+  const [openModalLogout, setOpenModalLogout] = React.useState<boolean>(false);
   const [loadingMedia, setLoadingMedia] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
   const [activePlan, setActivePlan] = React.useState<any>();
+  const { nonce, apiUrl } = window.satoConfig;
 
   const fetchUserDetail = async () => {
     try {
@@ -109,6 +111,17 @@ const AccountPage = ({ token }: { token: string }) => {
         console.error("Error fetching country:", error);
       });
   }, []);
+
+  const handleLogout = async () => {
+    await fetch(`${apiUrl}logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-WP-Nonce": nonce,
+      },
+    });
+    window.location.reload();
+  };
 
   if (!user || loadingMedia)
     return (
@@ -317,6 +330,63 @@ const AccountPage = ({ token }: { token: string }) => {
             <Invoices />
           </div>
         </div>
+
+        <div style={{ display: "flex", gap: "1rem", marginTop: "2rem" }}>
+          <Button
+            variant="secondary"
+            __next40pxDefaultSize
+            isDestructive
+            onClick={() => setOpenModalLogout(true)}
+          >
+            Logout
+          </Button>
+        </div>
+
+        <Modal
+          isOpen={openModalLogout}
+          setOpen={setOpenModalLogout}
+          title={"Confirm Logout"}
+          size="sm"
+        >
+          <p className="body">
+            Are you sure you want to logout? All unsaved changes will be lost
+            and you will need to login again to access your account.
+          </p>
+          <form onSubmit={handleLogout}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setOpenModalLogout(false);
+                }}
+                className="large-primary-btn"
+                style={{
+                  width: "100%",
+                  margin: "2rem 0 0 0",
+                }}
+              >
+                No
+              </button>
+
+              <button
+                type="submit"
+                className="large-danger-btn"
+                style={{
+                  width: "100%",
+                  margin: "2rem 0 0 0",
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </form>
+        </Modal>
 
         <Modal
           isOpen={openModalCancel}

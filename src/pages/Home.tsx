@@ -156,7 +156,6 @@ const Home = ({ token }: { token: string }) => {
   >("halcyon");
   const [notice, setNotice] = React.useState<NoticeType>();
   const [actionLoading, setActionLoading] = React.useState<string>();
-  const { nonce, apiUrl } = window.satoConfig;
 
   const [view, setView] = React.useState<View>({
     fields: ["videotitle", "shortcode", "updated_at"],
@@ -444,17 +443,6 @@ const Home = ({ token }: { token: string }) => {
     }
   };
 
-  const handleLogout = async () => {
-    await fetch(`${apiUrl}logout`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-WP-Nonce": nonce,
-      },
-    });
-    window.location.reload();
-  };
-
   React.useEffect(() => {
     fetchInvoice();
   }, []);
@@ -490,14 +478,6 @@ const Home = ({ token }: { token: string }) => {
         }}
       >
         <DetailMenu />
-        <Text
-          variant="heading-lg"
-          className="sato-link"
-          style={{ cursor: "pointer" }}
-          onClick={handleLogout}
-        >
-          Logout
-        </Text>
       </div>
       {notice && (
         <div

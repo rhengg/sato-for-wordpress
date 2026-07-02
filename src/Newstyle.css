@@ -1095,6 +1095,29 @@ li::marker {
   padding: 0rem 0.25rem;
 }
 
+.profile-container {
+  padding: 4rem 0 2rem 0;
+}
+
+.profile-box {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 1.5rem;
+  background-color: var(--surfaceVariant);
+  outline: none;
+  border: 1px solid;
+  border-color: var(--stroke);
+  border-radius: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  row-gap: 1rem;
+  box-sizing: border-box;
+}
+.version-container-profile {
+  position: absolute;
+  bottom: 1rem;
+}
+
 @media only screen and (max-width: 1590px) {
   .heading {
     font-size: 1.5rem;
@@ -1352,6 +1375,11 @@ li::marker {
   }
   .upload-container {
     flex-direction: column;
+  }
+
+  .profile-container {
+    padding: 2rem 0;
+    width: 100%;
   }
 
   .get-help-container {
