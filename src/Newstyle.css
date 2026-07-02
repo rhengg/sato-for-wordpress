@@ -719,6 +719,17 @@ li::marker {
 }
 
 /* CSS for Authentication */
+.auth-container {
+  /* padding: 2rem; */
+  /* border-radius: 0.25rem; */
+  height: calc(100vh - 97px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
 .auth-form {
   padding: 2rem;
   background-color: #fff;
@@ -753,15 +764,6 @@ li::marker {
   padding: 1rem;
   border: 1px solid var(--stroke);
   background-color: var(--surface);
-}
-
-.error-container {
-  min-height: 1.5rem;
-}
-
-.error-text {
-  font-size: 0.75rem;
-  color: var(--negative);
 }
 
 .required-error-text-space {

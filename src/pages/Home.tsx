@@ -142,7 +142,7 @@ export interface NoticeType {
   text: string;
 }
 
-const Home = () => {
+const Home = ({ token }: { token: string }) => {
   const [data, setData] = React.useState<Player[]>([]);
   const [error, setError] = React.useState(false);
   const [refetch, setRefetch] = React.useState(0);
@@ -156,6 +156,7 @@ const Home = () => {
   >("halcyon");
   const [notice, setNotice] = React.useState<NoticeType>();
   const [actionLoading, setActionLoading] = React.useState<string>();
+  const { nonce, apiUrl } = window.satoConfig;
 
   const [view, setView] = React.useState<View>({
     fields: ["videotitle", "shortcode", "updated_at"],
@@ -285,12 +286,12 @@ const Home = () => {
       setLoading(true);
       const res = await axios.get(`/subscriptions`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setActivePlan(plans.data?.plan);
@@ -326,14 +327,17 @@ const Home = () => {
     try {
       const res = await axios.get("/players", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setData(res.data);
       setLoading(false);
     } catch (error: any) {
-      if (error.response.status === 401 || error.response.status === 402) {
+      if (error.response.status === 401) {
         window.location.href = `${window.location.pathname}?page=sato-signin`;
+      }
+      if (error.response.status === 402) {
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
       setError(true);
       setLoading(false);
@@ -358,7 +362,7 @@ const Home = () => {
       };
       await axios.post("/players", newdata, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       showNotice({ status: "success", text: "Video player duplicated!" });
@@ -375,7 +379,7 @@ const Home = () => {
       setActionLoading("delete-player");
       await axios.delete(`/players/${item.id}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       showNotice({ status: "success", text: "Video player deleted!" });
@@ -412,7 +416,7 @@ const Home = () => {
 
       const res = await axios.post("/players", data, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setLoading(false);
@@ -430,7 +434,7 @@ const Home = () => {
       setLoading(true);
       const res = await axios.get(`/subscriptions/invoices`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
     } catch (error) {
@@ -438,6 +442,17 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await fetch(`${apiUrl}logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-WP-Nonce": nonce,
+      },
+    });
+    window.location.reload();
   };
 
   React.useEffect(() => {
@@ -467,7 +482,23 @@ const Home = () => {
 
   return (
     <div>
-      <DetailMenu />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <DetailMenu />
+        <Text
+          variant="heading-lg"
+          className="sato-link"
+          style={{ cursor: "pointer" }}
+          onClick={handleLogout}
+        >
+          Logout
+        </Text>
+      </div>
       {notice && (
         <div
           style={{
@@ -887,7 +918,7 @@ const Home = () => {
       </div>
 
       <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "1rem" }}>
-        <MediaLibrary length={10} showNotice={showNotice} />
+        <MediaLibrary length={10} showNotice={showNotice} token={token} />
       </div>
     </div>
   );

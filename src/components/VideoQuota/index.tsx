@@ -1,6 +1,6 @@
 import React from "react";
 import "./VideoQuota.css";
-import { Text, Link } from "@wordpress/ui";
+import { Text } from "@wordpress/ui";
 
 type VideoQuotaProps = {
   used: number;

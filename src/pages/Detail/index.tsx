@@ -234,7 +234,7 @@ export const videoconfigupdate = signal<VideoConfigType>({
   },
 });
 
-const Index = () => {
+const Index = ({ token }: { token: string }) => {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const videoId = params.get("video");
@@ -293,7 +293,7 @@ const Index = () => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -327,7 +327,7 @@ const Index = () => {
     try {
       const res = await axios.get("/players", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const playerById = res.data.filter((item: any) => item.id === videoId);
@@ -543,7 +543,7 @@ const Index = () => {
     try {
       const res = await axios.get(`/players/${videoId}/sources`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const sources = res.data || [];
@@ -584,7 +584,7 @@ const Index = () => {
     try {
       const res = await axios.get("/videos", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const sorted = res.data?.sort((a: any, b: any) => {
@@ -628,7 +628,7 @@ const Index = () => {
 
         await axios.post(`/players/${videoId}/sources`, data, {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
       } else {
@@ -636,7 +636,7 @@ const Index = () => {
 
         await axios.put(`/players/${videoId}/sources/${sourceId}`, data, {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
       }
@@ -654,7 +654,7 @@ const Index = () => {
     try {
       const res = await axios.put(`/players/${videoId}`, data, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       showNotice({ status: "success", text: "Player reset to default!" });
@@ -682,7 +682,7 @@ const Index = () => {
     try {
       await axios.put(`/players/${videoId}`, data, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       showNotice({ status: "success", text: "Player updated!" });
@@ -771,7 +771,7 @@ const Index = () => {
     try {
       const res = await axios.put(`/players/${videoId}`, data, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const plan = await fetchSubscription();
@@ -788,7 +788,7 @@ const Index = () => {
     try {
       const subRes = await axios.get(`/subscriptions`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -796,7 +796,7 @@ const Index = () => {
         `/plans/${subRes.data.subscription.plan_id}`,
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );

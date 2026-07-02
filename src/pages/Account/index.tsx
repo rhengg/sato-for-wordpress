@@ -11,7 +11,7 @@ import Invoices from "../Invoices";
 import DetailMenu from "../../components/DetailMenu";
 import config from "../../config";
 
-const AccountPage = () => {
+const AccountPage = ({ token }: { token: string }) => {
   const navigate = useNavigate();
   const [countryCode, setCountryCode] = React.useState("US");
   const [subscription, setSubscription] = React.useState<any>();
@@ -29,7 +29,7 @@ const AccountPage = () => {
     try {
       const res = await axios.get("/me", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       console.log("me data", res.data);
@@ -44,7 +44,7 @@ const AccountPage = () => {
     try {
       await axios.delete(`/subscriptions`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setOpenModalCancel(false);
@@ -59,7 +59,7 @@ const AccountPage = () => {
       setLoadingPlan(true);
       const res = await axios.get(`/subscriptions`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setSubscription(res?.data?.subscription);
@@ -69,7 +69,7 @@ const AccountPage = () => {
 
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       // const planDetails = allPlans.data.find(
@@ -98,7 +98,7 @@ const AccountPage = () => {
       setLoadingMedia(true);
       const res = await axios.get("/videos", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setMedia(res.data);

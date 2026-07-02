@@ -17,7 +17,7 @@ import { timeAgo } from "../../utils/helper";
 import config from "../../config";
 
 const MediaLibrary = (props: any) => {
-  const { length, showNotice } = props;
+  const { length, showNotice, token } = props;
   const navigate = useNavigate();
   const [openModalUpload, setOpenModalUpload] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
@@ -161,12 +161,12 @@ const MediaLibrary = (props: any) => {
     try {
       const res = await axios.get(`/subscriptions`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setActivePlan(plans.data?.plan);
@@ -200,7 +200,7 @@ const MediaLibrary = (props: any) => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -232,12 +232,12 @@ const MediaLibrary = (props: any) => {
     try {
       const res = await axios.get(`/subscriptions`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       setActivePlan(plans.data?.plan);
@@ -257,7 +257,7 @@ const MediaLibrary = (props: any) => {
       setLoading(true);
       const res = await axios.get("/videos", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -287,7 +287,7 @@ const MediaLibrary = (props: any) => {
       setActionLoading("delete-video");
       await axios.delete(`/videos/${item.id}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       showNotice({ status: "success", text: "Video deleted!" });

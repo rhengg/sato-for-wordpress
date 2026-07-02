@@ -1,37 +1,15 @@
-import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
-import HomeLayout from "./layout/home";
 import Detail from "./pages/Detail";
 import Login from "./pages/Auth/Login";
-import Auth from "./pages/Auth";
-import NotFound from "./pages/404";
-import Cookies from "js-cookie";
-import Register from "./pages/Auth/register";
-import Plans from "./pages/Plans";
-import ForgotPassword from "./pages/Auth/ForgotPassword";
-import Razorpay from "./pages/Razorpay";
 import MediaLibrary from "./pages/MediaLibrary";
-import Success from "./pages/Razorpay/success";
-import Failed from "./pages/Razorpay/failed";
-import AccountRecovery from "./pages/Auth/AccountRecovery";
-import Players from "./pages/Players";
-import Error500 from "./pages/500";
-import PlansById from "./pages/PlansById";
-import CanvaAuth from "./pages/CanvaAuth";
-import ProfileLayout from "./layout/ProfileLayout";
 import AccountPage from "./pages/Account";
-import SecurityPrivacyPage from "./pages/SecurityPrivacy";
-import PlansLoader from "./pages/PlanLoader";
-import Paypal from "./pages/Paypal";
-import Oauth from "./pages/Oauth";
 import React, { useEffect } from "react";
 import Loader from "./components/Loader";
-
-// http://localhost/mysite/wp-admin/admin.php?page=sato-video-library
 
 const App = () => {
   const [token, setToken] = React.useState<string>();
   const [loading, setLoading] = React.useState(true);
+  const page = new URLSearchParams(window.location.search).get("page");
 
   useEffect(() => {
     const loadToken = async () => {
@@ -43,8 +21,9 @@ const App = () => {
         });
 
         const data = await res.json();
-        console.log("token", data.token);
+        // console.log("token", data.token);
         setToken(data.token);
+        // window.location.href = `${window.location.pathname}?page=sato-player`;
       } catch (error) {
         console.error("error fetching token", error);
       } finally {
@@ -55,7 +34,13 @@ const App = () => {
     loadToken();
   }, []);
 
-  const page = new URLSearchParams(window.location.search).get("page");
+  React.useEffect(() => {
+    console.log("token", token);
+  }, [token]);
+
+  React.useEffect(() => {
+    console.log("page", page);
+  }, [page]);
 
   if (loading) {
     return (
@@ -85,76 +70,24 @@ const App = () => {
     case "sato-video-library":
       return (
         <div style={{ padding: "1rem" }}>
-          <MediaLibrary />
+          <MediaLibrary token={token} />
         </div>
       );
     case "sato-profile":
-      return <AccountPage />;
+      return <AccountPage token={token} />;
     case "sato-player-detail":
-      return <Detail />;
+      return <Detail token={token} />;
     case "sato-signin":
+      if (token) {
+        window.location.href = `${window.location.pathname}?page=sato-player`;
+        return null;
+      }
       return <Login />;
-    case "sato-pricing":
-      return <Plans />;
     case "sato-player":
-      return <Home />;
+      return <Home token={token} />;
     default:
-      return <Home />;
+      return <Home token={token} />;
   }
-
-  // return (
-  //   <Routes>
-  //     <Route path="/not-found" element={<NotFound />} />
-
-  //     {!isUserAuthenticated() && (
-  //       <>
-  //         <Route element={<Auth />}>
-  //           <Route path="/signin" element={<Login />}></Route>
-  //           <Route path="/register" element={<Register />}></Route>
-  //           <Route path="/canva-auth" element={<CanvaAuth />}></Route>
-  //           <Route
-  //             path="/account-recovery"
-  //             element={<AccountRecovery />}
-  //           ></Route>
-  //           <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-  //           <Route path="*" element={<Navigate to="/signin" />} />
-  //         </Route>
-  //         <Route path="/plans" element={<PlansLoader />} />
-  //         <Route path="/plans/:country" element={<Plans />}></Route>
-  //         <Route path="/custom-plans" element={<PlansById />}></Route>
-  //       </>
-  //     )}
-
-  //     {isUserAuthenticated() && (
-  //       <>
-  //         <Route element={<HomeLayout />}>
-  //           <Route path="/" element={<Home />}></Route>
-  //           {/* <Route path="/profile" element={<Profile />}></Route> */}
-  //           <Route path="/oauth/authorize" element={<Oauth />}></Route>
-  //           <Route path="/plans" element={<PlansLoader />} />
-  //           <Route path="/plans/:country" element={<Plans />}></Route>
-  //           <Route path="/custom-plans" element={<PlansById />}></Route>
-  //           <Route path="/checkout/IN" element={<Razorpay />}></Route>
-  //           <Route path="/checkout/:country" element={<Paypal />}></Route>
-  //           <Route path="/payment-success" element={<Success />}></Route>
-  //           <Route path="/payment-failed" element={<Failed />}></Route>
-  //           <Route path="/video-library" element={<MediaLibrary />}></Route>
-  //           <Route path="/all-players" element={<Players />}></Route>
-  //           {/* <Route path="/invoices" element={<Invoices />}></Route> */}
-  //           <Route path="*" element={<NotFound />} />
-  //           <Route path="/500" element={<Error500 />} />
-
-  //           <Route element={<ProfileLayout />}>
-  //             <Route path="/profile" element={<AccountPage />} />
-  //             <Route path="/billing" element={<BillingPage />} />
-  //             <Route path="/security" element={<SecurityPrivacyPage />} />
-  //           </Route>
-  //         </Route>
-  //         <Route path="/detail" element={<Detail />}></Route>
-  //       </>
-  //     )}
-  //   </Routes>
-  // );
 };
 
 export default App;
