@@ -34,8 +34,6 @@ const Plans = () => {
   const wfCodeStorage = sessionStorage.getItem("webflow-code");
   const wfCode = JSON.parse(wfCodeStorage as string);
 
-  const choosenPlan = Cookies.get("choosen-plan");
-
   const handleRedirect = async (id: string) => {
     navigate({ pathname: "/detail", search: `?video=${id}` });
   };
@@ -48,8 +46,6 @@ const Plans = () => {
       const data = {
         name: playerName,
         config: config[selectedTemplate],
-        // "media_source": 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
-        // "media_type": 'm3u8',
       };
 
       const res = await axios.post("/players", data, {
@@ -60,10 +56,6 @@ const Plans = () => {
       setLoading(false);
       setOpenModalAdd(false);
       await handleRedirect(res.data?.id);
-      // setTimeout(() => {
-      //   setRefetch(Math.random())
-      // }, 500)
-      // showToast()
     } catch (error) {
       setLoading(false);
       console.log("error creating player", error);
@@ -81,7 +73,6 @@ const Plans = () => {
         },
       });
       setData(res.data);
-      // console.log('data', res.data)
       setLoading(false);
     } catch (error: any) {
       setError(true);
@@ -95,16 +86,6 @@ const Plans = () => {
       }
     }
   };
-
-  // const searchData =
-  //   data &&
-  //   data.filter((item: any) => {
-  //     if (searchTitle === "") {
-  //       return item;
-  //     } else if (item.name.toLowerCase().includes(searchTitle?.toLowerCase())) {
-  //       return item;
-  //     }
-  //   });
 
   const searchData =
     data &&
@@ -137,25 +118,17 @@ const Plans = () => {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // setSubscription(res?.data?.subscription);
       const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("s-token")}`,
         },
       });
-      // console.log("plan details", plans?.data);
       setActivePlan(plans.data?.plan);
-
-      // console.log("success subscriptions fetch", res.data);
 
       if (
         (res.data?.subscription?.status as string).toLowerCase() !== "active"
       ) {
         navigate("/profile");
-        // navigate({
-        //   pathname: "/checkout",
-        //   search: `?planId=${res.data.subscription?.plan_id}&s_id=${res.data.subscription?.provider_subscription_id}`,
-        // });
       } else {
         Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
           expires: 30,
@@ -394,13 +367,6 @@ const Plans = () => {
               />
             );
           })}
-          {/*
-          {searchData.length < 4 &&
-            <CreatePlayer setRefetch={setRefetch}
-              totalLength={searchData.length}
-            />
-          }
-          */}
         </div>
       )}
     </div>

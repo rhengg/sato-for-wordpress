@@ -2,7 +2,6 @@ import React from "react";
 import Toggle from "../../components/Toggle";
 import ColorPicker from "../../components/ColorPicker";
 import axios from "../../utils/axios-instance";
-import Cookies from "js-cookie";
 import { signal } from "@preact/signals";
 import SEOcard from "../../components/SEOcard";
 import SizePicker from "../../components/SizePicker";
@@ -136,7 +135,6 @@ const playerNameUpdate = signal("");
 export const videoUrlExtensionUpdate = signal("");
 export const videoTranscript = signal("");
 
-// export const videoconfigupdate = signal({
 export const videoconfigupdate = signal<VideoConfigType>({
   videotitle: "",
   videodescription: "",
