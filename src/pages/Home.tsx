@@ -405,29 +405,29 @@ const Home = ({ token }: { token: string }) => {
 
   const createPlayer = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (playerName === "") return setErrorPlayer("emtpy-player-name");
+    if (playerName === "")
+      return setNotice({ status: "error", text: "Player name is required" });
     try {
       setLoading(true);
       const data = {
         name: playerName,
         config: config[selectedTemplate],
       };
-
-      const res = await axios.post("/players", data, {
+      await axios.post("/players", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setLoading(false);
+      setNotice({ status: "success", text: "Video player created!" });
       setOpenModalAdd(false);
-      handleRedirect(res.data?.id);
+      setRefetch(Math.random());
     } catch (error) {
+      setNotice({ status: "error", text: "Error creating video player!" });
+    } finally {
       setLoading(false);
-      setErrorPlayer("");
     }
   };
 
-  // Needs to be removed in future
   const fetchInvoice = async () => {
     try {
       setLoading(true);
@@ -437,7 +437,7 @@ const Home = ({ token }: { token: string }) => {
         },
       });
     } catch (error) {
-      setLoading(false);
+      console.log("error loading invoice", error);
     } finally {
       setLoading(false);
     }
@@ -597,14 +597,6 @@ const Home = ({ token }: { token: string }) => {
                   name="template-radio"
                   activePlan={activePlan}
                 />
-              </div>
-
-              <div className="error-container">
-                {errorPlayer === "emtpy-player-name" && (
-                  <p className="error-text required-error-text-space">
-                    Required field!
-                  </p>
-                )}
               </div>
             </form>
           </div>
