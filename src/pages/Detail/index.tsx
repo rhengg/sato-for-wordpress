@@ -1072,6 +1072,7 @@ const Index = ({ token }: { token: string }) => {
                         </div>
 
                         <Table
+                          token={token}
                           data={media}
                           setRefetch={(u) => {
                             setRefetch(u);

@@ -1,10 +1,8 @@
 import React from "react";
 import "./Table.css";
 import config from "../../config";
-import Toast from "../Toast";
 import { videoUrlUpdate } from "../../pages/Detail";
 import axios from "../../utils/axios-instance";
-import Cookies from "js-cookie";
 import Modal from "../Modal";
 import { timeAgo } from "../../utils/helper";
 import Popover from "../Popover";
@@ -15,6 +13,8 @@ import AddSvg from "../../assets/Add.svg";
 import FailedSvg from "../../assets/Failed.svg";
 import CompleteSvg from "../../assets/Complete.svg";
 import GenerateSvg from "../../assets/Generate.svg";
+import { NoticeType } from "../../pages/Home";
+import { Snackbar } from "@wordpress/components";
 
 type VideoListProps = {
   data: any;
@@ -22,16 +22,21 @@ type VideoListProps = {
   handleClick?: any;
   showCopy?: boolean;
   activePlan?: any;
+  token: string;
 };
 
 const VideoList = (props: VideoListProps) => {
-  const { data, setRefetch, handleClick, showCopy = true, activePlan } = props;
-
+  const {
+    data,
+    setRefetch,
+    handleClick,
+    showCopy = true,
+    activePlan,
+    token,
+  } = props;
+  const [notice, setNotice] = React.useState<NoticeType>();
   const [openModalDelete, setOpenModalDelete] = React.useState<boolean>(false);
-  const [show, setShowToast] = React.useState(false);
   const [assetId, setAssetId] = React.useState("");
-  const [text, setText] = React.useState("");
-
   const [transcriptionFailed, setTranscriptionFailed] = React.useState<
     string | null
   >(null);
@@ -39,18 +44,10 @@ const VideoList = (props: VideoListProps) => {
     string | null
   >(null);
 
-  const showToast = () => {
-    setShowToast(true);
-  };
-  const hideToast = () => {
-    setShowToast(false);
-  };
-
   const handleCopy = (url: string, text: string) => {
     const construct_video_url = new URL(url, config.VIDEO_CDN_URL).toString();
     navigator.clipboard.writeText(construct_video_url);
-    setText(text);
-    showToast();
+    setNotice({ status: "success", text: "Code copied!" });
   };
 
   const handleTranscribe = async (id: string) => {
@@ -61,7 +58,7 @@ const VideoList = (props: VideoListProps) => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -90,7 +87,7 @@ const VideoList = (props: VideoListProps) => {
         {},
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -103,20 +100,19 @@ const VideoList = (props: VideoListProps) => {
   const deleteAssets = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.delete(`/videos/${assetId}`, {
+      await axios.delete(`/videos/${assetId}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      // console.log("delete", res);
       setOpenModalDelete(false);
-      setText("Video Deleted");
-      showToast();
+      setNotice({ status: "success", text: "Video Deleted" });
       setTimeout(() => {
         setRefetch(Math.random());
       }, 800);
     } catch (error) {
       console.log("error deleting asset", error);
+      setNotice({ status: "error", text: "Failed to delete video" });
     }
   };
 
@@ -132,229 +128,225 @@ const VideoList = (props: VideoListProps) => {
   }
 
   return (
-    <div className="video-table">
-      <div className={"video-table-header"}>
-        <span className="sato-link textPrimary">Video name</span>
-        <span className="sato-link textPrimary">Uploaded at</span>
-        <span
-          className="sato-link textPrimary"
+    <>
+      {notice && (
+        <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.5rem",
+            position: "fixed",
+            top: "2%",
+            left: "50%",
+            zIndex: "9999",
+            transform: "translate(-50%,50%)",
           }}
         >
-          {!activePlan?.metadata?.premium_features?.caption && (
-            <Premium smIcon={true} width="16" />
-          )}
-          Speech-to-text
-        </span>
-        <span className="sato-link textPrimary">More</span>
-      </div>
-
-      {data.map((video: any, idx: number) => (
-        <div key={idx} className="video-table-row">
-          <span
-            className="filename table-row-text"
-            style={{
-              cursor: handleClick ? "pointer" : "text",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
+          <Snackbar
+            politeness="polite"
+            onDismiss={() => {
+              setNotice(undefined);
             }}
-            onClick={async () => {
-              if (handleClick) {
-                const construct_video_url = new URL(
-                  video.url,
-                  config.VIDEO_CDN_URL,
-                ).toString();
-                videoUrlUpdate.value = construct_video_url;
-                await handleClick(video);
-                setRefetch(Math.random());
-              }
+            onRemove={() => {
+              setNotice(undefined);
             }}
           >
-            {handleClick && (
-              <img
-                src={AddSvg}
-                alt="add"
-                style={{ width: "16px", maxWidth: 380 }}
-              />
-            )}
-            {truncate(video.name)}
-          </span>
-          <span className="table-row-text">{timeAgo(video.updated_at)}</span>
-
+            {notice.text}
+          </Snackbar>
+        </div>
+      )}
+      <div className="video-table">
+        <div className={"video-table-header"}>
+          <span className="sato-link textPrimary">Video name</span>
+          <span className="sato-link textPrimary">Uploaded at</span>
           <span
+            className="sato-link textPrimary"
             style={{
-              cursor:
-                !activePlan?.metadata?.premium_features?.caption ||
-                video.transcription_status === "completed"
-                  ? "not-allowed"
-                  : "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "0.25rem",
-              borderRadius: "0.25rem",
-            }}
-            onClick={() => {
-              if (
-                !activePlan?.metadata?.premium_features?.caption ||
-                video.transcription_status === "completed"
-              ) {
-                return;
-              }
-              handleTranscribe(video?.id);
+              gap: "0.5rem",
             }}
           >
+            {!activePlan?.metadata?.premium_features?.caption && (
+              <Premium smIcon={true} width="16" />
+            )}
+            Speech-to-text
+          </span>
+          <span className="sato-link textPrimary">More</span>
+        </div>
+
+        {data.map((video: any, idx: number) => (
+          <div key={idx} className="video-table-row">
+            <span
+              className="filename table-row-text"
+              style={{
+                cursor: handleClick ? "pointer" : "text",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+              onClick={async () => {
+                if (handleClick) {
+                  const construct_video_url = new URL(
+                    video.url,
+                    config.VIDEO_CDN_URL,
+                  ).toString();
+                  videoUrlUpdate.value = construct_video_url;
+                  await handleClick(video);
+                  setRefetch(Math.random());
+                }
+              }}
+            >
+              {handleClick && (
+                <img
+                  src={AddSvg}
+                  alt="add"
+                  style={{ width: "16px", maxWidth: 380 }}
+                />
+              )}
+              {truncate(video.name)}
+            </span>
+            <span className="table-row-text">{timeAgo(video.updated_at)}</span>
+
+            <span
+              style={{
+                cursor:
+                  !activePlan?.metadata?.premium_features?.caption ||
+                  video.transcription_status === "completed"
+                    ? "not-allowed"
+                    : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.25rem",
+                borderRadius: "0.25rem",
+              }}
+              onClick={() => {
+                if (
+                  !activePlan?.metadata?.premium_features?.caption ||
+                  video.transcription_status === "completed"
+                ) {
+                  return;
+                }
+                handleTranscribe(video?.id);
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                }}
+              >
+                {transcriptLoadingId === video.id ? (
+                  <Loader borderColor="var(--primary)" />
+                ) : video.transcription_status === "failed" ||
+                  transcriptionFailed === video.id ? (
+                  <img
+                    src={FailedSvg}
+                    alt="failed"
+                    style={{ width: "16px", maxWidth: 380 }}
+                  />
+                ) : video.transcription_status === "completed" ? (
+                  <img
+                    src={CompleteSvg}
+                    alt="complete"
+                    style={{ width: "16px", maxWidth: 380 }}
+                  />
+                ) : (
+                  <img
+                    src={GenerateSvg}
+                    alt="add"
+                    style={{ width: "80px", maxWidth: 380 }}
+                  />
+                )}
+              </div>
+            </span>
+
+            <span className=" table-row-text">
+              <div
+                style={{
+                  position: "relative",
+                }}
+              >
+                <Popover
+                  trigger={
+                    <div style={{ cursor: "pointer" }}>
+                      <span className="material-symbols-outlined">
+                        more_horiz
+                      </span>
+                    </div>
+                  }
+                  content={
+                    <Content
+                      onClickCopy={() => {
+                        handleCopy(video?.url, "Video URL copied");
+                      }}
+                      transcriptionUrl={video?.transcription_url}
+                      onClickTranscribeCopy={() => {
+                        handleCopy(
+                          video?.transcription_url,
+                          "Transcribe URL copied",
+                        );
+                      }}
+                      onClickDelete={() => {
+                        setOpenModalDelete(true);
+                        setAssetId(video.id);
+                      }}
+                    />
+                  }
+                  position="top"
+                />
+              </div>
+            </span>
+          </div>
+        ))}
+
+        <Modal
+          isOpen={openModalDelete}
+          setOpen={setOpenModalDelete}
+          title={`Delete Video?`}
+          size="sm"
+        >
+          <p className="body">
+            Deleting this video will permanently remove it from your video
+            library.
+          </p>
+          <form onSubmit={deleteAssets}>
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
+                gap: "1rem",
               }}
             >
-              {transcriptLoadingId === video.id ? (
-                <Loader borderColor="var(--primary)" />
-              ) : video.transcription_status === "failed" ||
-                transcriptionFailed === video.id ? (
-                <img
-                  src={FailedSvg}
-                  alt="failed"
-                  style={{ width: "16px", maxWidth: 380 }}
-                />
-              ) : video.transcription_status === "completed" ? (
-                <img
-                  src={CompleteSvg}
-                  alt="complete"
-                  style={{ width: "16px", maxWidth: 380 }}
-                />
-              ) : (
-                <img
-                  src={GenerateSvg}
-                  alt="add"
-                  style={{ width: "80px", maxWidth: 380 }}
-                />
-              )}
-            </div>
-          </span>
-
-          <span className=" table-row-text">
-            <div
-              style={{
-                position: "relative",
-              }}
-            >
-              <Popover
-                trigger={
-                  <div style={{ cursor: "pointer" }}>
-                    <span className="material-symbols-outlined">
-                      more_horiz
-                    </span>
-                  </div>
-                }
-                content={
-                  <Content
-                    onClickCopy={() => {
-                      handleCopy(video?.url, "Video URL copied");
-                    }}
-                    transcriptionUrl={video?.transcription_url}
-                    onClickTranscribeCopy={() => {
-                      handleCopy(
-                        video?.transcription_url,
-                        "Transcribe URL copied",
-                      );
-                    }}
-                    onClickDelete={() => {
-                      setOpenModalDelete(true);
-                      setAssetId(video.id);
-                    }}
-                  />
-                }
-                position="top"
-              />
-            </div>
-          </span>
-
-          {/* {!handleClick && (
-            <span>
-              <span
-                className="material-symbols-outlined delete-icon"
+              <button
+                type="button"
                 onClick={() => {
-                  setOpenModalDelete(true);
-                  setAssetId(video.id);
+                  setOpenModalDelete(false);
+                }}
+                className="large-primary-btn"
+                style={{
+                  width: "100%",
+                  margin: "2rem 0 0 0",
                 }}
               >
-                delete_forever
-              </span>
-            </span>
-          )} */}
-        </div>
-      ))}
-
-      <Modal
-        isOpen={openModalDelete}
-        setOpen={setOpenModalDelete}
-        title={`Delete Video?`}
-        size="sm"
-      >
-        <p className="body">
-          Deleting this video will permanently remove it from your video
-          library.
-        </p>
-        <form onSubmit={deleteAssets}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => {
-                setOpenModalDelete(false);
-              }}
-              className="large-primary-btn"
-              style={{
-                width: "100%",
-                margin: "2rem 0 0 0",
-              }}
-            >
-              No
-            </button>
-            <button
-              type="submit"
-              className="large-danger-btn"
-              style={{
-                width: "100%",
-                margin: "2rem 0 0 0",
-              }}
-            >
-              Yes
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <Toast show={show} hideToast={hideToast}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-          }}
-        >
-          <span className="material-symbols-outlined positive">done</span>
-          <p className="body" style={{ marginLeft: "1rem" }}>
-            {text}
-          </p>
-        </div>
-      </Toast>
-    </div>
+                No
+              </button>
+              <button
+                type="submit"
+                className="large-danger-btn"
+                style={{
+                  width: "100%",
+                  margin: "2rem 0 0 0",
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </form>
+        </Modal>
+      </div>
+    </>
   );
 };
 
