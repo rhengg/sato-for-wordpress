@@ -63,9 +63,17 @@ const App = () => {
         </div>
       );
     case "sato-profile":
-      return <AccountPage token={token} />;
+      return (
+        <div style={{ padding: "1rem" }}>
+          <AccountPage token={token} />
+        </div>
+      );
     case "sato-player-detail":
-      return <Detail token={token} />;
+      return (
+        <div style={{ padding: "1rem" }}>
+          <Detail token={token} />
+        </div>
+      );
     case "sato-signin":
       if (token) {
         window.location.href = `${window.location.pathname}?page=sato-player`;
@@ -73,9 +81,17 @@ const App = () => {
       }
       return <Login />;
     case "sato-player":
-      return <Home token={token} />;
+      return (
+        <div style={{ padding: "1rem" }}>
+          <Home token={token} />
+        </div>
+      );
     default:
-      return <Home token={token} />;
+      return (
+        <div style={{ padding: "1rem" }}>
+          <Home token={token} />
+        </div>
+      );
   }
 };
 

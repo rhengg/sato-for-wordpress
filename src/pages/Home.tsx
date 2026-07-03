@@ -146,7 +146,7 @@ const Home = ({ token }: { token: string }) => {
   const [data, setData] = React.useState<Player[]>([]);
   const [error, setError] = React.useState(false);
   const [refetch, setRefetch] = React.useState(0);
-  const [isLoading, setLoading] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(true);
   const [activePlan, setActivePlan] = React.useState<any>();
   const [openModalAdd, setOpenModalAdd] = React.useState<boolean>(false);
   const [playerName, setPlayerName] = React.useState("");
@@ -305,22 +305,18 @@ const Home = ({ token }: { token: string }) => {
         });
       }
     } catch (error: any) {
-      setLoading(false);
       if (error.response.status === 401) {
         window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
       if (error?.response?.status === 404) {
         window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
+    } finally {
+      setLoading(false);
     }
   };
 
-  React.useEffect(() => {
-    fetchSubscription();
-  }, []);
-
   const fetchPlayer = async () => {
-    setLoading(true);
     setError(false);
     try {
       const res = await axios.get("/players", {
@@ -430,6 +426,11 @@ const Home = ({ token }: { token: string }) => {
   };
 
   React.useEffect(() => {
+    fetchSubscription();
+    fetchInvoice();
+  }, []);
+
+  React.useEffect(() => {
     fetchPlayer();
     videoUrlUpdate.value = "";
     videoUrlExtensionUpdate.value = "";
@@ -441,10 +442,6 @@ const Home = ({ token }: { token: string }) => {
       videoconfigupdate.value.premium.playerCTA.buttonText = "";
     }
   }, [refetch]);
-
-  React.useEffect(() => {
-    fetchInvoice();
-  }, []);
 
   if (isLoading)
     return (

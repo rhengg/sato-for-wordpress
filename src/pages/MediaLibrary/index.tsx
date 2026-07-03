@@ -6,7 +6,6 @@ import VideoPicker, {
   waitForVideoProcessing,
 } from "../../components/VideoPicker";
 import { encodeBase64 } from "../../utils/base64";
-import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
 import VideoQuota from "../../components/VideoQuota";
 import Loader from "../../components/Loader";
@@ -18,7 +17,6 @@ import config from "../../config";
 
 const MediaLibrary = (props: any) => {
   const { length, showNotice, token } = props;
-  const navigate = useNavigate();
   const [openModalUpload, setOpenModalUpload] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
   const [refetch, setRefetch] = React.useState(0);
@@ -26,9 +24,6 @@ const MediaLibrary = (props: any) => {
   const [totalVideoCount, setTotalVideoCount] = React.useState<any>();
   const [isLoading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState<any>();
-  const wfCodeStorage = sessionStorage.getItem("webflow-code");
-  const wfCode = JSON.parse(wfCodeStorage as string);
-  const choosenPlan = Cookies.get("choosen-plan");
   const [transcriptionFailed, setTranscriptionFailed] = React.useState<
     string | null
   >(null);
@@ -52,7 +47,6 @@ const MediaLibrary = (props: any) => {
   });
 
   const applyFilters = (
-    // data: Player[],
     data: any[],
     filters?: {
       field?: string;
@@ -204,7 +198,6 @@ const MediaLibrary = (props: any) => {
           },
         },
       );
-      console.log("transcribe", res.data);
       const result = await waitForVideoProcessing(id);
       if (result.status === "completed") {
         setTranscriptLoadingId(null);
@@ -262,17 +255,21 @@ const MediaLibrary = (props: any) => {
       });
 
       setTotalVideoCount(res?.data?.length);
-      setMedia(res.data);
+      if (length === 10) {
+        setMedia(res.data.slice(0, 10));
+      } else {
+        setMedia(res.data);
+      }
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
       console.log("error fetching media", error);
-      // if (error.response.status === 401) {
-      //   navigate({ pathname: "/signin" });
-      // }
-      // if (error?.response?.status === 402) {
-      //   navigate({ pathname: "/plans" });
-      // }
+      if (error.response.status === 401) {
+        window.location.href = `${window.location.pathname}?page=sato-signin`;
+      }
+      if (error?.response?.status === 402) {
+        window.location.href = `${window.location.pathname}?page=sato-profile`;
+      }
     } finally {
       setLoading(false);
     }
@@ -419,6 +416,16 @@ const MediaLibrary = (props: any) => {
           >
             Uploaded Videos
           </p>
+          {length && media.length > 9 && (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                window.location.href = `${window.location.pathname}?page=sato-video-library`;
+              }}
+            >
+              See All
+            </Button>
+          )}
         </div>
         {showPremiumNotice && (
           <div style={{ margin: "0.5rem 0" }}>
