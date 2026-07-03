@@ -150,7 +150,6 @@ const Home = ({ token }: { token: string }) => {
   const [activePlan, setActivePlan] = React.useState<any>();
   const [openModalAdd, setOpenModalAdd] = React.useState<boolean>(false);
   const [playerName, setPlayerName] = React.useState("");
-  const [errorPlayer, setErrorPlayer] = React.useState("");
   const [selectedTemplate, setSelectedTemplate] = React.useState<
     "halcyon" | "moderna" | "sphinx" | "prosper"
   >("halcyon");
@@ -330,7 +329,6 @@ const Home = ({ token }: { token: string }) => {
         },
       });
       setData(res.data);
-      setLoading(false);
     } catch (error: any) {
       if (error.response.status === 401) {
         window.location.href = `${window.location.pathname}?page=sato-signin`;
@@ -339,6 +337,7 @@ const Home = ({ token }: { token: string }) => {
         window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
       setError(true);
+    } finally {
       setLoading(false);
     }
   };
@@ -390,6 +389,46 @@ const Home = ({ token }: { token: string }) => {
     }
   };
 
+  const createPlayer = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (playerName === "")
+      return showNotice({ status: "error", text: "Player name is required" });
+    try {
+      setLoading(true);
+      const data = {
+        name: playerName,
+        config: config[selectedTemplate],
+      };
+      await axios.post("/players", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      showNotice({ status: "success", text: "Video player created!" });
+      setOpenModalAdd(false);
+      setRefetch(Math.random());
+    } catch (error) {
+      showNotice({ status: "error", text: "Error creating video player!" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchInvoice = async () => {
+    try {
+      setLoading(true);
+      await axios.get(`/subscriptions/invoices`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.log("error loading invoice", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   React.useEffect(() => {
     fetchPlayer();
     videoUrlUpdate.value = "";
@@ -402,46 +441,6 @@ const Home = ({ token }: { token: string }) => {
       videoconfigupdate.value.premium.playerCTA.buttonText = "";
     }
   }, [refetch]);
-
-  const createPlayer = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (playerName === "")
-      return setNotice({ status: "error", text: "Player name is required" });
-    try {
-      setLoading(true);
-      const data = {
-        name: playerName,
-        config: config[selectedTemplate],
-      };
-      await axios.post("/players", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setNotice({ status: "success", text: "Video player created!" });
-      setOpenModalAdd(false);
-      setRefetch(Math.random());
-    } catch (error) {
-      setNotice({ status: "error", text: "Error creating video player!" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchInvoice = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`/subscriptions/invoices`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } catch (error) {
-      console.log("error loading invoice", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   React.useEffect(() => {
     fetchInvoice();

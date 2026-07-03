@@ -19,6 +19,13 @@ const Login = () => {
   const [visibility, setVisibility] = React.useState(false);
   const { nonce, apiUrl } = window.satoConfig;
 
+  const showNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
+  };
+
   const setTokenOnWpConfig = async (token: string) => {
     await fetch(`${apiUrl}auth-token`, {
       method: "POST",
@@ -46,7 +53,7 @@ const Login = () => {
     } catch (error: any) {
       setLoading(false);
       if (error.response.status === 404) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "User not found!",
         });
@@ -55,7 +62,7 @@ const Login = () => {
         error.response.status === 401 &&
         error?.response?.data?.error === "Invalid authentication information"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid Credentials!",
         });
@@ -64,7 +71,7 @@ const Login = () => {
         error.response.status === 401 &&
         error?.response?.data?.error === "invalid email or password"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid Credentials!",
         });
@@ -90,7 +97,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     if (pin === "") {
-      setNotice({
+      showNotice({
         status: "error",
         text: "OTP cannot be empty!",
       });
@@ -102,7 +109,7 @@ const Login = () => {
     } catch (error: any) {
       setLoading(false);
       if (error.response.status === 403) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid OTP!",
         });
@@ -112,7 +119,7 @@ const Login = () => {
         error?.response?.data?.error ===
           "Invalid tow factor authentication token"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid OTP!",
         });
@@ -135,7 +142,7 @@ const Login = () => {
         error.response.status === 401 &&
         error?.response?.data?.error === "Invalid authentication information"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid Credentials!",
         });
@@ -144,7 +151,7 @@ const Login = () => {
         error.response.status === 401 &&
         error?.response?.data?.error === "invalid email or password"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid Credentials!",
         });
@@ -154,7 +161,7 @@ const Login = () => {
         error?.response?.data?.error ===
           "Invalid tow factor authentication token"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid OTP!",
         });
@@ -164,7 +171,7 @@ const Login = () => {
         error?.response?.data?.error ===
           "two-factor authentication code is required"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid OTP!",
         });
@@ -174,7 +181,7 @@ const Login = () => {
         error?.response?.data?.error ===
           "invalid two-factor authentication code"
       ) {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Invalid OTP!",
         });
@@ -187,12 +194,12 @@ const Login = () => {
 
     if (inputEmail === "" || inputPassword === "") {
       if (inputEmail === "") {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Email cannot be empty!",
         });
       } else {
-        setNotice({
+        showNotice({
           status: "error",
           text: "Password cannot be empty!",
         });

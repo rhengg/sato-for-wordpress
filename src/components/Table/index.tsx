@@ -44,10 +44,17 @@ const VideoList = (props: VideoListProps) => {
     string | null
   >(null);
 
+  const showNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
+  };
+
   const handleCopy = (url: string, text: string) => {
     const construct_video_url = new URL(url, config.VIDEO_CDN_URL).toString();
     navigator.clipboard.writeText(construct_video_url);
-    setNotice({ status: "success", text: "Code copied!" });
+    showNotice({ status: "success", text: "Code copied!" });
   };
 
   const handleTranscribe = async (id: string) => {
@@ -106,13 +113,13 @@ const VideoList = (props: VideoListProps) => {
         },
       });
       setOpenModalDelete(false);
-      setNotice({ status: "success", text: "Video Deleted" });
+      showNotice({ status: "success", text: "Video Deleted" });
       setTimeout(() => {
         setRefetch(Math.random());
       }, 800);
     } catch (error) {
       console.log("error deleting asset", error);
-      setNotice({ status: "error", text: "Failed to delete video" });
+      showNotice({ status: "error", text: "Failed to delete video" });
     }
   };
 
