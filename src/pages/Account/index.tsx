@@ -4,7 +4,6 @@ import axios from "../../utils/axios-instance";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils/helper";
-import Invoices from "../Invoices";
 import DetailMenu from "../../components/DetailMenu";
 import config from "../../config";
 import { Button } from "@wordpress/components";
@@ -16,8 +15,10 @@ const AccountPage = ({ token }: { token: string }) => {
   const [user, setUser] = React.useState<any>();
   const [openModalCancel, setOpenModalCancel] = React.useState<boolean>(false);
   const [openModalLogout, setOpenModalLogout] = React.useState<boolean>(false);
-  const [loadingMedia, setLoadingMedia] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState([]);
+  const [invoices, setInvoices] = React.useState<any>([]);
+  const [loadingMedia, setLoadingMedia] = React.useState<boolean>(true);
+  const [loadingInvoices, setLoadingInvoices] = React.useState(true);
   const [activePlan, setActivePlan] = React.useState<any>();
   const { nonce, apiUrl } = window.satoConfig;
 
@@ -72,14 +73,23 @@ const AccountPage = ({ token }: { token: string }) => {
     }
   };
 
-  React.useEffect(() => {
-    fetchSubscription();
-    fetchUserDetail();
-  }, []);
+  const fetchInvoice = async () => {
+    try {
+      const res = await axios.get(`/subscriptions/invoices`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setInvoices(res.data);
+    } catch (error) {
+      console.log("error fetching media", error);
+    } finally {
+      setLoadingInvoices(false);
+    }
+  };
 
   const fetchMedia = async () => {
     try {
-      setLoadingMedia(true);
       const res = await axios.get("/videos", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -88,7 +98,6 @@ const AccountPage = ({ token }: { token: string }) => {
       setMedia(res.data);
     } catch (error: any) {
       console.log("error fetching media", error);
-      setLoadingMedia(false);
       if (error.response.status === 401) {
         navigate({ pathname: "/signin" });
       }
@@ -96,6 +105,12 @@ const AccountPage = ({ token }: { token: string }) => {
       setLoadingMedia(false);
     }
   };
+
+  React.useEffect(() => {
+    fetchSubscription();
+    fetchUserDetail();
+    fetchInvoice();
+  }, []);
 
   React.useEffect(() => {
     fetchMedia();
@@ -123,7 +138,7 @@ const AccountPage = ({ token }: { token: string }) => {
     window.location.reload();
   };
 
-  if (!user || loadingMedia)
+  if (!user || !subscription || !activePlan || loadingMedia || loadingInvoices)
     return (
       <div
         style={{
@@ -327,7 +342,97 @@ const AccountPage = ({ token }: { token: string }) => {
           )}
 
           <div style={{ marginTop: "2rem" }}>
-            <Invoices />
+            {/* <Invoices /> */}
+
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "1rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "max-content",
+                  }}
+                >
+                  <p className="subtitle-two">Your Payment Receipts</p>
+                </div>
+              </div>
+
+              <p
+                className="caption textSecondary"
+                style={{
+                  marginTop: "0.5rem",
+                }}
+              >
+                All your payment receipts are listed here.
+              </p>
+
+              {invoices && invoices.length > 0 ? (
+                <div className="plan-list">
+                  {[...invoices]
+                    .sort(
+                      (a: any, b: any) =>
+                        new Date(b.paid_at).getTime() -
+                        new Date(a.paid_at).getTime(),
+                    )
+                    .map((inv: any, index: number) => (
+                      <div
+                        key={inv.id}
+                        className="plan-item"
+                        style={{
+                          borderBottom:
+                            index === invoices.length - 1
+                              ? "none"
+                              : "1px solid var(--stroke)",
+                          paddingBottom:
+                            index === invoices.length - 1 ? "1rem" : "1rem",
+                          paddingTop:
+                            index === invoices.length - 1 ? "1rem" : "1rem",
+                        }}
+                      >
+                        <div className="plan-details">
+                          <span className="body">{inv.plan_name}</span>
+                          <span className="dot">•</span>
+                          {inv.status === "paid" ? (
+                            <span
+                              className="label"
+                              style={{ color: "var(--positive)" }}
+                            >
+                              Paid on {formatDate(inv.paid_at)}
+                            </span>
+                          ) : (
+                            <span className="label">{inv.status}</span>
+                          )}
+                        </div>
+
+                        <Link
+                          to={new URL(
+                            inv.short_url,
+                            config.IMAGE_CDN_URL,
+                          ).toString()}
+                          target="_blank"
+                          style={{
+                            textDecoration: "none",
+                          }}
+                          className="sato-link"
+                        >
+                          View
+                        </Link>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="plan-list">
+                  <p className="body" style={{ padding: "1rem 0" }}>
+                    No receipts found
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -335,7 +440,6 @@ const AccountPage = ({ token }: { token: string }) => {
           <Button
             variant="secondary"
             __next40pxDefaultSize
-            isDestructive
             onClick={() => setOpenModalLogout(true)}
           >
             Logout

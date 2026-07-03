@@ -19,11 +19,8 @@ const App = () => {
             "X-WP-Nonce": window.satoConfig.nonce,
           },
         });
-
         const data = await res.json();
-        // console.log("token", data.token);
         setToken(data.token);
-        // window.location.href = `${window.location.pathname}?page=sato-player`;
       } catch (error) {
         console.error("error fetching token", error);
       } finally {
@@ -33,14 +30,6 @@ const App = () => {
 
     loadToken();
   }, []);
-
-  React.useEffect(() => {
-    console.log("token", token);
-  }, [token]);
-
-  React.useEffect(() => {
-    console.log("page", page);
-  }, [page]);
 
   if (loading) {
     return (
