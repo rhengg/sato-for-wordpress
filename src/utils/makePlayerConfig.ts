@@ -4,10 +4,6 @@ export const makeConfig = (
   mediaType: any,
   transcriptUrl: any,
 ) => {
-  // console.log("makeConfig json →", json);
-  // console.log("makeConfig source →", source);
-  // console.log("makeConfig mediaType →", mediaType);
-
   return {
     src:
       source ||
