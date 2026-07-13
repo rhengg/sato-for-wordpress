@@ -98,6 +98,14 @@ const Login = () => {
       ) {
         setRenderElement("otp-sent");
       }
+      if (
+        error.response.status === 400) {
+        showNotice({
+          status: "error",
+          text: "Invalid Credentials!",
+        });
+      }
+
     }
   };
 
@@ -211,6 +219,13 @@ const Login = () => {
         showNotice({
           status: "error",
           text: "Invalid OTP!",
+        });
+      }
+      if (
+        error.response.status === 400) {
+        showNotice({
+          status: "error",
+          text: "Invalid Credentials!",
         });
       }
     }
