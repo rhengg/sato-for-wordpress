@@ -368,7 +368,7 @@ const MediaLibrary = (props: any) => {
                 setOpen={setOpenModalUpload}
                 title={``}
                 size="md"
-                // closeButton={false}
+              // closeButton={false}
               >
                 <div className="v-picker-container">
                   <VideoPicker
@@ -403,6 +403,7 @@ const MediaLibrary = (props: any) => {
                   window.open(
                     `https://app.satoplayer.com/plans/${countryCode}`,
                     "_blank",
+                    "noopener,noreferrer"
                   );
                 }}
               />
@@ -568,7 +569,7 @@ const MediaLibrary = (props: any) => {
                     style={{
                       color:
                         item.transcription_status === "failed" ||
-                        transcriptionFailed === item.id
+                          transcriptionFailed === item.id
                           ? "var(--negative)"
                           : item.transcription_status === "completed"
                             ? "var(--positive)"

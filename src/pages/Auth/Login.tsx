@@ -1,9 +1,6 @@
 import axios from "../../utils/axios-instance";
-import Cookies from "js-cookie";
 import React from "react";
-import { encodeBase64 } from "../../utils/base64";
 import Loader from "../../components/Loader";
-import { loadUserIp } from "../../utils/helper";
 import DetailMenu from "../../components/DetailMenu";
 import { Snackbar } from "@wordpress/components";
 import { Text } from "@wordpress/ui";
@@ -41,8 +38,19 @@ const Login = () => {
 
   const loginWithout2FA = async () => {
     setLoading(true);
+
+    const email = inputEmail.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showNotice({
+        status: "error",
+        text: "Please enter a valid email address.",
+      });
+      return;
+    }
+
     const userdata = {
-      email: inputEmail,
+      email: inputEmail.trim(),
       password: inputPassword,
     };
     try {
@@ -79,14 +87,14 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-          "tow factor authentication token is required"
+        "tow factor authentication token is required"
       ) {
         setRenderElement("otp-sent");
       }
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-          "two-factor authentication code is required"
+        "two-factor authentication code is required"
       ) {
         setRenderElement("otp-sent");
       }
@@ -117,7 +125,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-          "Invalid tow factor authentication token"
+        "Invalid tow factor authentication token"
       ) {
         showNotice({
           status: "error",
@@ -128,8 +136,27 @@ const Login = () => {
   };
 
   const internalLoging = async () => {
+
+    const email = inputEmail.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showNotice({
+        status: "error",
+        text: "Please enter a valid email address.",
+      });
+      return;
+    }
+
+    if (!/^\d{6}$/.test(pin)) {
+      showNotice({
+        status: "error",
+        text: "Enter a valid 6-digit OTP.",
+      });
+      return;
+    }
+
     const userdata = {
-      email: inputEmail,
+      email: inputEmail.trim(),
       password: inputPassword,
       otp: pin,
     };
@@ -159,7 +186,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-          "Invalid tow factor authentication token"
+        "Invalid tow factor authentication token"
       ) {
         showNotice({
           status: "error",
@@ -169,7 +196,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-          "two-factor authentication code is required"
+        "two-factor authentication code is required"
       ) {
         showNotice({
           status: "error",
@@ -179,7 +206,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-          "invalid two-factor authentication code"
+        "invalid two-factor authentication code"
       ) {
         showNotice({
           status: "error",
@@ -289,6 +316,7 @@ const Login = () => {
                   window.open(
                     `https://app.satoplayer.com/account-recovery`,
                     "_blank",
+                    "noopener,noreferrer"
                   );
                 }}
               >
@@ -358,6 +386,7 @@ const Login = () => {
                 window.open(
                   `https://app.satoplayer.com/forgot-password`,
                   "_blank",
+                  "noopener,noreferrer"
                 );
               }}
             >
@@ -391,7 +420,7 @@ const Login = () => {
                 className="sato-link"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  window.open(`https://app.satoplayer.com/register`, "_blank");
+                  window.open(`https://app.satoplayer.com/register`, "_blank", "noopener,noreferrer");
                 }}
               >
                 Register Now

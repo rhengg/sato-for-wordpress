@@ -65,7 +65,7 @@ const ImageRadioGroup = ({
                 opt.name !== "halcyon"
               ) {
                 e.preventDefault(); // prevent radio selection
-                window.open("/plans", "_blank");
+                window.open("/plans", "_blank", "noopener,noreferrer");
               }
             }}
             style={{
