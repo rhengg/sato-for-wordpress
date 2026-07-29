@@ -155,7 +155,7 @@ const Home = ({ token }: { token: string }) => {
   >("halcyon");
   const [notice, setNotice] = React.useState<NoticeType>();
   const [actionLoading, setActionLoading] = React.useState<string>();
-
+  const { nonce, apiUrl } = window.satoConfig;
   const [view, setView] = React.useState<View>({
     fields: ["videotitle", "shortcode", "updated_at"],
     filters: [],
@@ -306,6 +306,13 @@ const Home = ({ token }: { token: string }) => {
       }
     } catch (error: any) {
       if (error.response.status === 401) {
+        await fetch(`${apiUrl}logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-WP-Nonce": nonce,
+          },
+        });
         window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
       if (error?.response?.status === 404) {
@@ -327,6 +334,13 @@ const Home = ({ token }: { token: string }) => {
       setData(res.data);
     } catch (error: any) {
       if (error.response.status === 401) {
+        await fetch(`${apiUrl}logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-WP-Nonce": nonce,
+          },
+        });
         window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
       if (error.response.status === 402) {

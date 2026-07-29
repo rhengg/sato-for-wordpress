@@ -21,6 +21,8 @@ const MediaLibrary = (props: any) => {
   const [media, setMedia] = React.useState([]);
   const [refetch, setRefetch] = React.useState(0);
   const [activePlan, setActivePlan] = React.useState<any>();
+  const [usageData, setUsageData] = React.useState<any>();
+  const [usageLoading, setUsageLoading] = React.useState(true);
   const [totalVideoCount, setTotalVideoCount] = React.useState<any>();
   const [isLoading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState<any>();
@@ -151,6 +153,18 @@ const MediaLibrary = (props: any) => {
     return result.slice(start, end);
   }, [media, view.search, view.filters, view.sort, view.perPage, view.page]);
 
+  const fetchUsage = async () => {
+    try {
+      const res = await axios.get("/usages");
+      setUsageData(res.data);
+    } catch (e) {
+      setUsageLoading(false);
+      console.log("error usage", e);
+    } finally {
+      setUsageLoading(false);
+    }
+  };
+
   const fetchSubscription = async () => {
     try {
       const res = await axios.get(`/subscriptions`, {
@@ -277,6 +291,7 @@ const MediaLibrary = (props: any) => {
 
   React.useEffect(() => {
     fetchMedia();
+    fetchUsage();
   }, [refetch]);
 
   const deleteAssets = async (item: any) => {
@@ -314,7 +329,7 @@ const MediaLibrary = (props: any) => {
       });
   }, []);
 
-  if (isLoading && !length && !activePlan)
+  if (isLoading && !length && !activePlan && usageLoading)
     return (
       <div
         style={{
@@ -338,7 +353,7 @@ const MediaLibrary = (props: any) => {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "2fr 1fr",
+            gridTemplateColumns: "1fr 1fr 1fr",
             columnGap: "1rem",
             alignItems: "center",
             marginBottom: "1.0rem",
@@ -368,7 +383,7 @@ const MediaLibrary = (props: any) => {
                 setOpen={setOpenModalUpload}
                 title={``}
                 size="md"
-              // closeButton={false}
+                // closeButton={false}
               >
                 <div className="v-picker-container">
                   <VideoPicker
@@ -386,28 +401,54 @@ const MediaLibrary = (props: any) => {
               </Modal>
             </div>
           </div>
-          {activePlan?.amount >= 0 && (
-            <div
-              className="w-100"
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <VideoQuota
-                used={totalVideoCount}
-                total={activePlan?.total_video_upload_limit}
-                maxSize={activePlan?.per_video_upload_limit}
-                onChangePlanClick={() => {
-                  window.open(
-                    `https://app.satoplayer.com/plans/${countryCode}`,
-                    "_blank",
-                    "noopener,noreferrer"
-                  );
+
+          {usageData && (
+            <>
+              <div
+                className="w-100"
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
                 }}
-              />
-            </div>
+              >
+                <VideoQuota
+                  usedVideos={usageData?.video_count}
+                  totalVideos={usageData?.video_upload_limit}
+                  usedStorage={usageData?.storage}
+                  totalStorage={usageData?.storage_limit}
+                  name="Storage"
+                  onChangePlanClick={() => {
+                    window.open(
+                      `https://app.satoplayer.com/plans/${countryCode}`,
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                  }}
+                />
+              </div>
+              <div
+                className="w-100"
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                <VideoQuota
+                  usedStorage={usageData?.bandwidth}
+                  totalStorage={usageData?.bandwidth_limit}
+                  name="Bandwidth"
+                  onChangePlanClick={() => {
+                    window.open(
+                      `https://app.satoplayer.com/plans/${countryCode}`,
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                  }}
+                />
+              </div>
+            </>
           )}
         </div>
         <div className="desktop-text-render">
@@ -569,7 +610,7 @@ const MediaLibrary = (props: any) => {
                     style={{
                       color:
                         item.transcription_status === "failed" ||
-                          transcriptionFailed === item.id
+                        transcriptionFailed === item.id
                           ? "var(--negative)"
                           : item.transcription_status === "completed"
                             ? "var(--positive)"

@@ -69,33 +69,35 @@ export const fetchImage = async (url: string, retries = 2): Promise<Blob> => {
   } catch (error) {
     if (retries > 0) {
       console.log("Retrying fetchImage...", retries);
-
-      // wait before retry (important for CDN propagation)
       await new Promise((resolve) => setTimeout(resolve, 500));
-
       return fetchImage(url, retries - 1);
     }
-
-    throw error; // finally fail
+    throw error;
   }
 };
 
 export function sanitizeFileNameForS3Key(fileName: string) {
-  // Split name and extension
   const parts = fileName.split(".");
   const ext = parts.pop()?.toLowerCase() || "";
-  const base = parts.join("."); // In case name had multiple dots
-
-  // Sanitize the base filename
+  const base = parts.join(".");
   const cleanBase = base
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/[^a-zA-Z0-9\-_]+/g, "") // Allow only letters, numbers, -, _
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9\-_]+/g, "")
     .toLowerCase();
-
   const randomFallback = "file_" + Math.floor(Math.random() * 100000);
-
-  // Fallback when name becomes empty
   const finalBase = cleanBase || randomFallback;
-
   return ext ? `${finalBase}.${ext}` : finalBase;
+}
+
+export function readableSizeFromMB(mb: number) {
+  const sizes = ["MB", "GB", "TB", "PB"];
+  let size = Number(mb);
+  let i = 0;
+
+  while (size >= 1024 && i < sizes.length - 1) {
+    size /= 1024;
+    i++;
+  }
+
+  return `${parseInt(size.toString())} ${sizes[i]}`;
 }

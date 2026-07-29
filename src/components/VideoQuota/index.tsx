@@ -1,29 +1,41 @@
 import React from "react";
 import "./VideoQuota.css";
 import { Text } from "@wordpress/ui";
+import { readableSizeFromMB } from "../../utils/helper";
 
 type VideoQuotaProps = {
-  used: number;
-  total: number;
-  maxSize: string;
+  usedVideos?: number;
+  totalVideos?: number;
+  usedStorage: string;
+  totalStorage: string;
+  name: string;
   onChangePlanClick: () => void;
 };
 
 const VideoQuota: React.FC<VideoQuotaProps> = ({
-  used,
-  total,
-  maxSize,
+  usedVideos,
+  totalVideos,
+  usedStorage,
+  totalStorage,
+  name,
   onChangePlanClick,
 }) => {
-  const percentage = (used / total) * 100;
+  const storagePercentage =
+    Number(totalStorage) > 0
+      ? Math.min((Number(usedStorage) / Number(totalStorage)) * 100, 100)
+      : 0;
 
   return (
     <div className="video-quota-container">
       <div className="video-quota-header">
         <div className="video-quota-text">
-          <Text variant="body-lg">{`Usage: ${used}/${total} videos`}</Text>
-          <Text variant="body-lg"> | </Text>
-          <Text variant="body-lg">{`${maxSize} MB/video`}</Text>
+          <Text variant="body-lg">{`${name}: ${readableSizeFromMB(Number(usedStorage))}/${readableSizeFromMB(Number(totalStorage))}`}</Text>
+          {usedVideos && totalVideos && (
+            <>
+              <Text variant="body-lg"> | </Text>
+              <Text variant="body-lg">{`${usedVideos}/${totalVideos} videos`}</Text>
+            </>
+          )}
         </div>
         <Text
           variant="heading-lg"
@@ -31,13 +43,13 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
           style={{ cursor: "pointer" }}
           onClick={onChangePlanClick}
         >
-          Change Plan
+          Add More
         </Text>
       </div>
       <div className="video-quota-progress-bar">
         <div
           className="video-quota-progress-fill"
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${storagePercentage}%` }}
         />
       </div>
     </div>
