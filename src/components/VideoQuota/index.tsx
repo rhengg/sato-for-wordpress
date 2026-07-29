@@ -30,11 +30,9 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
       <div className="video-quota-header">
         <div className="video-quota-text">
           <Text variant="body-lg">{`${name}: ${readableSizeFromMB(Number(usedStorage))}/${readableSizeFromMB(Number(totalStorage))}`}</Text>
+          {usedVideos && totalVideos && <Text variant="body-lg"> | </Text>}
           {usedVideos && totalVideos && (
-            <>
-              <Text variant="body-lg"> | </Text>
-              <Text variant="body-lg">{`${usedVideos}/${totalVideos} videos`}</Text>
-            </>
+            <Text variant="body-lg">{`${usedVideos}/${totalVideos} videos`}</Text>
           )}
         </div>
         <Text

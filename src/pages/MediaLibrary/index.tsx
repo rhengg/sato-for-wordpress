@@ -12,7 +12,7 @@ import Loader from "../../components/Loader";
 import { Button, Notice } from "@wordpress/components";
 import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
-import { timeAgo } from "../../utils/helper";
+import { readableSizeFromMB, timeAgo } from "../../utils/helper";
 import config from "../../config";
 
 const MediaLibrary = (props: any) => {
@@ -36,7 +36,7 @@ const MediaLibrary = (props: any) => {
   const [actionLoading, setActionLoading] = React.useState<string>();
   const [countryCode, setCountryCode] = React.useState("US");
   const [view, setView] = React.useState<View>({
-    fields: ["uploaded_at", "speech-to-text"],
+    fields: ["bandwidth", "uploaded_at", "speech-to-text"],
     filters: [],
     groupBy: undefined,
     layout: {},
@@ -582,6 +582,19 @@ const MediaLibrary = (props: any) => {
                 label: "Video Name",
                 type: "text",
                 getValue: ({ item }) => item.name,
+              },
+              {
+                id: "bandwidth",
+                label: "Bandwidth",
+                type: "text",
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                getValue: ({ item }) => {
+                  return typeof item.bandwidth === "number"
+                    ? readableSizeFromMB(item.bandwidth)
+                    : "--";
+                },
               },
               {
                 id: "uploaded_at",
