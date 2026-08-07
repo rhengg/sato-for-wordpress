@@ -69,9 +69,15 @@ const Tooltip: React.FC<TooltipProps> = ({
         updatePosition();
         timeoutRef.current = setTimeout(() => {
           setVisible(true);
-        }, 800);
+        }, 600);
       }}
-      onMouseLeave={() => setVisible(false)}
+      onMouseLeave={() => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        setVisible(false);
+      }}
       style={{
         display: "flex",
         alignItems: "center",

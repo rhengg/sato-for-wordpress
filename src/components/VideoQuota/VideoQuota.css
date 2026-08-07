@@ -19,6 +19,7 @@
 .video-quota-text {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -36,7 +37,7 @@
 }
 
 .video-quota-progress-bar {
-  height: 8px;
+  height: 0.25rem;
   background-color: #d5d5d5;
   position: relative;
 }
@@ -45,9 +46,4 @@
   height: 100%;
   background-color: var(--primary);
   transition: width 0.3s ease-in-out;
-}
-@media only screen and (max-width: 1590px) {
-  .video-quota-header {
-    padding: 0.5rem 1rem;
-  }
 }

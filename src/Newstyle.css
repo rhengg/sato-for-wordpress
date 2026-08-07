@@ -289,6 +289,14 @@ li::marker {
   font-family: "Satoshi-Regular";
 }
 
+.sato-topbar-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+.sato-topbar-icon:hover {
+  color: var(--primaryHover);
+}
+
 .sato-action-icon {
   font-size: 20px;
   cursor: pointer;

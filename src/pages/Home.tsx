@@ -16,11 +16,14 @@ import ImageRadioGroup from "../components/ImageRadioButton";
 import playerTemplate from "../database/playerTemplate.json";
 import { timeAgo } from "../utils/helper";
 import { Button, Snackbar } from "@wordpress/components";
-import { Text } from "@wordpress/ui";
+import { IconButton, Text } from "@wordpress/ui";
+import { help } from "@wordpress/icons";
 import { DataViews, View } from "@wordpress/dataviews";
 import DetailMenu from "../components/DetailMenu";
 import Tooltip from "../components/Tooltip";
 import { encodeBase64 } from "../utils/base64";
+import NotificationPopover from "../components/NotificationPopover";
+import EmptyPlayersState from "../components/EmptyCard";
 
 export interface Player {
   id: string;
@@ -488,6 +491,29 @@ const Home = ({ token }: { token: string }) => {
         }}
       >
         <DetailMenu />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            position: "relative",
+          }}
+        >
+          <IconButton
+            icon={help}
+            label=" Get Support "
+            size="compact"
+            variant="minimal"
+            onClick={() => {
+              window.open(
+                `https://www.satoplayer.com/contact-us`,
+                "_blank",
+                "noopener,noreferrer",
+              );
+            }}
+          />
+          <NotificationPopover token={token} />
+        </div>
       </div>
       {notice && (
         <div
@@ -631,273 +657,286 @@ const Home = ({ token }: { token: string }) => {
           <p className="subtitle-three">Video Players</p>
         </div>
       </div>
-
-      <div
-        className="--wp-dataviews-color-background"
-        style={{
-          height: "100%",
-        }}
-      >
-        <DataViews
-          actions={[
-            {
-              id: "copy_code",
-              isPrimary: false,
-              label: "Copy Short Code",
-              modalFocusOnMount: "firstContentElement",
-              supportsBulk: false,
-              callback(items, context) {
-                try {
-                  navigator.clipboard.writeText(
-                    `[sato_player id="${items[0].id}"]`,
-                  );
-                  showNotice({ status: "success", text: "Code copied!" });
-                } catch (error) {
-                  showNotice({ status: "error", text: "Error copying code!" });
-                }
-              },
-            },
-            {
-              RenderModal: ({ items, closeModal, onActionPerformed }) => (
-                <>
-                  <Text variant="body-lg">
-                    Are you sure want to duplicate this player?
-                  </Text>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                      marginTop: "1rem",
-                    }}
-                  >
-                    <Button
-                      autoFocus
-                      variant="primary"
-                      __next40pxDefaultSize
-                      onClick={() => duplicatePlayer(items[0])}
-                      isBusy={
-                        actionLoading === "duplicate-player" ? true : false
-                      }
-                    >
-                      Duplicate
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      __next40pxDefaultSize
-                      onClick={closeModal}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              ),
-              id: "duplicate",
-              isPrimary: false,
-              label: "Duplicate item",
-              modalFocusOnMount: "firstContentElement",
-              modalHeader: () => {
-                return "Duplicate player?";
-              },
-              supportsBulk: false,
-            },
-            {
-              RenderModal: ({ items, closeModal, onActionPerformed }) => (
-                <>
-                  <Text variant="body-lg">
-                    Deleting this will affect video playback on your website
-                    where it might be embedded
-                  </Text>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1rem",
-                      marginTop: "1rem",
-                    }}
-                  >
-                    <Button
-                      variant="primary"
-                      isDestructive={true}
-                      __next40pxDefaultSize
-                      onClick={() => deletePlayer(items[0])}
-                      isBusy={actionLoading === "delete-player" ? true : false}
-                    >
-                      Delete permanently
-                    </Button>
-
-                    <Button
-                      autoFocus
-                      variant="tertiary"
-                      __next40pxDefaultSize
-                      onClick={closeModal}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </>
-              ),
-              id: "delete",
-              isPrimary: false,
-              label: "Delete item",
-              modalFocusOnMount: "firstContentElement",
-              modalHeader: () => {
-                return "Delete video player permanently?";
-              },
-              supportsBulk: false,
-            },
-          ]}
-          config={{
-            perPageSizes: [5, 10],
+      {modifiedData.length === 0 && (
+        <EmptyPlayersState
+          onButtonClick={() => {
+            setOpenModalAdd(true);
           }}
-          data={modifiedData}
-          defaultLayouts={{
-            table: true,
+        />
+      )}
+      {modifiedData.length !== 0 && (
+        <div
+          className="--wp-dataviews-color-background"
+          style={{
+            height: "100%",
           }}
-          fields={[
-            {
-              id: "image",
-              label: "Image",
-              render: (data) => {
-                return (
-                  <img
-                    style={{
-                      width: "100px",
-                      aspectRatio: "16/9",
-                      objectFit: "cover",
-                      borderRadius: "0.25rem",
-                      cursor: "pointer",
-                    }}
-                    src={
-                      data.item.config.playerThumbnailImageUrl.replace(
-                        "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
-                        "skara-imagecontent-staging.b-cdn.net/",
-                      ) ||
-                      "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
-                    }
-                    alt={"no image found"}
-                    className="card-thumbnail"
-                  />
-                );
+        >
+          <DataViews
+            actions={[
+              {
+                id: "copy_code",
+                isPrimary: false,
+                label: "Copy Short Code",
+                modalFocusOnMount: "firstContentElement",
+                supportsBulk: false,
+                callback(items, context) {
+                  try {
+                    navigator.clipboard.writeText(
+                      `[sato_player id="${items[0].id}"]`,
+                    );
+                    showNotice({ status: "success", text: "Code copied!" });
+                  } catch (error) {
+                    showNotice({
+                      status: "error",
+                      text: "Error copying code!",
+                    });
+                  }
+                },
               },
-              type: "media",
-            },
-            {
-              enableGlobalSearch: true,
-              filterBy: {
-                operators: ["contains", "notContains", "startsWith"],
-              },
-              render: ({ item }) => (
-                <Text className="sato-dataview-cell" variant="body-md">
-                  {item.name}
-                </Text>
-              ),
-              id: "name",
-              label: "Player Name",
-              type: "text",
-              getValue: ({ item }) => item.name,
-            },
-            {
-              id: "updated_at",
-              label: "Updated at",
-              type: "text",
-              filterBy: {
-                operators: ["contains", "notContains", "startsWith"],
-              },
-              getValue: ({ item }) => {
-                return timeAgo(Number(item.updated_at));
-              },
-            },
-
-            {
-              id: "videotitle",
-              label: "Video Title",
-              type: "text",
-              filterBy: {
-                operators: ["contains", "notContains", "startsWith"],
-              },
-              getValue: ({ item }) => {
-                return item.config.videotitle || "--";
-              },
-            },
-            {
-              id: "shortcode",
-              label: "Short Code",
-              type: "text",
-              filterBy: false,
-              getValue: ({ item }) => {
-                return `[sato_player id="${item.id}"]`;
-              },
-              render: (data) => {
-                return (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      marginInlineEnd: "1rem",
-                    }}
-                  >
+              {
+                RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                  <>
+                    <Text variant="body-lg">
+                      Are you sure want to duplicate this player?
+                    </Text>
                     <div
                       style={{
-                        border: "1px solid var(--stroke)",
-                        borderRadius: "4px",
-                        background: "var(--surface)",
-                        padding: "10px",
-                        fontFamily: "monospace",
-                        whiteSpace: "nowrap",
-                        width: "23rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                        marginTop: "1rem",
                       }}
                     >
-                      <Text variant="body-md">{`[sato_player id="${data.item.id}"]`}</Text>
+                      <Button
+                        autoFocus
+                        variant="primary"
+                        __next40pxDefaultSize
+                        onClick={() => duplicatePlayer(items[0])}
+                        isBusy={
+                          actionLoading === "duplicate-player" ? true : false
+                        }
+                      >
+                        Duplicate
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        __next40pxDefaultSize
+                        onClick={closeModal}
+                      >
+                        Cancel
+                      </Button>
                     </div>
+                  </>
+                ),
+                id: "duplicate",
+                isPrimary: false,
+                label: "Duplicate item",
+                modalFocusOnMount: "firstContentElement",
+                modalHeader: () => {
+                  return "Duplicate player?";
+                },
+                supportsBulk: false,
+              },
+              {
+                RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                  <>
+                    <Text variant="body-lg">
+                      Deleting this will affect video playback on your website
+                      where it might be embedded
+                    </Text>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <Button
+                        variant="primary"
+                        isDestructive={true}
+                        __next40pxDefaultSize
+                        onClick={() => deletePlayer(items[0])}
+                        isBusy={
+                          actionLoading === "delete-player" ? true : false
+                        }
+                      >
+                        Delete permanently
+                      </Button>
 
-                    <Tooltip text="Copy Short Code">
-                      <span
-                        className="material-symbols-outlined sato-action-icon"
-                        onClick={() => {
-                          try {
-                            navigator.clipboard.writeText(
-                              `[sato_player id="${data.item.id}"]`,
-                            );
-                            showNotice({
-                              status: "success",
-                              text: "Code copied!",
-                            });
-                          } catch (error) {
-                            showNotice({
-                              status: "error",
-                              text: "Error copying code!",
-                            });
-                          }
+                      <Button
+                        autoFocus
+                        variant="tertiary"
+                        __next40pxDefaultSize
+                        onClick={closeModal}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </>
+                ),
+                id: "delete",
+                isPrimary: false,
+                label: "Delete item",
+                modalFocusOnMount: "firstContentElement",
+                modalHeader: () => {
+                  return "Delete video player permanently?";
+                },
+                supportsBulk: false,
+              },
+            ]}
+            config={{
+              perPageSizes: [5, 10],
+            }}
+            data={modifiedData}
+            defaultLayouts={{
+              table: true,
+            }}
+            fields={[
+              {
+                id: "image",
+                label: "Image",
+                render: (data) => {
+                  return (
+                    <img
+                      style={{
+                        width: "100px",
+                        aspectRatio: "16/9",
+                        objectFit: "cover",
+                        borderRadius: "0.25rem",
+                        cursor: "pointer",
+                      }}
+                      src={
+                        data.item.config.playerThumbnailImageUrl.replace(
+                          "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
+                          "skara-imagecontent-staging.b-cdn.net/",
+                        ) ||
+                        "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
+                      }
+                      alt={"no image found"}
+                      className="card-thumbnail"
+                    />
+                  );
+                },
+                type: "media",
+              },
+              {
+                enableGlobalSearch: true,
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                render: ({ item }) => (
+                  <Text className="sato-dataview-cell" variant="body-md">
+                    {item.name}
+                  </Text>
+                ),
+                id: "name",
+                label: "Player Name",
+                type: "text",
+                getValue: ({ item }) => item.name,
+              },
+              {
+                id: "updated_at",
+                label: "Updated at",
+                type: "text",
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                getValue: ({ item }) => {
+                  return timeAgo(Number(item.updated_at));
+                },
+              },
+
+              {
+                id: "videotitle",
+                label: "Video Title",
+                type: "text",
+                filterBy: {
+                  operators: ["contains", "notContains", "startsWith"],
+                },
+                getValue: ({ item }) => {
+                  return item.config.videotitle || "--";
+                },
+              },
+              {
+                id: "shortcode",
+                label: "Short Code",
+                type: "text",
+                filterBy: false,
+                getValue: ({ item }) => {
+                  return `[sato_player id="${item.id}"]`;
+                },
+                render: (data) => {
+                  return (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginInlineEnd: "1rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          border: "1px solid var(--stroke)",
+                          borderRadius: "4px",
+                          background: "var(--surface)",
+                          padding: "10px",
+                          fontFamily: "monospace",
+                          whiteSpace: "nowrap",
+                          width: "23rem",
                         }}
                       >
-                        content_copy
-                      </span>
-                    </Tooltip>
-                  </div>
-                );
+                        <Text variant="body-md">{`[sato_player id="${data.item.id}"]`}</Text>
+                      </div>
+
+                      <Tooltip text="Copy Short Code">
+                        <span
+                          className="material-symbols-outlined sato-action-icon"
+                          onClick={() => {
+                            try {
+                              navigator.clipboard.writeText(
+                                `[sato_player id="${data.item.id}"]`,
+                              );
+                              showNotice({
+                                status: "success",
+                                text: "Code copied!",
+                              });
+                            } catch (error) {
+                              showNotice({
+                                status: "error",
+                                text: "Error copying code!",
+                              });
+                            }
+                          }}
+                        >
+                          content_copy
+                        </span>
+                      </Tooltip>
+                    </div>
+                  );
+                },
               },
-            },
-          ]}
-          getItemId={(item) => String(item.id)}
-          isItemClickable={() => true}
-          onChangeView={(item) => {
-            setView(item);
-          }}
-          onClickItem={(item) => {
-            handleRedirect(item.id);
-          }}
-          isLoading={data ? false : true}
-          paginationInfo={{
-            totalItems: data.length,
-            totalPages: Math.ceil(data.length / 5),
-          }}
-          searchLabel="Player Name"
-          search={true}
-          view={view}
-        />
-      </div>
+            ]}
+            getItemId={(item) => String(item.id)}
+            isItemClickable={() => true}
+            onChangeView={(item) => {
+              setView(item);
+            }}
+            onClickItem={(item) => {
+              handleRedirect(item.id);
+            }}
+            isLoading={data ? false : true}
+            paginationInfo={{
+              totalItems: data.length,
+              totalPages: Math.ceil(data.length / 5),
+            }}
+            searchLabel="Player Name"
+            search={true}
+            view={view}
+          />
+        </div>
+      )}
 
       <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "1rem" }}>
         <MediaLibrary length={10} showNotice={showNotice} token={token} />

@@ -14,6 +14,7 @@ import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
 import { readableSizeFromMB, timeAgo } from "../../utils/helper";
 import config from "../../config";
+import EmptyPlayersState from "../../components/EmptyCard";
 
 const MediaLibrary = (props: any) => {
   const { length, showNotice, token } = props;
@@ -352,11 +353,11 @@ const MediaLibrary = (props: any) => {
       <div style={{ padding: "1rem 0" }}>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            columnGap: "1rem",
+            display: "flex",
+            justifyContent: "space-between",
             alignItems: "center",
             marginBottom: "1.0rem",
+            gap: "1rem",
           }}
         >
           <div
@@ -403,54 +404,46 @@ const MediaLibrary = (props: any) => {
           </div>
 
           {usageData && (
-            <>
-              <div
-                className="w-100"
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
+            <div
+              className="w-100"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <VideoQuota
+                usedVideos={usageData?.video_count}
+                totalVideos={usageData?.video_upload_limit}
+                usedStorage={usageData?.storage}
+                totalStorage={usageData?.storage_limit}
+                name="Storage"
+                onChangePlanClick={() => {
+                  window.open(
+                    `https://app.satoplayer.com/plans/${countryCode}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
                 }}
-              >
-                <VideoQuota
-                  usedVideos={usageData?.video_count}
-                  totalVideos={usageData?.video_upload_limit}
-                  usedStorage={usageData?.storage}
-                  totalStorage={usageData?.storage_limit}
-                  name="Storage"
-                  onChangePlanClick={() => {
-                    window.open(
-                      `https://app.satoplayer.com/plans/${countryCode}`,
-                      "_blank",
-                      "noopener,noreferrer",
-                    );
-                  }}
-                />
-              </div>
-              <div
-                className="w-100"
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
+              />
+
+              <VideoQuota
+                usedStorage={usageData?.bandwidth}
+                totalStorage={usageData?.bandwidth_limit}
+                name="Bandwidth"
+                onChangePlanClick={() => {
+                  window.open(
+                    `https://app.satoplayer.com/plans/${countryCode}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
                 }}
-              >
-                <VideoQuota
-                  usedStorage={usageData?.bandwidth}
-                  totalStorage={usageData?.bandwidth_limit}
-                  name="Bandwidth"
-                  onChangePlanClick={() => {
-                    window.open(
-                      `https://app.satoplayer.com/plans/${countryCode}`,
-                      "_blank",
-                      "noopener,noreferrer",
-                    );
-                  }}
-                />
-              </div>
-            </>
+              />
+            </div>
           )}
         </div>
+
         <div className="desktop-text-render">
           <p
             className="subtitle-three"
@@ -484,197 +477,211 @@ const MediaLibrary = (props: any) => {
           </div>
         )}
 
-        <div
-          className="--wp-dataviews-color-background"
-          style={{
-            height: "100%",
-          }}
-        >
-          <DataViews
-            actions={[
-              {
-                id: "copy_url",
-                isPrimary: false,
-                label: "Copy Video URL",
-                modalFocusOnMount: "firstContentElement",
-                supportsBulk: false,
-                callback(items, context) {
-                  try {
-                    const construct_video_url = new URL(
-                      items[0].url,
-                      config.VIDEO_CDN_URL,
-                    ).toString();
-                    navigator.clipboard.writeText(construct_video_url);
-                    showNotice({
-                      status: "success",
-                      text: "Video URL copied!",
-                    });
-                  } catch (error) {
-                    showNotice({
-                      status: "error",
-                      text: "Error copying Video URL!",
-                    });
-                  }
+        {modifiedData.length === 0 && (
+          <EmptyPlayersState
+            heading="You haven't uploaded any videos yet."
+            description="Upload video files here to process them for streaming and organize them into your media library."
+            buttonText="Upload Your First Video"
+            imageSrc="video_file"
+            buttonIcon="cloud-upload"
+            onButtonClick={() => setOpenModalUpload(true)}
+          />
+        )}
+        {modifiedData.length !== 0 && (
+          <div
+            className="--wp-dataviews-color-background"
+            style={{
+              height: "100%",
+            }}
+          >
+            <DataViews
+              actions={[
+                {
+                  id: "copy_url",
+                  isPrimary: false,
+                  label: "Copy Video URL",
+                  modalFocusOnMount: "firstContentElement",
+                  supportsBulk: false,
+                  callback(items, context) {
+                    try {
+                      const construct_video_url = new URL(
+                        items[0].url,
+                        config.VIDEO_CDN_URL,
+                      ).toString();
+                      navigator.clipboard.writeText(construct_video_url);
+                      showNotice({
+                        status: "success",
+                        text: "Video URL copied!",
+                      });
+                    } catch (error) {
+                      showNotice({
+                        status: "error",
+                        text: "Error copying Video URL!",
+                      });
+                    }
+                  },
                 },
-              },
-              {
-                RenderModal: ({ items, closeModal, onActionPerformed }) => (
-                  <>
-                    <Text variant="body-lg">
-                      Deleting this video will permanently remove it from your
-                      video library.
-                    </Text>
-                    <div
+                {
+                  RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                    <>
+                      <Text variant="body-lg">
+                        Deleting this video will permanently remove it from your
+                        video library.
+                      </Text>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "1rem",
+                          marginTop: "1rem",
+                        }}
+                      >
+                        <Button
+                          variant="primary"
+                          isDestructive={true}
+                          __next40pxDefaultSize
+                          onClick={() => deleteAssets(items[0])}
+                          isBusy={
+                            actionLoading === "delete-video" ? true : false
+                          }
+                        >
+                          Delete permanently
+                        </Button>
+                        <Button
+                          onClick={closeModal}
+                          autoFocus
+                          __next40pxDefaultSize
+                          variant="tertiary"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </>
+                  ),
+                  id: "delete",
+                  isPrimary: false,
+                  label: "Delete item",
+                  modalFocusOnMount: "firstContentElement",
+                  modalHeader: () => {
+                    return "Delete video permanently?";
+                  },
+                  supportsBulk: false,
+                },
+              ]}
+              config={{
+                perPageSizes: [5, 10],
+              }}
+              data={modifiedData}
+              defaultLayouts={{
+                table: true,
+              }}
+              fields={[
+                {
+                  enableGlobalSearch: true,
+                  filterBy: {
+                    operators: ["contains", "notContains", "startsWith"],
+                  },
+                  isValid: {
+                    required: true,
+                  },
+                  id: "videoname",
+                  label: "Video Name",
+                  type: "text",
+                  getValue: ({ item }) => item.name,
+                },
+                {
+                  id: "bandwidth",
+                  label: "Bandwidth",
+                  type: "text",
+                  filterBy: {
+                    operators: ["contains", "notContains", "startsWith"],
+                  },
+                  getValue: ({ item }) => {
+                    return typeof item.bandwidth === "number"
+                      ? readableSizeFromMB(item.bandwidth)
+                      : "--";
+                  },
+                },
+                {
+                  id: "uploaded_at",
+                  label: "Uploaded at",
+                  type: "text",
+                  filterBy: {
+                    operators: ["contains", "notContains", "startsWith"],
+                  },
+                  getValue: ({ item }) => {
+                    return timeAgo(Number(item.updated_at));
+                  },
+                },
+                {
+                  id: "speech-to-text",
+                  label: "Speech-to-text",
+                  type: "text",
+                  filterBy: {
+                    operators: ["contains", "notContains", "startsWith"],
+                  },
+                  getValue: ({ item }) => {
+                    return item.transcription_status || "Generate";
+                  },
+                  render: ({ item }) => (
+                    <Button
+                      variant="tertiary"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                        marginTop: "1rem",
+                        color:
+                          item.transcription_status === "failed" ||
+                          transcriptionFailed === item.id
+                            ? "var(--negative)"
+                            : item.transcription_status === "completed"
+                              ? "var(--positive)"
+                              : "revert-layer",
+                      }}
+                      onClick={(e: any) => {
+                        e.stopPropagation();
+                        if (
+                          !activePlan?.metadata?.premium_features?.caption ||
+                          item.transcription_status === "completed"
+                        ) {
+                          console.log("premium click");
+                          setShowPremiumNotice(true);
+
+                          setTimeout(() => {
+                            setShowPremiumNotice(false);
+                          }, 5000);
+                          return;
+                        }
+                        handleTranscribe(item?.id);
                       }}
                     >
-                      <Button
-                        variant="primary"
-                        isDestructive={true}
-                        __next40pxDefaultSize
-                        onClick={() => deleteAssets(items[0])}
-                        isBusy={actionLoading === "delete-video" ? true : false}
-                      >
-                        Delete permanently
-                      </Button>
-                      <Button
-                        onClick={closeModal}
-                        autoFocus
-                        __next40pxDefaultSize
-                        variant="tertiary"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </>
-                ),
-                id: "delete",
-                isPrimary: false,
-                label: "Delete item",
-                modalFocusOnMount: "firstContentElement",
-                modalHeader: () => {
-                  return "Delete video permanently?";
+                      {transcriptLoadingId === item.id ? (
+                        <Loader borderColor="var(--primary)" />
+                      ) : item.transcription_status === "failed" ||
+                        transcriptionFailed === item.id ? (
+                        <Text color="var(--negative)">Failed</Text>
+                      ) : item.transcription_status === "completed" ? (
+                        <Text color="var(--positive)">Generated</Text>
+                      ) : (
+                        <Text>Generate</Text>
+                      )}
+                    </Button>
+                  ),
                 },
-                supportsBulk: false,
-              },
-            ]}
-            config={{
-              perPageSizes: [5, 10],
-            }}
-            data={modifiedData}
-            defaultLayouts={{
-              table: true,
-            }}
-            fields={[
-              {
-                enableGlobalSearch: true,
-                filterBy: {
-                  operators: ["contains", "notContains", "startsWith"],
-                },
-                isValid: {
-                  required: true,
-                },
-                id: "videoname",
-                label: "Video Name",
-                type: "text",
-                getValue: ({ item }) => item.name,
-              },
-              {
-                id: "bandwidth",
-                label: "Bandwidth",
-                type: "text",
-                filterBy: {
-                  operators: ["contains", "notContains", "startsWith"],
-                },
-                getValue: ({ item }) => {
-                  return typeof item.bandwidth === "number"
-                    ? readableSizeFromMB(item.bandwidth)
-                    : "--";
-                },
-              },
-              {
-                id: "uploaded_at",
-                label: "Uploaded at",
-                type: "text",
-                filterBy: {
-                  operators: ["contains", "notContains", "startsWith"],
-                },
-                getValue: ({ item }) => {
-                  return timeAgo(Number(item.updated_at));
-                },
-              },
-              {
-                id: "speech-to-text",
-                label: "Speech-to-text",
-                type: "text",
-                filterBy: {
-                  operators: ["contains", "notContains", "startsWith"],
-                },
-                getValue: ({ item }) => {
-                  return item.transcription_status || "Generate";
-                },
-                render: ({ item }) => (
-                  <Button
-                    variant="tertiary"
-                    style={{
-                      color:
-                        item.transcription_status === "failed" ||
-                        transcriptionFailed === item.id
-                          ? "var(--negative)"
-                          : item.transcription_status === "completed"
-                            ? "var(--positive)"
-                            : "revert-layer",
-                    }}
-                    onClick={(e: any) => {
-                      e.stopPropagation();
-                      if (
-                        !activePlan?.metadata?.premium_features?.caption ||
-                        item.transcription_status === "completed"
-                      ) {
-                        console.log("premium click");
-                        setShowPremiumNotice(true);
-
-                        setTimeout(() => {
-                          setShowPremiumNotice(false);
-                        }, 5000);
-                        return;
-                      }
-                      handleTranscribe(item?.id);
-                    }}
-                  >
-                    {transcriptLoadingId === item.id ? (
-                      <Loader borderColor="var(--primary)" />
-                    ) : item.transcription_status === "failed" ||
-                      transcriptionFailed === item.id ? (
-                      <Text color="var(--negative)">Failed</Text>
-                    ) : item.transcription_status === "completed" ? (
-                      <Text color="var(--positive)">Generated</Text>
-                    ) : (
-                      <Text>Generate</Text>
-                    )}
-                  </Button>
-                ),
-              },
-            ]}
-            getItemId={(item) => String(item.id)}
-            isItemClickable={() => false}
-            onChangeView={(item) => {
-              setView(item);
-            }}
-            isLoading={media ? false : true}
-            paginationInfo={{
-              totalItems: media.length,
-              totalPages: Math.ceil(media.length / 5),
-            }}
-            searchLabel="Video Name"
-            search={true}
-            view={view}
-          />
-        </div>
+              ]}
+              getItemId={(item) => String(item.id)}
+              isItemClickable={() => false}
+              onChangeView={(item) => {
+                setView(item);
+              }}
+              isLoading={media ? false : true}
+              paginationInfo={{
+                totalItems: media.length,
+                totalPages: Math.ceil(media.length / 5),
+              }}
+              searchLabel="Video Name"
+              search={true}
+              view={view}
+            />
+          </div>
+        )}
       </div>
     </>
   );
