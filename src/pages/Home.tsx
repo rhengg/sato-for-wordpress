@@ -680,13 +680,7 @@ const Home = ({ token }: { token: string }) => {
           <WaveLoader />
         </div>
       )}
-      {data && data.length === 0 && (
-        <EmptyPlayersState
-          onButtonClick={() => {
-            setOpenModalAdd(true);
-          }}
-        />
-      )}
+
       {data && modifiedData && (
         <div
           className="--wp-dataviews-color-background"
@@ -957,6 +951,15 @@ const Home = ({ token }: { token: string }) => {
             searchLabel="Player Name"
             search={true}
             view={view}
+            empty={
+              <div style={{ margin: "0.5rem 0" }}>
+                <EmptyPlayersState
+                  onButtonClick={() => {
+                    setOpenModalAdd(true);
+                  }}
+                />
+              </div>
+            }
           />
         </div>
       )}

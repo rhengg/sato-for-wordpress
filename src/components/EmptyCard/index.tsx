@@ -37,7 +37,7 @@ const EmptyPlayersState = ({
       </div>
 
       <Text variant="body-xl" style={{ marginBottom: "1rem" }}>
-        {heading || "You haven't created any players yet"}
+        {heading || "No video players found"}
       </Text>
 
       <Text
@@ -48,7 +48,7 @@ const EmptyPlayersState = ({
         }}
       >
         {description ||
-          "Design and customize video players to match your brand before embedding them on your site."}
+          "Create and customize a video player to match your brand before embedding it on your site."}
       </Text>
 
       <Button
@@ -57,7 +57,7 @@ const EmptyPlayersState = ({
         icon={buttonIcon ? buttonIcon : "plus"}
         onClick={onButtonClick}
       >
-        {buttonText || "Create Your First Player"}
+        {buttonText || "Create New Player"}
       </Button>
     </div>
   );

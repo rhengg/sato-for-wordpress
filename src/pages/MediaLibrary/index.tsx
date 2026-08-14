@@ -492,16 +492,6 @@ const MediaLibrary = (props: any) => {
           </div>
         )}
 
-        {media && media.length === 0 && (
-          <EmptyPlayersState
-            heading="You haven't uploaded any videos yet."
-            description="Upload video files here to process them for streaming and organize them into your media library."
-            buttonText="Upload Your First Video"
-            imageSrc="video_file"
-            buttonIcon="cloud-upload"
-            onButtonClick={() => setOpenModalUpload(true)}
-          />
-        )}
         {media && modifiedData && (
           <div
             className="--wp-dataviews-color-background"
@@ -694,6 +684,18 @@ const MediaLibrary = (props: any) => {
               searchLabel="Video Name"
               search={true}
               view={view}
+              empty={
+                <div style={{ margin: "0.5rem 0" }}>
+                  <EmptyPlayersState
+                    heading="No videos found."
+                    description="Upload video files here to process them for streaming and organize them into your media library."
+                    buttonText="Upload New Video"
+                    imageSrc="video_file"
+                    buttonIcon="cloud-upload"
+                    onButtonClick={() => setOpenModalUpload(true)}
+                  />
+                </div>
+              }
             />
           </div>
         )}
