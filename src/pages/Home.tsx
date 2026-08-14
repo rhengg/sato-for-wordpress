@@ -464,6 +464,12 @@ const Home = ({ token }: { token: string }) => {
     }
   }, [refetch]);
 
+  React.useEffect(() => {
+    console.log("isLoading", isLoading);
+    console.log("data", data);
+    console.log("modifiedData", modifiedData);
+  }, [data, isLoading, modifiedData]);
+
   if (isLoading)
     return (
       <div
@@ -662,7 +668,7 @@ const Home = ({ token }: { token: string }) => {
         </div>
       </div>
 
-      {!modifiedData && (
+      {!data && (
         <div
           style={{
             display: "flex",
@@ -674,14 +680,14 @@ const Home = ({ token }: { token: string }) => {
           <WaveLoader />
         </div>
       )}
-      {modifiedData && modifiedData.length === 0 && (
+      {data && data.length === 0 && (
         <EmptyPlayersState
           onButtonClick={() => {
             setOpenModalAdd(true);
           }}
         />
       )}
-      {data && modifiedData && modifiedData.length !== 0 && (
+      {data && modifiedData && (
         <div
           className="--wp-dataviews-color-background"
           style={{

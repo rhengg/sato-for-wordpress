@@ -479,7 +479,7 @@ const MediaLibrary = (props: any) => {
           </div>
         )}
 
-        {!modifiedData && (
+        {!media && (
           <div
             style={{
               display: "flex",
@@ -492,7 +492,7 @@ const MediaLibrary = (props: any) => {
           </div>
         )}
 
-        {modifiedData && modifiedData.length === 0 && (
+        {media && media.length === 0 && (
           <EmptyPlayersState
             heading="You haven't uploaded any videos yet."
             description="Upload video files here to process them for streaming and organize them into your media library."
@@ -502,7 +502,7 @@ const MediaLibrary = (props: any) => {
             onButtonClick={() => setOpenModalUpload(true)}
           />
         )}
-        {media && modifiedData && modifiedData.length !== 0 && (
+        {media && modifiedData && (
           <div
             className="--wp-dataviews-color-background"
             style={{
