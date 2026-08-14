@@ -342,63 +342,48 @@ const Index = ({ token }: { token: string }) => {
       const isPremium = plan?.amount > 0 || plan?.name === "Collab";
       const premiumConfig = isPremium
         ? {
-            ...(playerById[0]?.config?.premium?.layoutConfig?.name && {
-              layoutConfig: {
-                name:
-                  playerById[0]?.config?.premium?.layoutConfig?.name ||
-                  "halcyon",
+            layoutConfig: {
+              name:
+                playerById[0]?.config?.premium?.layoutConfig?.name || "halcyon",
 
-                controls_bg:
-                  playerById[0]?.config?.premium?.layoutConfig?.controls_bg ||
-                  "#59585B",
+              controls_bg:
+                playerById[0]?.config?.premium?.layoutConfig?.controls_bg ||
+                "#59585B",
 
-                controls_padding:
-                  playerById[0]?.config?.premium?.layoutConfig
-                    ?.controls_padding || "16",
+              controls_padding:
+                playerById[0]?.config?.premium?.layoutConfig
+                  ?.controls_padding || "16",
 
-                controls_corner_radius:
-                  playerById[0]?.config?.premium?.layoutConfig
-                    ?.controls_corner_radius || "24",
-              },
-            }),
-            ...(playerById[0]?.config?.premium?.playerCTA?.cta && {
+              controls_corner_radius:
+                playerById[0]?.config?.premium?.layoutConfig
+                  ?.controls_corner_radius || "24",
+            },
+            ...(plan.metadata.premium_features.playerCTA.cta && {
               playerCTA: {
-                cta: playerById[0]?.config?.premium?.playerCTA?.cta || false,
-
+                cta: playerById[0]?.config?.premium?.playerCTA?.cta,
                 url: playerById[0]?.config?.premium?.playerCTA?.url || "",
-
                 buttonText:
                   playerById[0]?.config?.premium?.playerCTA?.buttonText || "",
-
                 placement:
-                  playerById[0]?.config?.premium?.playerCTA?.placement ||
-                  "bottom-left",
-
-                timing:
-                  playerById[0]?.config?.premium?.playerCTA?.timing || "post",
-
+                  playerById[0]?.config?.premium?.playerCTA?.placement || "",
+                timing: playerById[0]?.config?.premium?.playerCTA?.timing || "",
                 direction:
-                  playerById[0]?.config?.premium?.playerCTA?.direction ||
-                  "vertical",
-
+                  playerById[0]?.config?.premium?.playerCTA?.direction || "",
                 heading:
                   playerById[0]?.config?.premium?.playerCTA?.heading || "",
-
                 description:
                   playerById[0]?.config?.premium?.playerCTA?.description || "",
-
                 imageEnable:
                   playerById[0]?.config?.premium?.playerCTA?.imageEnable ||
                   false,
-
                 image: playerById[0]?.config?.premium?.playerCTA?.image || "",
               },
             }),
-            ...(playerById[0]?.config?.premium?.rapidEngage && {
-              rapidEngage: playerById[0]?.config?.premium?.rapidEngage || false,
+            ...(plan.metadata.premium_features.rapidEngage && {
+              rapidEngage: playerById[0]?.config?.premium?.rapidEngage,
             }),
-            ...(playerById[0]?.config?.premium?.caption && {
-              caption: playerById[0]?.config?.premium?.caption || false,
+            ...(plan.metadata.premium_features.caption && {
+              caption: playerById[0]?.config?.premium?.caption,
             }),
           }
         : undefined;
