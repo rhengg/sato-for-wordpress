@@ -15,11 +15,12 @@ import { DataViews, View } from "@wordpress/dataviews";
 import { readableSizeFromMB, timeAgo } from "../../utils/helper";
 import config from "../../config";
 import EmptyPlayersState from "../../components/EmptyCard";
+import WaveLoader from "../../components/Loader/WaveLoader";
 
 const MediaLibrary = (props: any) => {
   const { length, showNotice, token } = props;
   const [openModalUpload, setOpenModalUpload] = React.useState<boolean>(false);
-  const [media, setMedia] = React.useState([]);
+  const [media, setMedia] = React.useState<any[]>();
   const [refetch, setRefetch] = React.useState(0);
   const [activePlan, setActivePlan] = React.useState<any>();
   const [usageData, setUsageData] = React.useState<any>();
@@ -37,7 +38,7 @@ const MediaLibrary = (props: any) => {
   const [actionLoading, setActionLoading] = React.useState<string>();
   const [countryCode, setCountryCode] = React.useState("US");
   const [view, setView] = React.useState<View>({
-    fields: ["bandwidth", "uploaded_at", "speech-to-text"],
+    fields: ["storage", "uploaded_at", "speech-to-text"],
     filters: [],
     groupBy: undefined,
     layout: {},
@@ -104,6 +105,9 @@ const MediaLibrary = (props: any) => {
   };
 
   const modifiedData = React.useMemo(() => {
+    if (!media) {
+      return undefined;
+    }
     const search = view.search?.toLowerCase() ?? "";
     const sort = view.sort;
     const page = view.page ?? 1;
@@ -384,7 +388,6 @@ const MediaLibrary = (props: any) => {
                 setOpen={setOpenModalUpload}
                 title={``}
                 size="md"
-                // closeButton={false}
               >
                 <div className="v-picker-container">
                   <VideoPicker
@@ -392,7 +395,6 @@ const MediaLibrary = (props: any) => {
                     setFile={setFile}
                     setVideoUrl={(e) => {
                       console.log(e);
-                      // setVideoUrl(e);
                     }}
                     setRefetch={setRefetch}
                     setOpenModalUpload={setOpenModalUpload}
@@ -451,7 +453,7 @@ const MediaLibrary = (props: any) => {
           >
             Uploaded Videos
           </p>
-          {length && media.length > 9 && (
+          {length && media && media.length > 9 && (
             <Button
               variant="secondary"
               onClick={() => {
@@ -477,7 +479,20 @@ const MediaLibrary = (props: any) => {
           </div>
         )}
 
-        {modifiedData.length === 0 && (
+        {!modifiedData && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            <WaveLoader />
+          </div>
+        )}
+
+        {modifiedData && modifiedData.length === 0 && (
           <EmptyPlayersState
             heading="You haven't uploaded any videos yet."
             description="Upload video files here to process them for streaming and organize them into your media library."
@@ -487,7 +502,7 @@ const MediaLibrary = (props: any) => {
             onButtonClick={() => setOpenModalUpload(true)}
           />
         )}
-        {modifiedData.length !== 0 && (
+        {media && modifiedData && modifiedData.length !== 0 && (
           <div
             className="--wp-dataviews-color-background"
             style={{
@@ -590,15 +605,15 @@ const MediaLibrary = (props: any) => {
                   getValue: ({ item }) => item.name,
                 },
                 {
-                  id: "bandwidth",
-                  label: "Bandwidth",
+                  id: "storage",
+                  label: "Storage",
                   type: "text",
                   filterBy: {
                     operators: ["contains", "notContains", "startsWith"],
                   },
                   getValue: ({ item }) => {
-                    return typeof item.bandwidth === "number"
-                      ? readableSizeFromMB(item.bandwidth)
+                    return typeof item.size_bytes === "number"
+                      ? readableSizeFromMB(item.size_bytes / 1024 / 1024)
                       : "--";
                   },
                 },

@@ -24,6 +24,7 @@ import Tooltip from "../components/Tooltip";
 import { encodeBase64 } from "../utils/base64";
 import NotificationPopover from "../components/NotificationPopover";
 import EmptyPlayersState from "../components/EmptyCard";
+import WaveLoader from "../components/Loader/WaveLoader/index";
 
 export interface Player {
   id: string;
@@ -146,7 +147,7 @@ export interface NoticeType {
 }
 
 const Home = ({ token }: { token: string }) => {
-  const [data, setData] = React.useState<Player[]>([]);
+  const [data, setData] = React.useState<Player[]>();
   const [error, setError] = React.useState(false);
   const [refetch, setRefetch] = React.useState(0);
   const [isLoading, setLoading] = React.useState(true);
@@ -228,6 +229,9 @@ const Home = ({ token }: { token: string }) => {
   };
 
   const modifiedData = React.useMemo(() => {
+    if (!data) {
+      return undefined;
+    }
     const search = view.search?.toLowerCase() ?? "";
     const sort = view.sort;
     const page = view.page ?? 1;
@@ -657,14 +661,27 @@ const Home = ({ token }: { token: string }) => {
           <p className="subtitle-three">Video Players</p>
         </div>
       </div>
-      {modifiedData.length === 0 && (
+
+      {!modifiedData && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <WaveLoader />
+        </div>
+      )}
+      {modifiedData && modifiedData.length === 0 && (
         <EmptyPlayersState
           onButtonClick={() => {
             setOpenModalAdd(true);
           }}
         />
       )}
-      {modifiedData.length !== 0 && (
+      {data && modifiedData && modifiedData.length !== 0 && (
         <div
           className="--wp-dataviews-color-background"
           style={{
@@ -928,7 +945,7 @@ const Home = ({ token }: { token: string }) => {
             }}
             isLoading={data ? false : true}
             paginationInfo={{
-              totalItems: data.length,
+              totalItems: data.length || 0,
               totalPages: Math.ceil(data.length / 5),
             }}
             searchLabel="Player Name"
