@@ -742,6 +742,7 @@ li::marker {
   padding: 2rem;
   background-color: #fff;
   border-radius: 0.25rem;
+  width: 25rem;
 }
 
 .auth-header {
