@@ -1,9 +1,0 @@
-.delete-account-container{
-  padding-bottom: 2rem;
-  width: 60%;
-}
-@media only screen and (max-width: 768px) {
-  .delete-account-container{
-    width: 100%;
-  }
-}

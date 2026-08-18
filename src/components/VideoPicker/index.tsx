@@ -166,10 +166,18 @@ const VideoPicker = (props: VideoPickerProps) => {
           },
         })
         .then(async (response) => {
-          const onSuccess = await axios.post("/videos/on-success", {
-            key: presignedPostData.fields.key,
-            use_caption: activePlan?.amount === 0 ? false : transcript,
-          });
+          const onSuccess = await axios.post(
+            "/videos/on-success",
+            {
+              key: presignedPostData.fields.key,
+              use_caption: activePlan?.amount === 0 ? false : transcript,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
 
           const construct_video_url = new URL(
             presignedPostData.fields.key,

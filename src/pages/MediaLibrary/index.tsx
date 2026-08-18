@@ -33,7 +33,6 @@ const MediaLibrary = (props: any) => {
   >(null);
   const [showPremiumNotice, setShowPremiumNotice] = React.useState(false);
   const [actionLoading, setActionLoading] = React.useState<string>();
-  const [countryCode, setCountryCode] = React.useState("US");
   const [view, setView] = React.useState<View>({
     fields: ["storage", "uploaded_at", "speech-to-text"],
     filters: [],
@@ -313,20 +312,6 @@ const MediaLibrary = (props: any) => {
     }
   };
 
-  React.useEffect(() => {
-    axios
-      .get(config.IP_API)
-      .then((response) => {
-        const code = response?.data?.countryCode?.toUpperCase();
-        if (code) {
-          setCountryCode(code);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching country:", error);
-      });
-  }, []);
-
   if (isLoading && !length && !activePlan && usageLoading)
     return (
       <div
@@ -409,26 +394,42 @@ const MediaLibrary = (props: any) => {
                 gap: "1rem",
               }}
             >
-              <VideoQuota
-                usedStorage={usageData?.storage}
-                totalStorage={usageData?.storage_limit}
-                name="Storage"
-                onChangePlanClick={() => {
-                  window.open(
-                    `https://app.satoplayer.com/plans/${countryCode}`,
-                    "_blank",
-                    "noopener,noreferrer",
-                  );
-                }}
-              />
+              {activePlan?.amount === 0 ? (
+                <VideoQuota
+                  used={usageData?.video_count}
+                  total={usageData?.video_upload_limit}
+                  name="Usage"
+                  maxSizePerVideo={activePlan?.per_video_upload_limit}
+                  onChangePlanClick={() => {
+                    window.open(
+                      `https://app.satoplayer.com/add-on`,
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                  }}
+                />
+              ) : (
+                <VideoQuota
+                  used={usageData?.storage}
+                  total={usageData?.storage_limit}
+                  name="Storage"
+                  onChangePlanClick={() => {
+                    window.open(
+                      `https://app.satoplayer.com/add-on`,
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                  }}
+                />
+              )}
 
               <VideoQuota
-                usedStorage={usageData?.bandwidth}
-                totalStorage={usageData?.bandwidth_limit}
+                used={usageData?.bandwidth}
+                total={usageData?.bandwidth_limit}
                 name="Bandwidth"
                 onChangePlanClick={() => {
                   window.open(
-                    `https://app.satoplayer.com/plans/${countryCode}`,
+                    `https://app.satoplayer.com/add-on`,
                     "_blank",
                     "noopener,noreferrer",
                   );
