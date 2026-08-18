@@ -1,11 +1,9 @@
 import React from "react";
 import "./medialibrary.css";
 import axios from "../../utils/axios-instance";
-import Cookies from "js-cookie";
 import VideoPicker, {
   waitForVideoProcessing,
 } from "../../components/VideoPicker";
-import { encodeBase64 } from "../../utils/base64";
 import Modal from "../../components/Modal";
 import VideoQuota from "../../components/VideoQuota";
 import Loader from "../../components/Loader";
