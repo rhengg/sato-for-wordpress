@@ -121,7 +121,6 @@ const ImagePicker = ({
       setImageUploading(true);
     } catch (error) {
       setLoading(false);
-      console.log("error", error);
     }
   };
 

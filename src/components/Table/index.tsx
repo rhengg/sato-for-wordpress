@@ -61,7 +61,6 @@ const VideoList = (props: VideoListProps) => {
           },
         },
       );
-      console.log("transcribe", res.data);
       const result = await waitForVideoProcessing(id, token);
       if (result.status === "completed") {
         setTranscriptLoadingId(null);
@@ -74,7 +73,6 @@ const VideoList = (props: VideoListProps) => {
         return;
       }
     } catch (error) {
-      console.log("errror transcribe", error);
       setTranscriptLoadingId(null);
     }
   };
@@ -93,7 +91,6 @@ const VideoList = (props: VideoListProps) => {
         setRefetch(Math.random());
       }, 800);
     } catch (error) {
-      console.log("error deleting asset", error);
       showNotice({ status: "error", text: "Failed to delete video" });
     }
   };

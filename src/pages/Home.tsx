@@ -424,7 +424,7 @@ const Home = ({ token }: { token: string }) => {
         },
       });
     } catch (error) {
-      console.log("error loading invoice", error);
+      // console.log("error loading invoice", error);
     } finally {
       setLoading(false);
     }

@@ -24,6 +24,7 @@ const Index = (props: TwoFAProps) => {
 
   const fetchUserDetail = async () => {
     try {
+      setError("");
       const res = await axios.get("/me", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -31,7 +32,7 @@ const Index = (props: TwoFAProps) => {
       });
       setUser(res.data);
     } catch (error) {
-      console.log("error fetching user detail", error);
+      setError("user-not-found");
     }
   };
 
@@ -56,7 +57,6 @@ const Index = (props: TwoFAProps) => {
       setTwoFaEnabled(false);
     } catch (error: any) {
       setLoading(false);
-      setError("");
       if (error?.response?.status === 409) {
         setTwoFaEnabled(true);
       } else {
@@ -90,7 +90,6 @@ const Index = (props: TwoFAProps) => {
       if (error.response.status === 400) {
         setError("empty-passcode");
       }
-      console.log("error verify", error);
     }
   };
 
@@ -124,10 +123,8 @@ const Index = (props: TwoFAProps) => {
         setError("invalid-passcode");
       }
       if (error.response.status === 400) {
-        console.log("400");
         setError("empty-passcode");
       }
-      console.log("error 2FA", error);
     }
   };
 
@@ -217,6 +214,11 @@ const Index = (props: TwoFAProps) => {
               </div>
 
               <div className="error-container">
+                {error === "user-not-found" && (
+                  <p className="error-text">
+                    Something went wrong! Retry again.
+                  </p>
+                )}
                 {error === "invalid-passcode" && (
                   <p className="error-text">Invalid code</p>
                 )}
@@ -232,6 +234,7 @@ const Index = (props: TwoFAProps) => {
                   width: "100%",
                   margin: "2rem 0",
                 }}
+                disabled={error === "user-not-found" ? true : false}
               >
                 Submit
               </button>

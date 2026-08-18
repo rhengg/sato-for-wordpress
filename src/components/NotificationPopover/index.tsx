@@ -41,36 +41,28 @@ const NotificationPopover = ({ token }: { token: string }) => {
   const [isLoading, setLoading] = React.useState(false);
 
   const readNotification = async (id: string) => {
-    try {
-      await axios.put(
-        `/notifications/${id}/read`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    await axios.put(
+      `/notifications/${id}/read`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
-    } catch (error: any) {
-      console.log("error reading notification", error);
-    }
+      },
+    );
   };
 
   const markAllAsRead = async () => {
-    try {
-      await axios.put(
-        `/notifications/read-all`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    await axios.put(
+      `/notifications/read-all`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
-      setUnreadCount(0);
-    } catch (error: any) {
-      console.log("error marking all notifications as read", error);
-    }
+      },
+    );
+    setUnreadCount(0);
   };
 
   const fetchNotifications = async () => {
@@ -91,7 +83,6 @@ const NotificationPopover = ({ token }: { token: string }) => {
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
-      console.log("error fetching notifications", error);
     }
   };
 

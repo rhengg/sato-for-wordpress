@@ -164,7 +164,6 @@ const MediaLibrary = (props: any) => {
       setUsageData(res.data);
     } catch (e) {
       setUsageLoading(false);
-      console.log("error usage", e);
     } finally {
       setUsageLoading(false);
     }
@@ -189,7 +188,6 @@ const MediaLibrary = (props: any) => {
         window.location.href = `${window.location.pathname}?page=sato-profile`;
       }
     } catch (error: any) {
-      console.log("error in subscription", error);
       if (error.response.status === 401) {
         window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
@@ -223,7 +221,6 @@ const MediaLibrary = (props: any) => {
         return;
       }
     } catch (error) {
-      console.log("errror transcribe", error);
       setTranscriptLoadingId(null);
     }
   };
@@ -248,7 +245,7 @@ const MediaLibrary = (props: any) => {
       });
       setActivePlan(plans.data?.plan);
     } catch (e) {
-      console.log("error", e);
+      // console.log("error", e);
     }
   };
 
@@ -274,7 +271,6 @@ const MediaLibrary = (props: any) => {
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
-      console.log("error fetching media", error);
       if (error.response.status === 401) {
         window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
@@ -302,7 +298,6 @@ const MediaLibrary = (props: any) => {
       showNotice({ status: "success", text: "Video deleted!" });
       setRefetch(Math.random());
     } catch (error) {
-      console.log("error deleting asset", error);
       showNotice({
         status: "error",
         text: "Error while deleting video",
@@ -372,9 +367,6 @@ const MediaLibrary = (props: any) => {
                     token={token}
                     file={file}
                     setFile={setFile}
-                    setVideoUrl={(e) => {
-                      console.log(e);
-                    }}
                     setRefetch={setRefetch}
                     setOpenModalUpload={setOpenModalUpload}
                     activePlan={activePlan}
@@ -639,9 +631,7 @@ const MediaLibrary = (props: any) => {
                           !activePlan?.metadata?.premium_features?.caption ||
                           item.transcription_status === "completed"
                         ) {
-                          console.log("premium click");
                           setShowPremiumNotice(true);
-
                           setTimeout(() => {
                             setShowPremiumNotice(false);
                           }, 5000);

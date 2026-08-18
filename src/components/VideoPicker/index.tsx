@@ -10,6 +10,8 @@ import Tooltip from "../Tooltip";
 import { sanitizeFileNameForS3Key } from "../../utils/helper";
 import UploadErrorSvg from "../../assets/upload-error.svg";
 import FilesIconsSvg from "../../assets/FilesIcons.svg";
+import { NoticeType } from "../../pages/Home";
+import { Snackbar } from "@wordpress/components";
 
 export const waitForVideoProcessing = async (
   videoId: string,
@@ -27,24 +29,21 @@ export const waitForVideoProcessing = async (
       });
 
       const video = res.data;
-      console.log("polling status:", video.transcription_status);
-
       if (video.transcription_status === "completed") {
         return { status: "completed", video };
       }
 
       if (video.transcription_status === "failed") {
-        return { status: "failed", video }; // no throw
+        return { status: "failed", video };
       }
 
       await new Promise((resolve) => setTimeout(resolve, delay));
     } catch (err) {
-      console.log("poll error", err);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 
-  return { status: "timeout" }; // no throw
+  return { status: "timeout" };
 };
 
 type VideoPickerProps = {
@@ -84,6 +83,14 @@ const VideoPicker = (props: VideoPickerProps) => {
   const [transcriptionFailed, setTranscriptionFailed] = React.useState(false);
   const [transcript, setTranscript] = React.useState(false);
   const [uploadLoading, setUploadLoading] = React.useState(false);
+  const [notice, setNotice] = React.useState<NoticeType>();
+
+  const showNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
+  };
 
   React.useEffect(() => {
     const video_id =
@@ -127,7 +134,6 @@ const VideoPicker = (props: VideoPickerProps) => {
         setOpenModalUpload && setOpenModalUpload(false);
       }, 1000);
     } catch (error: any) {
-      console.log(error);
       setLimitExceedCode(error?.response?.status);
       setTotalVideoCount(true);
       setLoading(false);
@@ -296,6 +302,30 @@ const VideoPicker = (props: VideoPickerProps) => {
 
   return (
     <div className="video-picker-container">
+      {notice && (
+        <div
+          style={{
+            position: "fixed",
+            top: "2%",
+            left: "50%",
+            zIndex: "9999",
+            transform: "translate(0%,50%)",
+          }}
+        >
+          <Snackbar
+            politeness="polite"
+            onDismiss={() => {
+              setNotice(undefined);
+            }}
+            onRemove={() => {
+              setNotice(undefined);
+            }}
+          >
+            {notice.text}
+          </Snackbar>
+        </div>
+      )}
+
       <form onSubmit={uploadFile}>
         <div
           style={{
@@ -409,7 +439,10 @@ const VideoPicker = (props: VideoPickerProps) => {
                               setOpenModalUpload && setOpenModalUpload(false);
                               setRefetch(Math.random());
                             } catch (err) {
-                              console.log("Save and continue failed", err);
+                              showNotice({
+                                status: "error",
+                                text: "Video upload failed!",
+                              });
                             }
                           }}
                         >

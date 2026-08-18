@@ -62,13 +62,10 @@ export const fetchImage = async (url: string, retries = 2): Promise<Blob> => {
     if (!res.ok) {
       throw new Error(`HTTP error: ${res.status}`);
     }
-
     const blob = await res.blob();
-    console.log(blob);
     return blob;
   } catch (error) {
     if (retries > 0) {
-      console.log("Retrying fetchImage...", retries);
       await new Promise((resolve) => setTimeout(resolve, 500));
       return fetchImage(url, retries - 1);
     }

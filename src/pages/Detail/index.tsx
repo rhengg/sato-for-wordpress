@@ -512,7 +512,6 @@ const Index = ({ token }: { token: string }) => {
       setLoadingPlayerData(false);
     } catch (error: any) {
       setLoadingPlayerData(false);
-      console.log("error fetching player", error);
       if (error.response.status === 401) {
         window.location.href = `${window.location.pathname}?page=sato-signin`;
       }
@@ -543,7 +542,6 @@ const Index = ({ token }: { token: string }) => {
       setSourceId(firstSource?.id);
       setLoadingSource(false);
     } catch (error) {
-      console.log("error fetching source", error);
       setLoadingSource(false);
     } finally {
       setLoadingSource(false);
@@ -577,7 +575,7 @@ const Index = ({ token }: { token: string }) => {
       });
       setMedia(sorted);
     } catch (error) {
-      console.log("error fetching media", error);
+      // console.log("error fetching media", error);
     }
   };
 
@@ -607,16 +605,12 @@ const Index = ({ token }: { token: string }) => {
 
     try {
       if (!sources || sources.length === 0) {
-        console.log("adding source");
-
         await axios.post(`/players/${videoId}/sources`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       } else {
-        console.log("updating source");
-
         await axios.put(`/players/${videoId}/sources/${sourceId}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -624,7 +618,10 @@ const Index = ({ token }: { token: string }) => {
         });
       }
     } catch (error) {
-      console.log("error adding source", error);
+      showNotice({
+        status: "error",
+        text: "Failed to add video!",
+      });
     }
   };
 
@@ -677,14 +674,12 @@ const Index = ({ token }: { token: string }) => {
 
   const handlePlayerThumbnailOnChange = async (val: string) => {
     let image = new URL(val, config.IMAGE_CDN_URL).toString();
-    console.log("thumb", image);
     videoconfigupdate.value.playerThumbnailImageUrl = image;
     videoconfigupdate.value.playercontrol.thumbnail = true;
     await updatePlayer();
     try {
-      await fetchImage(image, 3); // retry up to 3 times
+      await fetchImage(image, 3);
     } catch (error) {
-      console.log("Image fetch failed after retries", error);
       showNotice({ status: "error", text: "Error updating thumbnail!" });
     } finally {
       setReRender(Math.random() * 1000);
@@ -693,14 +688,12 @@ const Index = ({ token }: { token: string }) => {
 
   const handlePlayerBrandingOnChange = async (val: string) => {
     let image = new URL(val, config.IMAGE_CDN_URL).toString();
-    console.log("branding", image);
     videoconfigupdate.value.playerBrandingImageUrl = image;
     videoconfigupdate.value.playercontrol.branding = true;
     await updatePlayer();
     try {
       await fetchImage(image, 3); //  retry up to 3 times
     } catch (error) {
-      console.log("Image fetch failed after retries", error);
       showNotice({ status: "error", text: "Error updating brand!" });
     } finally {
       setReRender(Math.random() * 1000);
@@ -712,14 +705,12 @@ const Index = ({ token }: { token: string }) => {
     const playerCTA = premium?.playerCTA;
     if (!playerCTA) return;
     let image = new URL(val, config.IMAGE_CDN_URL).toString();
-    console.log("cta image", image);
     playerCTA.image = image;
     playerCTA.imageEnable = true;
     await updatePlayer();
     try {
       await fetchImage(image, 3); //  retry up to 3 times
     } catch (error) {
-      console.log("Image fetch failed after retries", error);
       showNotice({ status: "error", text: "Error updating CTA image!" });
     } finally {
       setReRender(Math.random() * 1000);
@@ -788,7 +779,6 @@ const Index = ({ token }: { token: string }) => {
       setActivePlan(plan);
       return plan;
     } catch (error) {
-      console.log("error subscription", error);
       return null;
     }
   };

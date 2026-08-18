@@ -6,7 +6,8 @@ import Modal from "../../components/Modal";
 import { formatDate } from "../../utils/helper";
 import SatoLogo from "../../components/SatoLogo";
 import config from "../../config";
-import { Button } from "@wordpress/components";
+import { Button, Snackbar } from "@wordpress/components";
+import { NoticeType } from "../Home";
 
 const AccountPage = ({ token }: { token: string }) => {
   const navigate = useNavigate();
@@ -20,7 +21,15 @@ const AccountPage = ({ token }: { token: string }) => {
   const [loadingMedia, setLoadingMedia] = React.useState<boolean>(true);
   const [loadingInvoices, setLoadingInvoices] = React.useState(true);
   const [activePlan, setActivePlan] = React.useState<any>();
+  const [notice, setNotice] = React.useState<NoticeType>();
   const { nonce, apiUrl } = window.satoConfig;
+
+  const showNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
+  };
 
   const fetchUserDetail = async () => {
     try {
@@ -46,7 +55,10 @@ const AccountPage = ({ token }: { token: string }) => {
       setOpenModalCancel(false);
       await fetchSubscription();
     } catch (error) {
-      console.log("error cancel subscription", error);
+      showNotice({
+        status: "error",
+        text: "Subscription cancellation failed!",
+      });
     }
   };
 
@@ -66,7 +78,6 @@ const AccountPage = ({ token }: { token: string }) => {
       });
       setActivePlan(plans.data.plan);
     } catch (error: any) {
-      console.log("error in subscription", error);
       if (error.response.status === 401) {
         navigate({ pathname: "/signin" });
       }
@@ -82,7 +93,7 @@ const AccountPage = ({ token }: { token: string }) => {
       });
       setInvoices(res.data);
     } catch (error) {
-      console.log("error fetching media", error);
+      // console.log("error fetching media", error);
     } finally {
       setLoadingInvoices(false);
     }
@@ -97,7 +108,6 @@ const AccountPage = ({ token }: { token: string }) => {
       });
       setMedia(res.data);
     } catch (error: any) {
-      console.log("error fetching media", error);
       if (error.response.status === 401) {
         navigate({ pathname: "/signin" });
       }
@@ -159,6 +169,30 @@ const AccountPage = ({ token }: { token: string }) => {
   return (
     <>
       <SatoLogo />
+
+      {notice && (
+        <div
+          style={{
+            position: "fixed",
+            top: "2%",
+            left: "50%",
+            zIndex: "9999",
+            transform: "translate(0%,50%)",
+          }}
+        >
+          <Snackbar
+            politeness="polite"
+            onDismiss={() => {
+              setNotice(undefined);
+            }}
+            onRemove={() => {
+              setNotice(undefined);
+            }}
+          >
+            {notice.text}
+          </Snackbar>
+        </div>
+      )}
 
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         {(subscription?.status as string)?.toLowerCase() === "cancelled" ||
