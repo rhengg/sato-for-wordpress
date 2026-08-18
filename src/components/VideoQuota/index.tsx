@@ -25,8 +25,6 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
     <div className="video-quota-container">
       <div className="video-quota-header">
         <div className="video-quota-text">
-          {/* <Text variant="body-sm">{`${name}: ${readableSizeFromMB(Number(usedStorage))}/${readableSizeFromMB(Number(totalStorage))}`}</Text> */}
-
           <Text variant="body-sm" style={{ display: "inline-block" }}>
             {name}:
           </Text>
@@ -54,7 +52,13 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
       <div className="video-quota-progress-bar">
         <div
           className="video-quota-progress-fill"
-          style={{ width: `${totalPercentage}%` }}
+          style={{
+            width: `${totalPercentage}%`,
+            backgroundColor:
+              parseInt(totalPercentage.toString()) < 80
+                ? "var(--positive)"
+                : "var(--negative)",
+          }}
         />
       </div>
     </div>
