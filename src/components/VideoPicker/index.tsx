@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from "react";
 import axios from "../../utils/axios-instance";
 import axiosOriginal from "axios";
-import Cookies from "js-cookie";
 import "./videopicker.css";
 import config from "../../config";
 import { videoUrlUpdate } from "../../pages/Detail";
@@ -12,7 +11,10 @@ import { sanitizeFileNameForS3Key } from "../../utils/helper";
 import UploadErrorSvg from "../../assets/upload-error.svg";
 import FilesIconsSvg from "../../assets/FilesIcons.svg";
 
-export const waitForVideoProcessing = async (videoId: string) => {
+export const waitForVideoProcessing = async (
+  videoId: string,
+  token: string,
+) => {
   const maxRetries = 20;
   const delay = 3000;
 
@@ -20,7 +22,7 @@ export const waitForVideoProcessing = async (videoId: string) => {
     try {
       const res = await axios.get(`/videos/${videoId}`, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -46,6 +48,7 @@ export const waitForVideoProcessing = async (videoId: string) => {
 };
 
 type VideoPickerProps = {
+  token: string;
   file: any;
   setFile: React.Dispatch<React.SetStateAction<any>>;
   setVideoUrl?: React.Dispatch<React.SetStateAction<any>>;
@@ -59,12 +62,11 @@ type VideoPickerProps = {
 
 const VideoPicker = (props: VideoPickerProps) => {
   const {
+    token,
     file,
     setFile,
-    setVideoUrl,
     setRefetch,
     setOpenModalUpload,
-    handleSetUrl,
     addSource,
     sourceId,
     activePlan,
@@ -78,12 +80,9 @@ const VideoPicker = (props: VideoPickerProps) => {
   const [imageImported, setImageImported] = React.useState(false);
   const [sizeExceed, setSizeExceed] = React.useState(false);
   const [totalVideoCount, setTotalVideoCount] = React.useState(false);
-
   const [failedVideo, setFailedVideo] = React.useState<any>(null);
   const [transcriptionFailed, setTranscriptionFailed] = React.useState(false);
-
   const [transcript, setTranscript] = React.useState(false);
-  const [abr, setABR] = React.useState(false);
   const [uploadLoading, setUploadLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -114,11 +113,10 @@ const VideoPicker = (props: VideoPickerProps) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
-      // console.log("upload", res.data);
 
       await uploadToS3(file, res.data);
       setLoading(false);
@@ -170,30 +168,26 @@ const VideoPicker = (props: VideoPickerProps) => {
         .then(async (response) => {
           const onSuccess = await axios.post("/videos/on-success", {
             key: presignedPostData.fields.key,
-            // transcode: abr,
             use_caption: activePlan?.amount === 0 ? false : transcript,
           });
-          console.log("onsuccess", onSuccess);
+
           const construct_video_url = new URL(
             presignedPostData.fields.key,
             config.VIDEO_CDN_URL,
           ).toString();
 
           videoUrlUpdate.value = construct_video_url;
-
-          // const shouldProcess = abr || transcript;
           const shouldProcess = transcript;
 
           try {
-            //  ONLY run polling if needed
             if (shouldProcess) {
-              const result = await waitForVideoProcessing(onSuccess.data?.id);
+              const result = await waitForVideoProcessing(
+                onSuccess.data?.id,
+                token,
+              );
 
-              // CASE 1: with addSource
               if (addSource) {
                 if (result.status === "completed") {
-                  console.log("addddddddd after success");
-
                   await addSource(sourceId, result.video);
                 }
 
@@ -207,10 +201,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                   setTranscriptionFailed(true);
                   return;
                 }
-              }
-
-              // CASE 2: WITHOUT addSource
-              else {
+              } else {
                 if (result.status === "completed") {
                   setOpenModalUpload && setOpenModalUpload(false);
                   setRefetch(Math.random());
@@ -226,13 +217,8 @@ const VideoPicker = (props: VideoPickerProps) => {
                   return;
                 }
               }
-            }
-
-            //  If NO processing needed → just close immediately
-            else {
+            } else {
               if (addSource) {
-                console.log("caalllll");
-
                 await addSource(sourceId);
                 setRefetch(Math.random());
                 setOpenModalUpload && setOpenModalUpload(false);
@@ -241,12 +227,10 @@ const VideoPicker = (props: VideoPickerProps) => {
             setLoading(false);
             resolve(response);
           } catch (err) {
-            console.log("processing failed or timeout", err);
             resolve(response);
           }
         })
         .catch((error: any) => {
-          console.log("error while uploading", error?.response?.status);
           setLoading(false);
           setLimitExceedCode(error?.response?.status);
           setSizeExceed(true);
@@ -262,7 +246,6 @@ const VideoPicker = (props: VideoPickerProps) => {
 
   const isUploading = loading && (progress ?? 0) < 100;
   const isProcessing = (progress ?? 0) === 100 && transcript;
-  // const isProcessing = (progress ?? 0) === 100 && (transcript || abr);
 
   if (limitExceedCode === 400)
     return (
@@ -349,7 +332,6 @@ const VideoPicker = (props: VideoPickerProps) => {
                   <div className="videoUpload-main">
                     <div
                       style={{
-                        // width: "50%",
                         height: "0.5rem",
                         border: "1px solid var(--stroke)",
                         borderRadius: "0.25rem",
@@ -435,12 +417,10 @@ const VideoPicker = (props: VideoPickerProps) => {
                     className="videoUpload-main"
                     style={{
                       alignItems: "flex-start",
-                      // width: "50%",
                     }}
                   >
                     <div
                       style={{
-                        // marginTop: "0.5rem",
                         display: "flex",
                         flexDirection: "column",
                         gap: "0.5rem",
@@ -554,7 +534,6 @@ const VideoPicker = (props: VideoPickerProps) => {
 
                     <div style={{ width: "100%" }}>
                       <label
-                        // className="videoUploadSecondary-button"
                         style={{
                           height: "100%",
                         }}
@@ -564,8 +543,6 @@ const VideoPicker = (props: VideoPickerProps) => {
                           style={{
                             padding: "0 1rem",
                           }}
-                          // className="large-secondary-btn"
-                          // className="videoUploadSecondary-button"
                         >
                           <p className="body" style={{ textAlign: "center" }}>
                             or{" "}
@@ -612,12 +589,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                   </div>
                 </div>
                 <label style={{ width: "100%" }} htmlFor={pickerId}>
-                  <div
-                    // className="large-primary-btn"
-                    className="videoUpload-button"
-                  >
-                    Browse Device
-                  </div>
+                  <div className="videoUpload-button">Browse Device</div>
                   <p
                     className="body textSecondary"
                     style={{ marginTop: "0.5rem", textAlign: "center" }}

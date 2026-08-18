@@ -1,13 +1,11 @@
 import React from "react";
 import "./accordion.css";
 import Premium from "../PremiumIcon";
-import { Link, useNavigate } from "react-router-dom";
-import Modal from "../Modal";
+import { useNavigate } from "react-router-dom";
 
 type AccordionProps = {
   handleToggle: (id: string) => void;
   active: string[];
-  // active: string | null;
   header: string;
   children: React.ReactNode;
   id: string;
@@ -28,22 +26,9 @@ const Accordion: React.FC<AccordionProps> = ({
   premiumModalTitle,
   onPremiumClick,
 }) => {
-  const navigate = useNavigate();
-
   const contentEl = React.useRef<HTMLDivElement>(null);
-  const [height, setHeight] = React.useState("0px");
-
-  // React.useEffect(() => {
-  //   if (active === id && contentEl.current) {
-  //     setHeight(`${contentEl.current.scrollHeight}px`);
-  //   } else {
-  //     setHeight("0px");
-  //   }
-  // }, [active, id]);
-
-  // const isActive = active === id;
-
   const isActive = active.includes(id);
+  const [height, setHeight] = React.useState("0px");
 
   React.useEffect(() => {
     if (isActive && contentEl.current) {
@@ -74,7 +59,7 @@ const Accordion: React.FC<AccordionProps> = ({
               <div
                 style={{ display: "flex", alignItems: "center" }}
                 onClick={(e) => {
-                  e.stopPropagation(); // IMPORTANT (prevents accordion toggle)
+                  e.stopPropagation();
                   onPremiumClick?.(premiumModalTitle);
                 }}
               >

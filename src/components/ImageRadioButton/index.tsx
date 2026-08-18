@@ -1,4 +1,3 @@
-import React from "react";
 import Premium from "../PremiumIcon";
 import { useNavigate } from "react-router-dom";
 
@@ -19,8 +18,6 @@ const ImageRadioGroup = ({
   handleSaveButton,
   activePlan,
 }: ImageRadioGroupProps) => {
-  const navigator = useNavigate();
-
   return (
     <>
       <style>
@@ -53,18 +50,12 @@ const ImageRadioGroup = ({
         {options.map((opt) => (
           <label
             key={opt.name}
-            // onClick={(e) => {
-            //   if (activePlan?.amount === 0 && opt.name !== "halcyon") {
-            //     e.preventDefault(); // prevent radio selection
-            //     navigator("/plans");
-            //   }
-            // }}
             onClick={(e) => {
               if (
                 !activePlan?.metadata?.premium_features?.layoutConfig?.name &&
                 opt.name !== "halcyon"
               ) {
-                e.preventDefault(); // prevent radio selection
+                e.preventDefault();
                 window.open("/plans", "_blank", "noopener,noreferrer");
               }
             }}
@@ -81,7 +72,6 @@ const ImageRadioGroup = ({
               padding: "0.25rem",
               display: "flex",
               flexDirection: "column",
-              // alignItems: "center",
               justifyContent: "center",
             }}
           >
@@ -106,9 +96,6 @@ const ImageRadioGroup = ({
                 !activePlan?.metadata?.premium_features?.layoutConfig?.name &&
                 opt.name !== "halcyon"
               }
-              // onChange={() => {
-              //   (onChange(opt.name), handleSaveButton && handleSaveButton());
-              // }}
               onChange={() => {
                 if (
                   !activePlan?.metadata?.premium_features?.layoutConfig?.name &&
@@ -133,10 +120,6 @@ const ImageRadioGroup = ({
                 objectFit: "cover",
                 borderRadius: "6px",
                 display: "block",
-                // cursor:
-                //   activePlan?.amount === 0 && opt.name !== "halcyon"
-                //     ? "not-allowed"
-                //     : "pointer",
               }}
             />
 

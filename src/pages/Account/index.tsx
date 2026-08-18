@@ -4,7 +4,7 @@ import axios from "../../utils/axios-instance";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils/helper";
-import DetailMenu from "../../components/DetailMenu";
+import SatoLogo from "../../components/SatoLogo";
 import config from "../../config";
 import { Button } from "@wordpress/components";
 
@@ -158,7 +158,7 @@ const AccountPage = ({ token }: { token: string }) => {
 
   return (
     <>
-      <DetailMenu />
+      <SatoLogo />
 
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         {(subscription?.status as string)?.toLowerCase() === "cancelled" ||

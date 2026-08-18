@@ -25,7 +25,6 @@ const MediaLibrary = (props: any) => {
   const [activePlan, setActivePlan] = React.useState<any>();
   const [usageData, setUsageData] = React.useState<any>();
   const [usageLoading, setUsageLoading] = React.useState(true);
-  const [totalVideoCount, setTotalVideoCount] = React.useState<any>();
   const [isLoading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState<any>();
   const [transcriptionFailed, setTranscriptionFailed] = React.useState<
@@ -160,7 +159,11 @@ const MediaLibrary = (props: any) => {
 
   const fetchUsage = async () => {
     try {
-      const res = await axios.get("/usages");
+      const res = await axios.get("/usages", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUsageData(res.data);
     } catch (e) {
       setUsageLoading(false);
@@ -187,12 +190,6 @@ const MediaLibrary = (props: any) => {
         (res.data?.subscription?.status as string)?.toLowerCase() !== "active"
       ) {
         window.location.href = `${window.location.pathname}?page=sato-profile`;
-      } else {
-        Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
-          expires: 30,
-          secure: true,
-          sameSite: "Strict",
-        });
       }
     } catch (error: any) {
       console.log("error in subscription", error);
@@ -217,7 +214,7 @@ const MediaLibrary = (props: any) => {
           },
         },
       );
-      const result = await waitForVideoProcessing(id);
+      const result = await waitForVideoProcessing(id, token);
       if (result.status === "completed") {
         setTranscriptLoadingId(null);
         setRefetch(Math.random());
@@ -272,8 +269,6 @@ const MediaLibrary = (props: any) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setTotalVideoCount(res?.data?.length);
       if (length === 10) {
         setMedia(res.data.slice(0, 10));
       } else {
@@ -391,6 +386,7 @@ const MediaLibrary = (props: any) => {
               >
                 <div className="v-picker-container">
                   <VideoPicker
+                    token={token}
                     file={file}
                     setFile={setFile}
                     setVideoUrl={(e) => {
@@ -416,8 +412,6 @@ const MediaLibrary = (props: any) => {
               }}
             >
               <VideoQuota
-                usedVideos={usageData?.video_count}
-                totalVideos={usageData?.video_upload_limit}
                 usedStorage={usageData?.storage}
                 totalStorage={usageData?.storage_limit}
                 name="Storage"

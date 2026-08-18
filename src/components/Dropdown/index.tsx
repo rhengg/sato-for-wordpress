@@ -1,8 +1,7 @@
 import React from "react";
 import "./dropdown.css";
 import Tooltip from "../Tooltip";
-import Premium from "../PremiumIcon";
-import { Button, DropdownMenu } from "@wordpress/components";
+import { Button } from "@wordpress/components";
 
 type Option = {
   label: string;
@@ -63,7 +62,6 @@ const Dropdown = ({
         paddingBottom: "1rem",
       }}
     >
-      {/* Label + tooltip */}
       <div
         style={{
           display: "flex",
@@ -85,7 +83,6 @@ const Dropdown = ({
         )}
       </div>
 
-      {/* Dropdown */}
       <div ref={wrapperRef} style={{ position: "relative" }}>
         <Button
           ref={wrapperRef}

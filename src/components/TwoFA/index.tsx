@@ -1,18 +1,15 @@
 import React from "react";
 import Modal from "../Modal";
 import axios from "../../utils/axios-instance";
-import Cookies from "js-cookie";
-import { decodeBase64 } from "../../utils/base64";
 import Loader from "../Loader";
 
 type TwoFAProps = {
   email: string;
-  enabled: boolean;
   token: string;
 };
 
 const Index = (props: TwoFAProps) => {
-  const { email, enabled, token } = props;
+  const { email, token } = props;
   const [openModalDisable2fa, setOpenModalDisable2fa] =
     React.useState<boolean>(false);
   const [openModal, setOpenModal] = React.useState<boolean>(false);
@@ -50,7 +47,7 @@ const Index = (props: TwoFAProps) => {
       const res = await axios.get(`/two-factors/${email}`, {
         responseType: "blob",
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const dataURI = URL.createObjectURL(res.data);
@@ -80,7 +77,7 @@ const Index = (props: TwoFAProps) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -114,7 +111,7 @@ const Index = (props: TwoFAProps) => {
       };
       const res = await axios.put("/two-factors", userdata, {
         headers: {
-          Authorization: `Bearer ${Cookies.get("s-token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -269,7 +266,6 @@ const Index = (props: TwoFAProps) => {
               marginTop: "2rem",
             }}
             onClick={async () => {
-              // await reqQR();
               setOpenModal(true);
             }}
           >
@@ -363,7 +359,6 @@ const Index = (props: TwoFAProps) => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  // alignItems: 'center',
                   marginTop: "1rem",
                   gap: "0.5rem",
                 }}

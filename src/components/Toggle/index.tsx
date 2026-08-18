@@ -1,4 +1,3 @@
-import React from "react";
 import "./toggle.css";
 import Tooltip from "../Tooltip";
 import Premium from "../PremiumIcon";
@@ -68,7 +67,7 @@ const Toggle = ({
         <div
           style={{ position: "relative", cursor: "pointer" }}
           onClick={(e) => {
-            e.stopPropagation(); // IMPORTANT (prevents accordion toggle)
+            e.stopPropagation();
             onPremiumClick?.(premiumModalTitle);
           }}
         >

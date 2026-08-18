@@ -20,20 +20,12 @@ type VideoListProps = {
   data: any;
   setRefetch: React.Dispatch<React.SetStateAction<number>>;
   handleClick?: any;
-  showCopy?: boolean;
   activePlan?: any;
   token: string;
 };
 
 const VideoList = (props: VideoListProps) => {
-  const {
-    data,
-    setRefetch,
-    handleClick,
-    showCopy = true,
-    activePlan,
-    token,
-  } = props;
+  const { data, setRefetch, handleClick, activePlan, token } = props;
   const [notice, setNotice] = React.useState<NoticeType>();
   const [openModalDelete, setOpenModalDelete] = React.useState<boolean>(false);
   const [assetId, setAssetId] = React.useState("");
@@ -70,7 +62,7 @@ const VideoList = (props: VideoListProps) => {
         },
       );
       console.log("transcribe", res.data);
-      const result = await waitForVideoProcessing(id);
+      const result = await waitForVideoProcessing(id, token);
       if (result.status === "completed") {
         setTranscriptLoadingId(null);
         setRefetch(Math.random());
@@ -84,23 +76,6 @@ const VideoList = (props: VideoListProps) => {
     } catch (error) {
       console.log("errror transcribe", error);
       setTranscriptLoadingId(null);
-    }
-  };
-
-  const handleEncode = async (id: string) => {
-    try {
-      const res = await axios.post(
-        `/videos/${id}/transcodes`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      console.log("encode", res.data);
-    } catch (error) {
-      console.log("errror encode", error);
     }
   };
 
@@ -125,7 +100,7 @@ const VideoList = (props: VideoListProps) => {
 
   const truncate = (text: string = "", maxLength = 50): string => {
     if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      maxLength = 30; // mobile limit
+      maxLength = 30;
     }
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };

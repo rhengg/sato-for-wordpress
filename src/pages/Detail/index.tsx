@@ -16,11 +16,10 @@ import Accordion from "../../components/Accordion";
 import { config as playerconfig } from "../../utils/default-config";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "../../components/Table";
-import DetailMenu from "../../components/DetailMenu";
+import SatoLogo from "../../components/SatoLogo";
 import ImageRadioGroup from "../../components/ImageRadioButton";
 import playerTemplate from "../../database/playerTemplate.json";
 import Dropdown from "../../components/Dropdown";
-import LivePlayer from "../../components/LivePlayer";
 import { makeConfig } from "../../utils/makePlayerConfig";
 import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
@@ -28,6 +27,7 @@ import CompleteSvg from "../../assets/Complete.svg";
 import { Button, Snackbar } from "@wordpress/components";
 import { Input } from "@wordpress/ui";
 import { NoticeType } from "../Home";
+import LivePlayer from "../../components/LivePlayer";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -295,7 +295,7 @@ const Index = ({ token }: { token: string }) => {
           },
         },
       );
-      const result = await waitForVideoProcessing(id);
+      const result = await waitForVideoProcessing(id, token);
       if (result.status === "completed") {
         await addSource(sourceId, result.video);
         setTranscriptComplete(true);
@@ -869,7 +869,7 @@ const Index = ({ token }: { token: string }) => {
         {/* left side */}
         <div className="detail-sub-container-2 hide-scroll">
           <div className="detail-sub-container-child">
-            <DetailMenu />
+            <SatoLogo />
 
             <div
               style={{
@@ -1037,6 +1037,7 @@ const Index = ({ token }: { token: string }) => {
                   >
                     <div className="v-p-conainer">
                       <VideoPicker
+                        token={token}
                         file={file}
                         setFile={setFile}
                         setRefetch={(u) => {
@@ -1064,7 +1065,6 @@ const Index = ({ token }: { token: string }) => {
                             setReRender(u);
                           }}
                           activePlan={activePlan}
-                          showCopy={false}
                           handleClick={async (item: any) => {
                             setOpenModalUpload(false);
                             await addSource(sourceId, item);
@@ -2578,6 +2578,7 @@ const Index = ({ token }: { token: string }) => {
 
                   <div style={{ width: "100%" }}>
                     <ImagePicker
+                      token={token}
                       disabled={
                         !activePlan?.metadata?.premium_features?.playerCTA
                           ?.image
@@ -2726,6 +2727,7 @@ const Index = ({ token }: { token: string }) => {
 
                   <div style={{ width: "100%" }}>
                     <ImagePicker
+                      token={token}
                       onChange={(val: any) => {
                         handlePlayerThumbnailOnChange(val);
                         setDisableSaveButton(false);
@@ -2783,6 +2785,7 @@ const Index = ({ token }: { token: string }) => {
                 >
                   <div style={{ width: "100%" }}>
                     <ImagePicker
+                      token={token}
                       onChange={(val: any) => {
                         handlePlayerBrandingOnChange(val);
                         setDisableSaveButton(false);

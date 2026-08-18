@@ -1,6 +1,6 @@
 import satoSvg from "../../assets/sato.svg";
 
-const DetailMenu = () => {
+const SatoLogo = () => {
   return (
     <div>
       <div
@@ -28,4 +28,4 @@ const DetailMenu = () => {
   );
 };
 
-export default DetailMenu;
+export default SatoLogo;

@@ -4,8 +4,6 @@ import { Text } from "@wordpress/ui";
 import { readableSizeFromMB } from "../../utils/helper";
 
 type VideoQuotaProps = {
-  usedVideos?: number;
-  totalVideos?: number;
   usedStorage: string;
   totalStorage: string;
   name: string;
@@ -13,8 +11,6 @@ type VideoQuotaProps = {
 };
 
 const VideoQuota: React.FC<VideoQuotaProps> = ({
-  usedVideos,
-  totalVideos,
   usedStorage,
   totalStorage,
   name,

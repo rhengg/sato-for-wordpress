@@ -1,4 +1,3 @@
-import React from "react";
 import PremiumSmallSvg from "../../assets/PremiumSmall.svg";
 import UpgradeSvg from "../../assets/Upgrade.svg";
 

@@ -2,18 +2,16 @@ import React from "react";
 import "./imagepicker.css";
 import axios from "../../utils/axios-instance";
 import axiosOriginal from "axios";
-import Cookies from "js-cookie";
-import Loader from "../Loader";
 import SparkMd5 from "spark-md5";
 import { Buffer } from "buffer";
 import Tooltip from "../Tooltip";
-import Premium from "../PremiumIcon";
 import { sanitizeFileNameForS3Key } from "../../utils/helper";
 import { Button } from "@wordpress/components";
 
 type ImagePickerType = {
   onChange: (val: string) => void;
   label: string;
+  token: string;
   setImageUploading?: any;
   tooltipText?: string;
   validationRequired?: boolean;
@@ -24,24 +22,17 @@ type ImagePickerType = {
 const ImagePicker = ({
   onChange,
   label,
+  token,
   setImageUploading,
   tooltipText,
-  validationRequired = false,
   disabled = false,
   uploadedUrl,
 }: ImagePickerType) => {
   const [fileName, setFileName] = React.useState("Choose File");
   const [pickerId, setPickerId] = React.useState<string>();
   const [isLoading, setLoading] = React.useState(false);
-
   const [showErrorMessage, setShowErrorMessage] = React.useState("");
-  const [validationError, setValidationError] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  // this support only 16/9 aspect ratio image
-  // const lowerRange = 1.7;
-  // const upperRange = 1.9;
-  // const requiredSizeKB = 8192;
 
   React.useEffect(() => {
     const image_id =
@@ -53,22 +44,9 @@ const ImagePicker = ({
   }, []);
 
   const uploadToS3 = async (file: File, url: any, md5: string) => {
-    // console.log("upload");
-
     return new Promise(async (resolve, reject) => {
-      // const formData = new FormData();
-      // console.log("file", file);
-      // formData.append("content-type", file.type);
-      // formData.append("file", file);
-
       const buffer = await file.arrayBuffer();
       const blob = Buffer.from(buffer);
-
-      // fetch(url, {
-      //   method: "PUT",
-      //   body: blob,
-      //   headers: {"Content-Type": file.type, "Content-MD5"}
-      // })
 
       axiosOriginal
         .put(url, blob, {
@@ -82,14 +60,6 @@ const ImagePicker = ({
           resolve(response);
         })
         .catch((error) => {
-          console.log("error", error);
-
-          // if (isAxiosError(error)) {
-          //   show({
-          //     code: error.response?.status as number,
-          //     ctx: XMLParser(error.response?.data)?.message || "",
-          //   });
-          // }
           reject(error);
         });
     });
@@ -119,35 +89,24 @@ const ImagePicker = ({
         readNextChunk();
       } else {
         const md5 = hasher.end(true);
-        // console.log(md5);
 
         let payload = {
           file_name: sanitizeFileNameForS3Key(file.name),
           content_md5: btoa(md5),
         };
 
-        // store in database with md5 hash
         const res = await axios.post("/images", payload, {
           headers: {
-            // "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
-        // console.log("res", res);
         setFileName(file.name);
         onChange(res.data.key);
 
-        // upload image to s3 bucket
         await uploadToS3(file, res.data?.upload_url, md5);
         Promise.resolve();
       }
     };
-
-    // reader.onprogress = function () {
-    //   setMD5Progress(
-    //     Math.ceil((Math.ceil(currChunk * chunkSize) / file.size) * 100)
-    //   );
-    // };
 
     readNextChunk();
   }
@@ -157,7 +116,6 @@ const ImagePicker = ({
     imageFile.append("file", file);
     setLoading(true);
     try {
-      //calculate md5
       await calculateMd5(file);
       setLoading(false);
       setImageUploading(true);
@@ -189,25 +147,6 @@ const ImagePicker = ({
         imgwidth = img.width;
         imgheight = img.height;
         ratio = imgwidth / imgheight;
-        console.log("ratio", ratio);
-        console.log("imgSizeKB", imgSizeKB);
-
-        // if (validationRequired) {
-        //   if (
-        //     ratio >= (lowerRange as number) &&
-        //     ratio <= (upperRange as number) &&
-        //     imgSizeKB <= (requiredSizeKB as number)
-        //   ) {
-        //     handleImageApiCall(chosenFiles[0]);
-        //     setValidationError(false);
-        //   } else {
-        //     setValidationError(true);
-        //   }
-        // } else {
-        //   handleImageApiCall(chosenFiles[0]);
-        //   setValidationError(false);
-        // }
-
         handleImageApiCall(chosenFiles[0]);
       };
       img.src = fileReader.result as string;
@@ -233,15 +172,12 @@ const ImagePicker = ({
         style={{
           display: "flex",
           width: "100%",
-          // marginBottom: "0.5rem",
         }}
       >
         <div
           style={{
             width: "50%",
             display: "flex",
-            // justifyContent: "space-between",
-            // alignItems: "center",
             gap: "0.25rem",
             position: "relative",
           }}
@@ -266,9 +202,6 @@ const ImagePicker = ({
               </Tooltip>
             </div>
           )}
-          {/* <div style={{ position: "relative" }}>
-            {disabled && <Premium top="0%" />}
-          </div> */}
         </div>
 
         <div className="imageUpload-main">
@@ -315,19 +248,6 @@ const ImagePicker = ({
           <p className="error-text">Invalid file type</p>
         </div>
       )}
-
-      {/* {validationError && (
-        <div
-          className="error-container"
-          style={{
-            marginBottom: "1rem",
-          }}
-        >
-          <p className="error-text">
-            Upload an 16/9 aspect ratio image and under {requiredSizeKB} KB.
-          </p>
-        </div>
-      )} */}
     </div>
   );
 };

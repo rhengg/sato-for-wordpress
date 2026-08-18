@@ -1,7 +1,7 @@
 import axios from "../../utils/axios-instance";
 import React from "react";
 import Loader from "../../components/Loader";
-import DetailMenu from "../../components/DetailMenu";
+import SatoLogo from "../../components/SatoLogo";
 import { Snackbar } from "@wordpress/components";
 import { Text } from "@wordpress/ui";
 import { NoticeType } from "../Home";
@@ -87,25 +87,23 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-        "tow factor authentication token is required"
+          "tow factor authentication token is required"
       ) {
         setRenderElement("otp-sent");
       }
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-        "two-factor authentication code is required"
+          "two-factor authentication code is required"
       ) {
         setRenderElement("otp-sent");
       }
-      if (
-        error.response.status === 400) {
+      if (error.response.status === 400) {
         showNotice({
           status: "error",
           text: "Invalid Credentials!",
         });
       }
-
     }
   };
 
@@ -133,7 +131,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-        "Invalid tow factor authentication token"
+          "Invalid tow factor authentication token"
       ) {
         showNotice({
           status: "error",
@@ -144,7 +142,6 @@ const Login = () => {
   };
 
   const internalLoging = async () => {
-
     const email = inputEmail.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -194,7 +191,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-        "Invalid tow factor authentication token"
+          "Invalid tow factor authentication token"
       ) {
         showNotice({
           status: "error",
@@ -204,7 +201,7 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-        "two-factor authentication code is required"
+          "two-factor authentication code is required"
       ) {
         showNotice({
           status: "error",
@@ -214,15 +211,14 @@ const Login = () => {
       if (
         error.response.status === 401 &&
         error?.response?.data?.error ===
-        "invalid two-factor authentication code"
+          "invalid two-factor authentication code"
       ) {
         showNotice({
           status: "error",
           text: "Invalid OTP!",
         });
       }
-      if (
-        error.response.status === 400) {
+      if (error.response.status === 400) {
         showNotice({
           status: "error",
           text: "Invalid Credentials!",
@@ -253,7 +249,7 @@ const Login = () => {
 
   return (
     <div className="auth-container">
-      <DetailMenu />
+      <SatoLogo />
       {notice && (
         <div
           style={{
@@ -331,7 +327,7 @@ const Login = () => {
                   window.open(
                     `https://app.satoplayer.com/account-recovery`,
                     "_blank",
-                    "noopener,noreferrer"
+                    "noopener,noreferrer",
                   );
                 }}
               >
@@ -401,7 +397,7 @@ const Login = () => {
                 window.open(
                   `https://app.satoplayer.com/forgot-password`,
                   "_blank",
-                  "noopener,noreferrer"
+                  "noopener,noreferrer",
                 );
               }}
             >
@@ -435,7 +431,11 @@ const Login = () => {
                 className="sato-link"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  window.open(`https://app.satoplayer.com/register`, "_blank", "noopener,noreferrer");
+                  window.open(
+                    `https://app.satoplayer.com/register`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
                 }}
               >
                 Register Now

@@ -22,8 +22,7 @@ const ColorPicker = ({
   tooltipText,
 }: ColorPickerProps) => {
   const [newValue, setNewValue] = React.useState(value);
-  const [colorPickerVisibility, setColorPickerVisibility] =
-    React.useState("none");
+  const isTransparent = newValue === "transparent";
 
   React.useEffect(() => {
     setNewValue(value);
@@ -32,16 +31,6 @@ const ColorPicker = ({
   const handleColorChange = (val: string) => {
     setNewValue(val);
     onChange?.(val);
-  };
-
-  const isTransparent = newValue === "transparent";
-
-  const toggleColorPicker = () => {
-    if (colorPickerVisibility === "none") {
-      setColorPickerVisibility("block");
-    } else {
-      setColorPickerVisibility("none");
-    }
   };
 
   return (

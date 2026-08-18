@@ -1,17 +1,16 @@
 import React from "react";
 import Modal from "../Modal";
 import axios from "../../utils/axios-instance";
-import Cookies from "js-cookie";
 import Loader from "../Loader";
-import { decodeBase64 } from "../../utils/base64";
 import "./deleteAccount.css";
 
 type DeleteAccountProps = {
   email: string;
+  token: string;
 };
 
 const Index = (props: DeleteAccountProps) => {
-  const { email } = props;
+  const { email, token } = props;
   const [openModal, setOpenModal] = React.useState<boolean>(false);
   const [pin, setPin] = React.useState<string>("");
   const [error, setError] = React.useState("");
@@ -23,7 +22,7 @@ const Index = (props: DeleteAccountProps) => {
     setError("");
     setLoading(true);
     try {
-      const res = await axios.post("/otps/generate", {
+      await axios.post("/otps/generate", {
         email,
       });
       setLoading(false);
@@ -46,23 +45,18 @@ const Index = (props: DeleteAccountProps) => {
     e.preventDefault();
     setError("");
     try {
-      const res = await axios.post(
-        `/delete-account`,
+      await axios.post(
+        "/delete-account",
         {
           otp: pin,
         },
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("s-token")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
-      // console.log("verify");
       setDeleted(true);
-      Cookies.remove("splay-token");
-      Cookies.remove("s_subs");
-      sessionStorage.removeItem("choosen-plan");
-      Cookies.remove("s-pay");
       setTimeout(() => {
         window.location.replace("/");
       }, 800);
@@ -84,7 +78,6 @@ const Index = (props: DeleteAccountProps) => {
         className="label textSecondary"
         style={{
           marginTop: "1rem",
-          // fontFamily: 'Satoshi-Regular',
         }}
       >
         Deleting your account is a permanent action and cannot be undone. All
@@ -96,7 +89,6 @@ const Index = (props: DeleteAccountProps) => {
         className="label textSecondary"
         style={{
           marginTop: "1rem",
-          // fontFamily: 'Satoshi-Regular',
         }}
       >
         Are you sure you want to proceed?

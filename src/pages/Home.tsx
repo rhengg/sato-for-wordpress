@@ -1,7 +1,6 @@
 import React from "react";
 import Error from "../components/Error";
 import axios from "../utils/axios-instance";
-import Cookies from "js-cookie";
 import Loader from "../components/Loader";
 import {
   videoUrlUpdate,
@@ -19,9 +18,8 @@ import { Button, Snackbar } from "@wordpress/components";
 import { IconButton, Text } from "@wordpress/ui";
 import { help } from "@wordpress/icons";
 import { DataViews, View } from "@wordpress/dataviews";
-import DetailMenu from "../components/DetailMenu";
+import SatoLogo from "../components/SatoLogo";
 import Tooltip from "../components/Tooltip";
-import { encodeBase64 } from "../utils/base64";
 import NotificationPopover from "../components/NotificationPopover";
 import EmptyPlayersState from "../components/EmptyCard";
 import WaveLoader from "../components/Loader/WaveLoader/index";
@@ -187,40 +185,32 @@ const Home = ({ token }: { token: string }) => {
     return data.filter((item) =>
       filters.every((filter) => {
         const field = filter.field ?? "name";
-
         let fieldValue = "";
 
         switch (field) {
           case "name":
             fieldValue = item.name ?? "";
             break;
-
           case "videotitle":
             fieldValue = item.config.videotitle ?? "";
             break;
-
           case "updated_at":
             fieldValue = timeAgo(Number(item.updated_at));
             break;
-
           default:
             fieldValue = String(item[field as keyof Player] ?? "");
         }
 
         fieldValue = fieldValue.toLowerCase();
-
         const filterValue = String(filter.value ?? "").toLowerCase();
 
         switch (filter.operator) {
           case "contains":
             return fieldValue.includes(filterValue);
-
           case "notContains":
             return !fieldValue.includes(filterValue);
-
           case "startsWith":
             return fieldValue.startsWith(filterValue);
-
           default:
             return true;
         }
@@ -304,12 +294,6 @@ const Home = ({ token }: { token: string }) => {
         (res.data?.subscription?.status as string).toLowerCase() !== "active"
       ) {
         window.location.href = `${window.location.pathname}?page=sato-profile`;
-      } else {
-        Cookies.set("s_subs", encodeBase64(res.data.subscription?.plan_id), {
-          expires: 30,
-          secure: true,
-          sameSite: "Strict",
-        });
       }
     } catch (error: any) {
       if (error.response.status === 401) {
@@ -464,12 +448,6 @@ const Home = ({ token }: { token: string }) => {
     }
   }, [refetch]);
 
-  React.useEffect(() => {
-    console.log("isLoading", isLoading);
-    console.log("data", data);
-    console.log("modifiedData", modifiedData);
-  }, [data, isLoading, modifiedData]);
-
   if (isLoading)
     return (
       <div
@@ -500,7 +478,7 @@ const Home = ({ token }: { token: string }) => {
           justifyContent: "space-between",
         }}
       >
-        <DetailMenu />
+        <SatoLogo />
         <div
           style={{
             display: "flex",

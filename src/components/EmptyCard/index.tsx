@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { Text } from "@wordpress/ui";
 import { Button } from "@wordpress/components";
 import "./EmptyCard.css";

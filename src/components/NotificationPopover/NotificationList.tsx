@@ -1,4 +1,3 @@
-import React from "react";
 import Loader from "../Loader";
 import { NotificationItem, NotificationType } from ".";
 import { timeAgo } from "../../utils/helper";
@@ -44,7 +43,6 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
 type Props = {
   data: NotificationItem[];
   loading: boolean;
-  // onAction: (item: NotificationItem) => void;
   onAction: (item: NotificationItem) => Promise<void>;
 };
 
@@ -88,13 +86,6 @@ const NotificationList = ({ data, loading, onAction }: Props) => {
               }}
             >
               <Text variant="body-sm">{timeAgo(item.created_at)}</Text>
-
-              {/* <div
-                className="notif-dot"
-                style={{
-                  visibility: item.is_read ? "hidden" : "visible",
-                }}
-              /> */}
             </div>
             <div className="notif-top">
               <div>

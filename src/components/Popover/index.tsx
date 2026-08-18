@@ -1,56 +1,59 @@
-import React, { useState, useRef, useEffect, ReactNode } from 'react';
-import './popover.css';
+import React, { useState, useRef, useEffect, ReactNode } from "react";
+import "./popover.css";
 
 type PopoverProps = {
   trigger: ReactNode;
   content: ReactNode;
-  position?: 'left' | 'right' | 'bottom' | 'top'
+  position?: "left" | "right" | "bottom" | "top";
 };
 
-const Popover: React.FC<PopoverProps> = ({ trigger, content, position = 'bottom' }) => {
+const Popover: React.FC<PopoverProps> = ({
+  trigger,
+  content,
+  position = "bottom",
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [positionStyle, setPositionStyle] = React.useState<any>()
-
+  const [positionStyle, setPositionStyle] = React.useState<any>();
 
   React.useEffect(() => {
     switch (position) {
-      case 'left':
+      case "left":
         setPositionStyle({
           top: 0,
           left: 0,
-          transform: `translate(-100%, 0)`
-        })
+          transform: `translate(-100%, 0)`,
+        });
         break;
-      case 'right':
+      case "right":
         setPositionStyle({
           top: 0,
           right: 0,
-          transform: `translate(100%, 0)`
-        })
+          transform: `translate(100%, 0)`,
+        });
         break;
-      case 'bottom':
+      case "bottom":
         setPositionStyle({
           bottom: 0,
-          left: '100%',
-          transform: `translate(-100%, 105%)`
-        })        // code block to execute if expression === value2
+          left: "100%",
+          transform: `translate(-100%, 105%)`,
+        });
         break;
-      case 'top':
+      case "top":
         setPositionStyle({
           top: 0,
-          left: '100%',
-          transform: `translate(-100%, -105%)`
-        })
+          left: "100%",
+          transform: `translate(-100%, -105%)`,
+        });
         break;
       default:
         setPositionStyle({
           bottom: 0,
-          left: '100%',
-          transform: `translate(-100%, 105%)`
-        })
+          left: "100%",
+          transform: `translate(-100%, 105%)`,
+        });
     }
-  }, [position])
+  }, [position]);
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -63,27 +66,27 @@ const Popover: React.FC<PopoverProps> = ({ trigger, content, position = 'bottom'
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <div className="popover-wrapper" ref={menuRef}>
-      {/* Trigger */}
-      <div className="trigger-ui" onClick={toggleMenu}
+      <div
+        className="trigger-ui"
+        onClick={toggleMenu}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
-            toggleMenu()
+            toggleMenu();
           }
         }}
       >
         {trigger}
       </div>
 
-      {/* Content */}
       <div
-        className={`popover-content ${isOpen ? 'show' : ''}`}
+        className={`popover-content ${isOpen ? "show" : ""}`}
         style={positionStyle}
         onClick={toggleMenu}
       >
@@ -94,4 +97,3 @@ const Popover: React.FC<PopoverProps> = ({ trigger, content, position = 'bottom'
 };
 
 export default Popover;
-

@@ -14,33 +14,6 @@ type SizePickerProps = {
 const Index = (props: SizePickerProps) => {
   const { label, name, value, onChange, tooltipText, disabled } = props;
 
-  // const rendericon = () => {
-  //   if (name?.includes("margin")) {
-  //     return <span className="material-symbols-outlined">padding</span>;
-  //   }
-  //   if (name?.includes("opacity")) {
-  //     return <span className="material-symbols-outlined">opacity</span>;
-  //   }
-  //   if (name?.includes("padding")) {
-  //     return <span className="material-symbols-outlined">padding</span>;
-  //   }
-  //   if (name?.includes("radius")) {
-  //     return <span className="material-symbols-outlined">rounded_corner</span>;
-  //   }
-  //   if (name?.includes("spacing")) {
-  //     return <span className="material-symbols-outlined">toast</span>;
-  //   }
-  //   if (name?.includes("size")) {
-  //     return <span className="material-symbols-outlined">arrows_output</span>;
-  //   }
-  //   if (name?.includes("height")) {
-  //     return <span className="material-symbols-outlined">height</span>;
-  //   }
-  //   if (name?.includes("scale")) {
-  //     return <span className="material-symbols-outlined">expand</span>;
-  //   }
-  // };
-
   const rendericon = () => {
     const icons: Record<string, string> = {
       margin: "padding",
