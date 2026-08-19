@@ -11,7 +11,6 @@ import { NoticeType } from "../Home";
 
 const AccountPage = ({ token }: { token: string }) => {
   const navigate = useNavigate();
-  const [countryCode, setCountryCode] = React.useState("US");
   const [subscription, setSubscription] = React.useState<any>();
   const [user, setUser] = React.useState<any>();
   const [openModalCancel, setOpenModalCancel] = React.useState<boolean>(false);
@@ -122,21 +121,6 @@ const AccountPage = ({ token }: { token: string }) => {
     fetchInvoice();
   }, []);
 
-  React.useEffect(() => {
-    fetchMedia();
-    axios
-      .get(config.IP_API)
-      .then((response) => {
-        const code = response?.data?.countryCode?.toUpperCase();
-        if (code) {
-          setCountryCode(code);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching country:", error);
-      });
-  }, []);
-
   const handleLogout = async () => {
     await fetch(`${apiUrl}logout`, {
       method: "POST",
@@ -217,7 +201,7 @@ const AccountPage = ({ token }: { token: string }) => {
                   Your subscription has been cancelled. To continue using Sato,
                   you must&nbsp;
                   <Link
-                    to={`https://app.satoplayer.com/plans/${countryCode}`}
+                    to={"https://app.satoplayer.com/plans"}
                     style={{
                       textDecoration: "none",
                     }}
@@ -233,7 +217,7 @@ const AccountPage = ({ token }: { token: string }) => {
                 <p className="body">
                   Subscription to {activePlan?.name} was abandoned.&nbsp;
                   <Link
-                    to={`https://app.satoplayer.com/plans/${countryCode}`}
+                    to={"https://app.satoplayer.com/plans"}
                     style={{
                       textDecoration: "none",
                     }}
@@ -301,7 +285,7 @@ const AccountPage = ({ token }: { token: string }) => {
                 ></span>
                 <span className="primary" style={{ cursor: "pointer" }}>
                   <Link
-                    to={`https://app.satoplayer.com/plans/${countryCode}`}
+                    to={"https://app.satoplayer.com/plans"}
                     style={{
                       textDecoration: "none",
                       fontWeight: "bold",
@@ -376,8 +360,6 @@ const AccountPage = ({ token }: { token: string }) => {
           )}
 
           <div style={{ marginTop: "2rem" }}>
-            {/* <Invoices /> */}
-
             <div>
               <div
                 style={{
