@@ -930,6 +930,11 @@ const Home = ({ token }: { token: string }) => {
             empty={
               <div style={{ margin: "0.5rem 0" }}>
                 <EmptyPlayersState
+                  imageSrc="play_circle"
+                  heading="No video players found"
+                  description="Create and customize a video player to match your brand before embedding it on your site"
+                  buttonText="Create New Player"
+                  buttonIcon="plus"
                   onButtonClick={() => {
                     setOpenModalAdd(true);
                   }}

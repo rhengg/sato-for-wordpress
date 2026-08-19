@@ -670,10 +670,10 @@ const MediaLibrary = (props: any) => {
               empty={
                 <div style={{ margin: "0.5rem 0" }}>
                   <EmptyPlayersState
+                    imageSrc="video_file"
                     heading="No videos found."
                     description="Upload video files here to process them for streaming and organize them into your media library."
                     buttonText="Upload New Video"
-                    imageSrc="video_file"
                     buttonIcon="cloud-upload"
                     onButtonClick={() => setOpenModalUpload(true)}
                   />

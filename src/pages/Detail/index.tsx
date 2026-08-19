@@ -26,6 +26,7 @@ import { Button, Snackbar } from "@wordpress/components";
 import { Input } from "@wordpress/ui";
 import { NoticeType } from "../Home";
 import LivePlayer from "../../components/LivePlayer";
+import EmptyPlayersState from "../../components/EmptyCard";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -1050,8 +1051,12 @@ const Index = ({ token }: { token: string }) => {
                 <LivePlayer key={livePlayerKey} embedUrl={embedUrl} />
               )}
               {videoUrlUpdate.value === "" && (
-                <div>
-                  <p>Add source</p>
+                <div style={{ width: "100%", aspectRatio: "16/9" }}>
+                  <EmptyPlayersState
+                    imageSrc="videocam"
+                    heading="No video added yet"
+                    description="Add a video from your library to preview the player and its configuration settings."
+                  />
                 </div>
               )}
             </div>
