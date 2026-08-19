@@ -43,18 +43,6 @@ export const formatDate = (timestamp: number) => {
   });
 };
 
-export const loadUserIp = async () => {
-  const FALLBACK_COUNTRY = "US";
-
-  try {
-    const res = await axiosOriginal.get(config.IP_API);
-    return res.data.countryCode?.toUpperCase() || FALLBACK_COUNTRY;
-  } catch (error) {
-    console.error("Error fetching IP address:", error);
-    return FALLBACK_COUNTRY;
-  }
-};
-
 export const fetchImage = async (url: string, retries = 2): Promise<Blob> => {
   try {
     const res = await fetch(url);

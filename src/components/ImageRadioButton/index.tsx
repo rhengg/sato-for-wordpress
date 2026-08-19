@@ -56,93 +56,6 @@ const ImageRadioGroup = ({
       </style>
 
       <div className="templateGrid">
-        {/* {options.map((opt) => (
-          <label
-            key={opt.name}
-            onClick={(e) => {
-              if (
-                !activePlan?.metadata?.premium_features?.layoutConfig?.name &&
-                opt.name !== "halcyon"
-              ) {
-                e.preventDefault();
-                window.open("/plans", "_blank", "noopener,noreferrer");
-              }
-            }}
-            style={{
-              position: "relative",
-              cursor: "pointer",
-              border:
-                value === opt.name
-                  ? "1px solid var(--primary)"
-                  : "1px solid transparent",
-              boxShadow:
-                value === opt.name ? "0 2px 10px rgba(0, 0, 0, 0.1)" : "none",
-              borderRadius: "0.5rem",
-              padding: "0.25rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            {!activePlan?.metadata?.premium_features?.layoutConfig?.name &&
-              opt.name !== "halcyon" && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "5%",
-                    right: "3%",
-                  }}
-                >
-                  <Premium />
-                </div>
-              )}
-            <input
-              type="radio"
-              name={name}
-              value={opt.name}
-              checked={value === opt.name}
-              disabled={
-                !activePlan?.metadata?.premium_features?.layoutConfig?.name &&
-                opt.name !== "halcyon"
-              }
-              onChange={() => {
-                if (
-                  !activePlan?.metadata?.premium_features?.layoutConfig?.name &&
-                  opt.name !== "halcyon"
-                )
-                  return;
-                onChange(opt.name);
-                handleSaveButton && handleSaveButton();
-              }}
-              style={{
-                display: "none",
-              }}
-            />
-
-            <img
-              src={opt.img}
-              alt={opt.label}
-              loading="lazy"
-              style={{
-                width: "100%",
-                aspectRatio: "16/9",
-                objectFit: "cover",
-                borderRadius: "6px",
-                display: "block",
-              }}
-            />
-
-            <p
-              className="label"
-              style={{
-                marginTop: "1rem",
-              }}
-            >
-              {opt.label}
-            </p>
-          </label>
-        ))} */}
-
         {templateData.map((opt) => (
           <label
             key={opt}
@@ -152,7 +65,11 @@ const ImageRadioGroup = ({
                 opt !== "halcyon"
               ) {
                 e.preventDefault();
-                window.open("/plans", "_blank", "noopener,noreferrer");
+                window.open(
+                  "https://app.satoplayer.com/plans",
+                  "_blank",
+                  "noopener,noreferrer",
+                );
               }
             }}
             style={{
