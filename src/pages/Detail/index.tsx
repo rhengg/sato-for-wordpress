@@ -19,7 +19,6 @@ import Table from "../../components/Table";
 import SatoLogo from "../../components/SatoLogo";
 import ImageRadioGroup from "../../components/ImageRadioButton";
 import Dropdown from "../../components/Dropdown";
-import { makeConfig } from "../../utils/makePlayerConfig";
 import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
 import CompleteSvg from "../../assets/Complete.svg";
@@ -235,12 +234,13 @@ const Index = ({ token }: { token: string }) => {
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const videoId = params.get("video");
+  const embedUrl = `${config.BASE_URL}/players/embed/${videoId}`;
   const [error, setError] = React.useState("");
   const [activePlan, setActivePlan] = React.useState<any>();
   const [disableSaveButon, setDisableSaveButton] = React.useState(true);
   const [selectedExtension, setSelectedExtension] =
     React.useState<string>("mp4");
-  const [reRender, setReRender] = React.useState(0);
+  const [livePlayerKey, setLivePlayerKey] = React.useState(0);
   const [isLoadingPlayerData, setLoadingPlayerData] = React.useState(true);
   const [loadingSource, setLoadingSource] = React.useState(true);
   const [sourceId, setSourceId] = React.useState<any>("");
@@ -251,7 +251,6 @@ const Index = ({ token }: { token: string }) => {
   const [openModalEditName, setOpenModalEditName] =
     React.useState<boolean>(false);
   const [openModalReset, setOpenModalReset] = React.useState<boolean>(false);
-  const [livePlayerConfig, setLivePlayerConfig] = React.useState<any>();
   const [openModalChooseTemplate, setOpenModalChooseTemplate] =
     React.useState<boolean>(false);
   const [transcriptModal, setTranscriptModal] = React.useState(false);
@@ -281,7 +280,6 @@ const Index = ({ token }: { token: string }) => {
     }, 3000);
   };
 
-  // transcribe video
   const handleTranscribe = async (id: string) => {
     try {
       setTranscriptLoading(true);
@@ -328,14 +326,6 @@ const Index = ({ token }: { token: string }) => {
         },
       });
       const playerById = res.data.filter((item: any) => item.id === videoId);
-      setLivePlayerConfig(
-        makeConfig(
-          playerById[0]?.config,
-          videoUrlUpdate.value,
-          videoUrlExtensionUpdate.value,
-          videoTranscript.value,
-        ),
-      );
       playerNameUpdate.value = playerById[0]?.name;
 
       const isPremium = plan?.amount > 0 || plan?.name === "Collab";
@@ -631,7 +621,7 @@ const Index = ({ token }: { token: string }) => {
       config: playerconfig[selectedTemplate],
     };
     try {
-      const res = await axios.put(`/players/${videoId}`, data, {
+      await axios.put(`/players/${videoId}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -640,17 +630,13 @@ const Index = ({ token }: { token: string }) => {
       setOpenModalReset(false);
       const plan = await fetchSubscription();
       await fetchPlayer(plan);
+      setLivePlayerKey((key) => key + 1);
     } catch (error) {
       showNotice({
         status: "error",
         text: "Error while resetting to default!",
       });
     }
-  };
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    await updatePlayer();
   };
 
   const updatePlayer = async () => {
@@ -671,6 +657,12 @@ const Index = ({ token }: { token: string }) => {
     }
   };
 
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    await updatePlayer();
+    setLivePlayerKey((key) => key + 1);
+  };
+
   const handlePlayerThumbnailOnChange = async (val: string) => {
     let image = new URL(val, config.IMAGE_CDN_URL).toString();
     videoconfigupdate.value.playerThumbnailImageUrl = image;
@@ -681,7 +673,7 @@ const Index = ({ token }: { token: string }) => {
     } catch (error) {
       showNotice({ status: "error", text: "Error updating thumbnail!" });
     } finally {
-      setReRender(Math.random() * 1000);
+      setLivePlayerKey((key) => key + 1);
     }
   };
 
@@ -695,7 +687,7 @@ const Index = ({ token }: { token: string }) => {
     } catch (error) {
       showNotice({ status: "error", text: "Error updating brand!" });
     } finally {
-      setReRender(Math.random() * 1000);
+      setLivePlayerKey((key) => key + 1);
     }
   };
 
@@ -712,7 +704,7 @@ const Index = ({ token }: { token: string }) => {
     } catch (error) {
       showNotice({ status: "error", text: "Error updating CTA image!" });
     } finally {
-      setReRender(Math.random() * 1000);
+      setLivePlayerKey((key) => key + 1);
     }
   };
 
@@ -731,7 +723,7 @@ const Index = ({ token }: { token: string }) => {
 
   const truncate = (text: string = "", maxLength = 50): string => {
     if (typeof window !== "undefined" && window.innerWidth <= 768) {
-      maxLength = 30; // mobile limit
+      maxLength = 30;
     }
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
@@ -742,7 +734,7 @@ const Index = ({ token }: { token: string }) => {
       config: playerconfig[selectedTemplate],
     };
     try {
-      const res = await axios.put(`/players/${videoId}`, data, {
+      await axios.put(`/players/${videoId}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -752,6 +744,7 @@ const Index = ({ token }: { token: string }) => {
       showNotice({ status: "success", text: "Theme updated!" });
       setOpenModalChooseTemplate(false);
       setError("");
+      setLivePlayerKey((key) => key + 1);
     } catch (error) {
       showNotice({ status: "error", text: "Error updating theme!" });
     }
@@ -790,26 +783,6 @@ const Index = ({ token }: { token: string }) => {
 
     init();
   }, []);
-
-  const computedConfig = React.useMemo(() => {
-    if (reRender === 0) {
-      if (livePlayerConfig) {
-        return livePlayerConfig;
-      }
-    } else {
-      return makeConfig(
-        videoconfigupdate.value,
-        videoUrlUpdate.value,
-        videoUrlExtensionUpdate.value,
-        videoTranscript.value,
-      );
-    }
-  }, [
-    reRender,
-    livePlayerConfig,
-    videoUrlUpdate.value,
-    videoUrlExtensionUpdate.value,
-  ]);
 
   if (isLoadingPlayerData && !activePlan && loadingSource)
     return (
@@ -855,7 +828,6 @@ const Index = ({ token }: { token: string }) => {
         </div>
       )}
       <div className="detail-container">
-        {/* left side */}
         <div className="detail-sub-container-2 hide-scroll">
           <div className="detail-sub-container-child">
             <SatoLogo />
@@ -1031,7 +1003,6 @@ const Index = ({ token }: { token: string }) => {
                         setFile={setFile}
                         setRefetch={(u) => {
                           setRefetch(u);
-                          setReRender(u);
                         }}
                         activePlan={activePlan}
                         setOpenModalUpload={setOpenModalUpload}
@@ -1051,14 +1022,12 @@ const Index = ({ token }: { token: string }) => {
                           data={media}
                           setRefetch={(u) => {
                             setRefetch(u);
-                            setReRender(u);
                           }}
                           activePlan={activePlan}
                           handleClick={async (item: any) => {
                             setOpenModalUpload(false);
                             await addSource(sourceId, item);
                             setRefetch(Math.random());
-                            setReRender(Math.random());
                           }}
                         />
                       </div>
@@ -1077,7 +1046,14 @@ const Index = ({ token }: { token: string }) => {
                 alignItems: "center",
               }}
             >
-              {computedConfig && <LivePlayer config={computedConfig} />}
+              {videoUrlUpdate.value !== "" && (
+                <LivePlayer key={livePlayerKey} embedUrl={embedUrl} />
+              )}
+              {videoUrlUpdate.value === "" && (
+                <div>
+                  <p>Add source</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1148,8 +1124,6 @@ const Index = ({ token }: { token: string }) => {
                 <div
                   style={{
                     width: "100%",
-                    // marginTop: "1.5rem",
-                    // padding: "0 1rem 0 3rem",
                     boxSizing: "border-box",
                   }}
                 >
@@ -1158,7 +1132,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Auto Play"}
                     checked={videoconfigupdate.value.playersettings.autoplay}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playersettings.autoplay =
                         e.target.checked;
                       videoconfigupdate.value.playersettings.muted =
@@ -1176,7 +1149,6 @@ const Index = ({ token }: { token: string }) => {
                         return;
                       videoconfigupdate.value.playersettings.muted =
                         e.target.checked;
-                      setReRender(Math.random() * 1000);
                       setDisableSaveButton(false);
                     }}
                     tooltipText="All autoplay-enabled videos are mute by default until manually unmuted"
@@ -1187,20 +1159,12 @@ const Index = ({ token }: { token: string }) => {
                     label={"Loop"}
                     checked={videoconfigupdate.value.playersettings.loop}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playersettings.loop =
                         e.target.checked;
                       setDisableSaveButton(false);
                     }}
                     tooltipText="Your video will play in loop until manually paused"
                   />
-
-                  {/* <Toggle
-                                    name={'use-as-bg-video'}
-                                    label={'Use as BG Video'}
-                                    checked={videoconfigupdate.value.playersettings.use_as_BG_video}
-                                    onChange={(e: any) => { setReRender(Math.random() * 1000); (videoconfigupdate.value.playersettings.use_as_BG_video = e.target.checked) }}
-                                /> */}
                 </div>
               </Accordion>
             </div>
@@ -1212,7 +1176,6 @@ const Index = ({ token }: { token: string }) => {
                 header="Theme Style"
                 id="theme-style"
                 icon="colorize"
-                // premium={activePlan && activePlan?.amount === 0}
                 premium={
                   !activePlan?.metadata?.premium_features?.layoutConfig?.name
                 }
@@ -1265,15 +1228,7 @@ const Index = ({ token }: { token: string }) => {
                             ?.controls_padding
                         }
                         // @ts-ignore
-                        // onChange={(e: any) => {
-                        //   setReRender(Math.random() * 1000);
-                        //   videoconfigupdate.value?.premium?.layoutConfig?.controls_padding =
-                        //     e.target.value;
-                        //   setDisableSaveButton(false);
-                        // }}
                         onChange={(e: any) => {
-                          setReRender(Math.random() * 1000);
-
                           videoconfigupdate.value = {
                             ...videoconfigupdate.value,
                             premium: {
@@ -1285,7 +1240,6 @@ const Index = ({ token }: { token: string }) => {
                               },
                             },
                           };
-
                           setDisableSaveButton(false);
                         }}
                       />
@@ -1298,16 +1252,7 @@ const Index = ({ token }: { token: string }) => {
                           videoconfigupdate?.value.premium?.layoutConfig
                             ?.controls_corner_radius
                         }
-                        // @ts-ignore
-                        // onChange={(e: any) => {
-                        //   setReRender(Math.random() * 1000);
-                        //   videoconfigupdate.value?.premium?.layoutConfig?.controls_corner_radius =
-                        //     e.target.value;
-                        //   setDisableSaveButton(false);
-                        // }}
                         onChange={(e: any) => {
-                          setReRender(Math.random() * 1000);
-
                           videoconfigupdate.value = {
                             ...videoconfigupdate.value,
                             premium: {
@@ -1331,16 +1276,7 @@ const Index = ({ token }: { token: string }) => {
                           videoconfigupdate.value?.premium?.layoutConfig
                             ?.controls_bg
                         }
-                        // @ts-ignore
-                        // onChange={(e: any) => {
-                        //   setReRender(Math.random() * 1000);
-                        //   videoconfigupdate.value?.premium?.layoutConfig?.controls_bg =
-                        //     e;
-                        //   setDisableSaveButton(false);
-                        // }}
                         onChange={(e: string) => {
-                          setReRender(Math.random() * 1000);
-
                           videoconfigupdate.value = {
                             ...videoconfigupdate.value,
                             premium: {
@@ -1379,13 +1315,10 @@ const Index = ({ token }: { token: string }) => {
                   <SizePicker
                     label={"Padding"}
                     name={"inner-padding"}
-                    // @ts-ignore
                     value={
                       videoconfigupdate.value.playerstyle.player_controls_margin
                     }
-                    // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.player_controls_margin =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1395,13 +1328,10 @@ const Index = ({ token }: { token: string }) => {
                   <SizePicker
                     label={"Radius"}
                     name={"corner-radius"}
-                    // @ts-ignore
                     value={
                       videoconfigupdate.value.playerstyle.player_corner_radius
                     }
-                    // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.player_corner_radius =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1413,7 +1343,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Gradient"}
                     checked={videoconfigupdate.value.playercontrol.gradient}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.gradient =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1427,7 +1356,6 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.osd_auto_hide
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.osd_auto_hide =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1466,7 +1394,6 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.center_playpause
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.center_playpause =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1482,7 +1409,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_button_size =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1499,7 +1425,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_button_padding =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1516,7 +1441,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_button_corner_radius =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1532,7 +1456,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_button_color =
                         e;
                       setDisableSaveButton(false);
@@ -1547,7 +1470,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_color = e;
                       setDisableSaveButton(false);
                     }}
@@ -1562,7 +1484,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_button_hover_color =
                         e;
                       setDisableSaveButton(false);
@@ -1579,7 +1500,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.center_icon_button_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1603,7 +1523,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Play Button"}
                     checked={videoconfigupdate.value.playercontrol.playpause}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.playpause =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1615,7 +1534,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Volume Button"}
                     checked={videoconfigupdate.value.playercontrol.volume}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.volume =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1629,7 +1547,6 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.settings_menu
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.settings_menu =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1643,7 +1560,6 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.full_screen_icon
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.full_screen_icon =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1666,7 +1582,6 @@ const Index = ({ token }: { token: string }) => {
                       };
 
                       setDisableSaveButton(false);
-                      setReRender(Math.random() * 1000);
                     }}
                   /> */}
 
@@ -1677,7 +1592,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.icon_button_size}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_button_size =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1693,7 +1607,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_button_padding =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1710,7 +1623,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_button_corner_radius =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1725,7 +1637,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_button_color = e;
                       setDisableSaveButton(false);
                     }}
@@ -1737,7 +1648,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.icon_color}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_color = e;
                       setDisableSaveButton(false);
                     }}
@@ -1752,7 +1662,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_button_hover_color =
                         e;
                       setDisableSaveButton(false);
@@ -1768,7 +1677,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.icon_button_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1797,7 +1705,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Show"}
                     checked={videoconfigupdate.value.playercontrol.progress_bar}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.progress_bar =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1809,7 +1716,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Scrubber"}
                     checked={videoconfigupdate.value.playercontrol.scrubber}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.scrubber =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -1821,7 +1727,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Timestamp"}
                     checked={videoconfigupdate.value.playercontrol.time_stamp}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       if (videoconfigupdate.value?.premium?.rapidEngage) {
                         return setError("rapid-engage-enabled");
                       }
@@ -1850,7 +1755,6 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.video_frame =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setReRender(Math.random() * 1000);
                     }}
                   />
 
@@ -1870,14 +1774,12 @@ const Index = ({ token }: { token: string }) => {
                     }
                     checked={videoconfigupdate.value.premium?.rapidEngage}
                     // onChange={(e: any) => {
-                    //   setReRender(Math.random() * 1000);
                     //   videoconfigupdate.value.premium?.rapidEngage =
                     //     e.target.checked;
                     //   setDisableSaveButton(false);
                     // }}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setError("");
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value = {
                         ...videoconfigupdate.value,
                         premium: {
@@ -1908,7 +1810,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.bottom_bar_spacing =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1924,7 +1825,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_size =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1941,7 +1841,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_hover_scale =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -1966,7 +1865,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_FG_color =
                         e;
                       setDisableSaveButton(false);
@@ -1981,7 +1879,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_BG_color =
                         e;
                       setDisableSaveButton(false);
@@ -1997,7 +1894,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_loaded_color =
                         e;
                       setDisableSaveButton(false);
@@ -2013,7 +1909,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_circle_color =
                         e;
                       setDisableSaveButton(false);
@@ -2029,7 +1924,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.progress_bar_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2052,7 +1946,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.tooltip_BG_color}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.tooltip_BG_color = e;
                       setDisableSaveButton(false);
                     }}
@@ -2066,7 +1959,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.tooltip_text_color =
                         e;
                       setDisableSaveButton(false);
@@ -2082,7 +1974,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.tooltip_corner_radius =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2096,7 +1987,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.tooltip_opacity}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.tooltip_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2127,7 +2017,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.volume_bar_size}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.volume_bar_size =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2141,7 +2030,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.volume_bar_BG_color =
                         e;
                       setDisableSaveButton(false);
@@ -2156,7 +2044,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.volume_bar_FG_color =
                         e;
                       setDisableSaveButton(false);
@@ -2172,7 +2059,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.volume_bar_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2204,7 +2090,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.settings_menu_BG_color =
                         e;
                       setDisableSaveButton(false);
@@ -2220,7 +2105,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.settings_menu_BG_hover_color =
                         e;
                       setDisableSaveButton(false);
@@ -2236,7 +2120,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.settings_menu_text_color =
                         e;
                       setDisableSaveButton(false);
@@ -2252,7 +2135,6 @@ const Index = ({ token }: { token: string }) => {
                     }
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.settings_menu_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2323,7 +2205,6 @@ const Index = ({ token }: { token: string }) => {
                             },
                           },
                         };
-                        setReRender(Math.random() * 1000);
                         setDisableSaveButton(false);
                       }}
                       name="cta-url"
@@ -2369,7 +2250,6 @@ const Index = ({ token }: { token: string }) => {
                             },
                           },
                         };
-                        setReRender(Math.random() * 1000);
                         setDisableSaveButton(false);
                       }}
                       name="cta-heading"
@@ -2416,7 +2296,6 @@ const Index = ({ token }: { token: string }) => {
                             },
                           },
                         };
-                        setReRender(Math.random() * 1000);
                         setDisableSaveButton(false);
                       }}
                       name="cta-description"
@@ -2463,7 +2342,6 @@ const Index = ({ token }: { token: string }) => {
                             },
                           },
                         };
-                        setReRender(Math.random() * 1000);
                         setDisableSaveButton(false);
                       }}
                       name="cta-title"
@@ -2492,7 +2370,6 @@ const Index = ({ token }: { token: string }) => {
                           },
                         },
                       };
-                      setReRender(Math.random() * 1000);
                       setDisableSaveButton(false);
                     }}
                     options={[
@@ -2524,7 +2401,6 @@ const Index = ({ token }: { token: string }) => {
                           },
                         },
                       };
-                      setReRender(Math.random() * 1000);
                       setDisableSaveButton(false);
                     }}
                     options={[
@@ -2556,7 +2432,6 @@ const Index = ({ token }: { token: string }) => {
                           },
                         },
                       };
-                      setReRender(Math.random() * 1000);
                       setDisableSaveButton(false);
                     }}
                     options={[
@@ -2596,7 +2471,6 @@ const Index = ({ token }: { token: string }) => {
                         : false
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       if (videoconfigupdate.value.premium?.playerCTA?.image) {
                         videoconfigupdate.value.premium.playerCTA.imageEnable =
                           e.target.checked;
@@ -2627,7 +2501,6 @@ const Index = ({ token }: { token: string }) => {
                         : false
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       setError("");
                       if (
                         videoconfigupdate.value?.premium?.playerCTA
@@ -2675,7 +2548,6 @@ const Index = ({ token }: { token: string }) => {
                 >
                   <SEOcard
                     title={videoconfigupdate.value.videotitle}
-                    setReRender={setReRender}
                     setDisableSaveButton={setDisableSaveButton}
                   />
 
@@ -2684,7 +2556,6 @@ const Index = ({ token }: { token: string }) => {
                     label={"Show"}
                     checked={videoconfigupdate.value.playercontrol.video_name}
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       setError("");
                       if (videoconfigupdate.value.videotitle) {
                         videoconfigupdate.value.playercontrol.video_name =
@@ -2708,7 +2579,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.text_color}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.text_color = e;
                       setDisableSaveButton(false);
                     }}
@@ -2738,7 +2608,6 @@ const Index = ({ token }: { token: string }) => {
                         : false
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       if (videoconfigupdate.value.playerThumbnailImageUrl) {
                         videoconfigupdate.value.playercontrol.thumbnail =
                           e.target.checked;
@@ -2795,7 +2664,6 @@ const Index = ({ token }: { token: string }) => {
                         : false
                     }
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playercontrol.branding =
                         e.target.checked;
                       setDisableSaveButton(false);
@@ -2809,7 +2677,6 @@ const Index = ({ token }: { token: string }) => {
                     value={videoconfigupdate.value.playerstyle.branding_opacity}
                     // @ts-ignore
                     onChange={(e: any) => {
-                      setReRender(Math.random() * 1000);
                       videoconfigupdate.value.playerstyle.branding_opacity =
                         e.target.value;
                       setDisableSaveButton(false);
@@ -2856,7 +2723,6 @@ const Index = ({ token }: { token: string }) => {
                       };
 
                       setDisableSaveButton(false);
-                      setReRender(Math.random() * 1000);
                     }}
                   />
 
@@ -3147,10 +3013,6 @@ const Index = ({ token }: { token: string }) => {
                   value={selectedTemplate}
                   onChange={setSelectedTemplate}
                   name="template-radio"
-                  handleSaveButton={() => {
-                    setReRender(Math.random() * 1000);
-                    // setDisableSaveButton(false);
-                  }}
                   activePlan={activePlan}
                 />
               </div>

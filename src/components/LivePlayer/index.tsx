@@ -1,31 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import SkaraPlayer, { PlayerConfig } from "@skara-live/skara-video-player-web";
+import React from "react";
 
 type LivePlayerProps = {
-  config: PlayerConfig;
+  embedUrl: string;
 };
 
-const LivePlayer: React.FC<LivePlayerProps> = ({ config }) => {
-  const playerRef = useRef<HTMLDivElement | null>(null);
-  const playerInstance = useRef<SkaraPlayer | null>(null);
-
-  const initializePlayer = () => {
-    if (!playerRef.current) return;
-    playerRef.current.innerHTML = "";
-    const freshConfig = structuredClone(config);
-    playerInstance.current = new SkaraPlayer(playerRef.current, freshConfig);
-    playerInstance.current.start();
-  };
-
-  useEffect(() => {
-    initializePlayer();
-
-    return () => {
-      playerInstance.current?.dispose();
-      playerInstance.current = null;
-    };
-  }, [config]);
-
+const LivePlayer: React.FC<LivePlayerProps> = ({ embedUrl }) => {
   return (
     <div
       style={{
@@ -36,7 +15,21 @@ const LivePlayer: React.FC<LivePlayerProps> = ({ config }) => {
         aspectRatio: "16/9",
       }}
     >
-      <div ref={playerRef} style={{ width: "100%", height: "100%" }} />
+      <iframe
+        title="Sato Player"
+        width="100%"
+        height="100%"
+        loading="lazy"
+        allowFullScreen
+        src={embedUrl}
+        style={{
+          border: "none",
+          outline: "none",
+          padding: 0,
+          margin: 0,
+          cursor: "pointer",
+        }}
+      ></iframe>
     </div>
   );
 };

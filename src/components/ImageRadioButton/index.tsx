@@ -8,7 +8,7 @@ type ImageRadioGroupProps = {
   value: string;
   onChange: (value: "halcyon" | "moderna" | "sphinx" | "prosper") => void;
   name: string;
-  handleSaveButton?: () => void;
+  // handleSaveButton?: () => void;
   activePlan?: any;
 };
 
@@ -16,7 +16,7 @@ const ImageRadioGroup = ({
   value,
   onChange,
   name = "image-radio",
-  handleSaveButton,
+  // handleSaveButton,
   activePlan,
 }: ImageRadioGroupProps) => {
   const templateData = ["halcyon", "moderna", "sphinx", "prosper"] as const;
@@ -116,7 +116,7 @@ const ImageRadioGroup = ({
                 )
                   return;
                 onChange(opt);
-                handleSaveButton && handleSaveButton();
+                // handleSaveButton && handleSaveButton();
               }}
               style={{
                 display: "none",
