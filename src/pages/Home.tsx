@@ -12,7 +12,6 @@ import MediaLibrary from "./MediaLibrary";
 import Modal from "../components/Modal";
 import { config } from "../utils/default-config";
 import ImageRadioGroup from "../components/ImageRadioButton";
-import playerTemplate from "../database/playerTemplate.json";
 import { timeAgo } from "../utils/helper";
 import { Button, Snackbar } from "@wordpress/components";
 import { IconButton, Text } from "@wordpress/ui";
@@ -615,7 +614,6 @@ const Home = ({ token }: { token: string }) => {
                 </p>
 
                 <ImageRadioGroup
-                  options={playerTemplate}
                   value={selectedTemplate}
                   onChange={setSelectedTemplate}
                   name="template-radio"

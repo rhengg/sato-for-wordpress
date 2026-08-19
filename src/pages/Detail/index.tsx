@@ -18,7 +18,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Table from "../../components/Table";
 import SatoLogo from "../../components/SatoLogo";
 import ImageRadioGroup from "../../components/ImageRadioButton";
-import playerTemplate from "../../database/playerTemplate.json";
 import Dropdown from "../../components/Dropdown";
 import { makeConfig } from "../../utils/makePlayerConfig";
 import { fetchImage } from "../../utils/helper";
@@ -3145,7 +3144,6 @@ const Index = ({ token }: { token: string }) => {
                 }}
               >
                 <ImageRadioGroup
-                  options={playerTemplate}
                   value={selectedTemplate}
                   onChange={setSelectedTemplate}
                   name="template-radio"
