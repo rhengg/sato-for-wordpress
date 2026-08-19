@@ -119,6 +119,7 @@ const AccountPage = ({ token }: { token: string }) => {
     fetchSubscription();
     fetchUserDetail();
     fetchInvoice();
+    fetchMedia();
   }, []);
 
   const handleLogout = async () => {
