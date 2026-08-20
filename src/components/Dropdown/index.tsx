@@ -123,8 +123,8 @@ const Dropdown = ({
               <li
                 key={opt.value}
                 onClick={() => {
-                  handleChange(opt.value);
                   setOpen(false);
+                  handleChange(opt.value);
                 }}
                 className="dropdown-option body"
               >
