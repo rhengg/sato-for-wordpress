@@ -83,7 +83,7 @@ const Accordion: React.FC<AccordionProps> = ({
         className={`collapse ${isActive ? "show" : ""}`}
         style={{ height, overflow: "hidden", transition: "height 0.3s ease" }}
       >
-        <div className="accordion-satoBody">{children}</div>
+        <div className="accordion-body">{children}</div>
       </div>
     </div>
   );
