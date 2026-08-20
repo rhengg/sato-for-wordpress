@@ -243,7 +243,6 @@ const Index = ({ token }: { token: string }) => {
     React.useState<string>("mp4");
   const [refetch, setRefetch] = React.useState(0);
   const [livePlayerKey, setLivePlayerKey] = React.useState(0);
-  const [toggleKey, setToggleKey] = React.useState(0);
   const [isLoadingPlayerData, setLoadingPlayerData] = React.useState(true);
   const [loadingSource, setLoadingSource] = React.useState(true);
   const [sourceId, setSourceId] = React.useState<any>("");
@@ -274,6 +273,14 @@ const Index = ({ token }: { token: string }) => {
   >("halcyon");
   const [notice, setNotice] = React.useState<NoticeType>();
   const [active, setActive] = React.useState<string[]>(["video-playback"]);
+  const [toggleKey, setToggleKey] = React.useState<Record<string, number>>({});
+
+  const reloadToggle = (name: string) => {
+    setToggleKey((prev) => ({
+      ...prev,
+      [name]: (prev[name] || 0) + 1,
+    }));
+  };
 
   const showNotice = (item: NoticeType) => {
     setNotice(item);
@@ -1133,7 +1140,7 @@ const Index = ({ token }: { token: string }) => {
                   }}
                 >
                   <Toggle
-                    key={toggleKey}
+                    key={`autoplay-${toggleKey.autoplay || 0}`}
                     name={"autoplay"}
                     label={"Auto Play"}
                     checked={videoconfigupdate.value.playersettings.autoplay}
@@ -1143,12 +1150,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playersettings.muted =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("autoplay");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`muted-${toggleKey.muted || 0}`}
                     name={"muted"}
                     label={"Muted"}
                     checked={videoconfigupdate.value.playersettings.muted}
@@ -1158,13 +1165,13 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playersettings.muted =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("muted");
                     }}
                     tooltipText="All autoplay-enabled videos are mute by default until manually unmuted"
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`loop-${toggleKey.loop || 0}`}
                     name={"loop"}
                     label={"Loop"}
                     checked={videoconfigupdate.value.playersettings.loop}
@@ -1172,7 +1179,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playersettings.loop =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("loop");
                     }}
                     tooltipText="Your video will play in loop until manually paused"
                   />
@@ -1350,7 +1357,7 @@ const Index = ({ token }: { token: string }) => {
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`gradient-${toggleKey.gradient || 0}`}
                     name={"gradient"}
                     label={"Gradient"}
                     checked={videoconfigupdate.value.playercontrol.gradient}
@@ -1358,12 +1365,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.gradient =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("gradient");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`osd-${toggleKey.osd || 0}`}
                     name={"osd-auto-hide"}
                     label={"OSD Autohide"}
                     checked={
@@ -1373,7 +1380,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.osd_auto_hide =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("osd");
                     }}
                   />
                 </div>
@@ -1403,7 +1410,7 @@ const Index = ({ token }: { token: string }) => {
                   </div>
 
                   <Toggle
-                    key={toggleKey}
+                    key={`cntrbtn-${toggleKey.cntrbtn || 0}`}
                     name={"center-btn-show"}
                     label={"Show/Hide"}
                     checked={
@@ -1413,7 +1420,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.center_playpause =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("cntrbtn");
                     }}
                   />
                   <SizePicker
@@ -1536,7 +1543,7 @@ const Index = ({ token }: { token: string }) => {
                   </div>
 
                   <Toggle
-                    key={toggleKey}
+                    key={`smallplay-${toggleKey.smallplay || 0}`}
                     name={"small-icon-play-show"}
                     label={"Play Button"}
                     checked={videoconfigupdate.value.playercontrol.playpause}
@@ -1544,12 +1551,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.playpause =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("smallplay");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`smallvol-${toggleKey.smallvol || 0}`}
                     name={"small-icon-vol-show"}
                     label={"Volume Button"}
                     checked={videoconfigupdate.value.playercontrol.volume}
@@ -1557,12 +1564,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.volume =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("smallvol");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`settings-${toggleKey.settings || 0}`}
                     name={"small-icon-setting-show"}
                     label={"Settings Button"}
                     checked={
@@ -1572,12 +1579,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.settings_menu =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("settings");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`fullscreen-${toggleKey.fullscreen || 0}`}
                     name={"small-icon-fullscreen-show"}
                     label={"Fullscreen Button"}
                     checked={
@@ -1587,7 +1594,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.full_screen_icon =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("fullscreen");
                     }}
                   />
 
@@ -1707,7 +1714,7 @@ const Index = ({ token }: { token: string }) => {
                   }}
                 >
                   <Toggle
-                    key={toggleKey}
+                    key={`progress-${toggleKey.progress || 0}`}
                     name={"progress-bar-show"}
                     label={"Show"}
                     checked={videoconfigupdate.value.playercontrol.progress_bar}
@@ -1715,12 +1722,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.progress_bar =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("progress");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`scrubber-${toggleKey.scrubber || 0}`}
                     name={"progress-bar-scrubber"}
                     label={"Scrubber"}
                     checked={videoconfigupdate.value.playercontrol.scrubber}
@@ -1728,12 +1735,12 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.scrubber =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("scrubber");
                     }}
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`timestamp-${toggleKey.timestamp || 0}`}
                     name={"progress-bar-time"}
                     label={"Timestamp"}
                     checked={videoconfigupdate.value.playercontrol.time_stamp}
@@ -1744,7 +1751,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.time_stamp =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("timestamp");
                     }}
                   />
 
@@ -1757,7 +1764,7 @@ const Index = ({ token }: { token: string }) => {
                   )}
 
                   <Toggle
-                    key={toggleKey}
+                    key={`videoframe-${toggleKey.videoframe || 0}`}
                     name={"video-frame"}
                     label={"Video Frame"}
                     checked={videoconfigupdate.value.playercontrol.video_frame}
@@ -1768,7 +1775,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.video_frame =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("videoframe");
                     }}
                   />
 
@@ -1781,7 +1788,7 @@ const Index = ({ token }: { token: string }) => {
                   )}
 
                   <Toggle
-                    key={toggleKey}
+                    key={`superprgrs-${toggleKey.superprgrs || 0}`}
                     name={"super-progress"}
                     label={"Super Progress"}
                     disabled={
@@ -1800,7 +1807,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.time_stamp = false;
                       videoconfigupdate.value.playercontrol.video_frame = false;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("superprgrs");
                     }}
                     showCaptions={true}
                     onPremiumClick={(title) => {
@@ -2470,7 +2477,7 @@ const Index = ({ token }: { token: string }) => {
                   </div>
 
                   <Toggle
-                    key={toggleKey}
+                    key={`imgenable-${toggleKey.imgenable || 0}`}
                     name={"imageEnable"}
                     label={"Enable Image"}
                     disabled={
@@ -2487,7 +2494,7 @@ const Index = ({ token }: { token: string }) => {
                         videoconfigupdate.value.premium.playerCTA.imageEnable =
                           e.target.checked;
                         setDisableSaveButton(false);
-                        setToggleKey((key) => key + 1);
+                        reloadToggle("imgenable");
                       } else {
                         setError("upload-cta-thumbnail-error");
                       }
@@ -2503,7 +2510,7 @@ const Index = ({ token }: { token: string }) => {
                   </div>
 
                   <Toggle
-                    key={toggleKey}
+                    key={`ctaenable-${toggleKey.ctaenable || 0}`}
                     name={"enable-cta"}
                     label={"Enable CTA"}
                     disabled={
@@ -2528,7 +2535,7 @@ const Index = ({ token }: { token: string }) => {
                         videoconfigupdate.value.premium.playerCTA.cta =
                           e.target.checked;
                         setDisableSaveButton(false);
-                        setToggleKey((key) => key + 1);
+                        reloadToggle("ctaenable");
                       } else {
                         setError("cta-enable-error");
                       }
@@ -2567,7 +2574,7 @@ const Index = ({ token }: { token: string }) => {
                   />
 
                   <Toggle
-                    key={toggleKey}
+                    key={`videoname-${toggleKey.videoname || 0}`}
                     name={"video-name"}
                     label={"Show"}
                     checked={videoconfigupdate.value.playercontrol.video_name}
@@ -2577,7 +2584,7 @@ const Index = ({ token }: { token: string }) => {
                         videoconfigupdate.value.playercontrol.video_name =
                           e.target.checked;
                         setDisableSaveButton(false);
-                        setToggleKey((key) => key + 1);
+                        reloadToggle("videoname");
                       } else {
                         setError("title-enable-error");
                       }
@@ -2617,7 +2624,7 @@ const Index = ({ token }: { token: string }) => {
                   </div>
 
                   <Toggle
-                    key={toggleKey}
+                    key={`thumbnail-${toggleKey.thumbnail || 0}`}
                     name={"thumbnail"}
                     label={"Show"}
                     checked={
@@ -2630,14 +2637,17 @@ const Index = ({ token }: { token: string }) => {
                         videoconfigupdate.value.playercontrol.thumbnail =
                           e.target.checked;
                         setDisableSaveButton(false);
-                        setToggleKey((key) => key + 1);
+                        reloadToggle("thumbnail");
                       } else {
                         setError("upload-thumbnail-error");
                       }
                     }}
                   />
 
-                  <div className="error-container">
+                  <div
+                    className="error-container"
+                    style={{ marginBottom: "1rem" }}
+                  >
                     {error === "upload-thumbnail-error" && (
                       <p className="error-text">Upload image to show</p>
                     )}
@@ -2675,7 +2685,7 @@ const Index = ({ token }: { token: string }) => {
                   </div>
 
                   <Toggle
-                    key={toggleKey}
+                    key={`branding-${toggleKey.branding || 0}`}
                     name={"branding"}
                     label={"Show Logo"}
                     checked={
@@ -2687,7 +2697,7 @@ const Index = ({ token }: { token: string }) => {
                       videoconfigupdate.value.playercontrol.branding =
                         e.target.checked;
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("branding");
                     }}
                   />
 
@@ -2730,7 +2740,7 @@ const Index = ({ token }: { token: string }) => {
                   }}
                 >
                   <Toggle
-                    key={toggleKey}
+                    key={`caption-${toggleKey.caption || 0}`}
                     name={"caption"}
                     label={"Show/Hide"}
                     disabled={!activePlan?.metadata?.premium_features?.caption}
@@ -2744,7 +2754,7 @@ const Index = ({ token }: { token: string }) => {
                         },
                       };
                       setDisableSaveButton(false);
-                      setToggleKey((key) => key + 1);
+                      reloadToggle("caption");
                     }}
                   />
 
