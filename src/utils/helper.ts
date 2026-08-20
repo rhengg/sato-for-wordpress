@@ -1,6 +1,3 @@
-import axiosOriginal from "axios";
-import config from "../config";
-
 export const timeAgo = (dateString: number): string => {
   const now = new Date();
   const then = new Date(dateString * 1000);
@@ -35,7 +32,6 @@ export const validatePassword = (value: string) => {
 
 export const formatDate = (timestamp: number) => {
   const date = new Date(timestamp * 1000);
-  // return date.toLocaleDateString("en-IN");
   return date.toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
