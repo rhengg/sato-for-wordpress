@@ -30,7 +30,7 @@
 }
 
 .video-table-row:hover {
-  background-color: var(--stroke);
+  background-color: var(--satoStroke);
   border-radius: 0.5rem;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .video-table-row-select-media:hover {
-  background-color: var(--stroke);
+  background-color: var(--satoStroke);
   border-radius: 0.5rem;
 }
 
@@ -68,12 +68,12 @@
 .delete-icon {
   cursor: pointer;
   transition: all 0.4s ease-in-out;
-  color: var(--negative);
+  color: var(--satoNegative);
 }
 
 .delete-icon:hover {
   /* transform: scale(1.2); */
-  color: var(--negative);
+  color: var(--satoNegative);
 }
 
 .mobile-text-render {
@@ -138,7 +138,7 @@
     justify-content: space-between;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    border-bottom: 1px solid var(--textSecondary);
+    border-bottom: 1px solid var(--satoTextSecondary);
   }
   .delete-icon {
     display: none;

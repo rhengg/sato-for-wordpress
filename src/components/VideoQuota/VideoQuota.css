@@ -1,7 +1,7 @@
 .video-quota-container {
   width: fit-content;
   max-width: 100%;
-  border: 1px solid var(--placeholder);
+  border: 1px solid var(--satoPlaceholder);
   border-radius: 0.25rem;
   overflow: hidden;
   font-size: 1rem;
@@ -14,7 +14,7 @@
   padding: 0.75rem 1rem;
   gap: 1.5rem;
   flex-wrap: wrap;
-  color: var(--textSecondary);
+  color: var(--satoTextSecondary);
 }
 .video-quota-text {
   display: flex;
@@ -24,7 +24,7 @@
 }
 
 .divider {
-  color: var(--textPrimary);
+  color: var(--satoTextPrimary);
 }
 
 .upgrade-plan {

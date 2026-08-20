@@ -51,7 +51,7 @@ const ColorPicker = ({
           position: "relative",
         }}
       >
-        <p className="body placeholder">{label}</p>
+        <p className="satoBody satoPlaceholder">{label}</p>
         {tooltipText && (
           <Tooltip text={tooltipText}>
             <span
@@ -128,7 +128,7 @@ const ColorPicker = ({
         </div>
 
         <input
-          className="color-hex-input body"
+          className="color-hex-input satoBody"
           name={name}
           value={newValue}
           onChange={(e) => {

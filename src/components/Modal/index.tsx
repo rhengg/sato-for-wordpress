@@ -66,7 +66,7 @@ const Modal = (props: ModalProps) => {
             className="modalHeader"
             style={{ justifyContent: closeButton ? "space-between" : "center" }}
           >
-            <p className="subtitle-one">{title}</p>
+            <p className="satoSubtitle-one">{title}</p>
 
             {closeButton && (
               <IconButton onClick={() => setOpen(false)}>

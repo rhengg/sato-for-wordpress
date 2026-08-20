@@ -44,7 +44,7 @@ const Toggle = ({
           position: "relative",
         }}
       >
-        <p className="body placeholder">{label}</p>
+        <p className="satoBody satoPlaceholder">{label}</p>
         {tooltipText && (
           <div
             style={{

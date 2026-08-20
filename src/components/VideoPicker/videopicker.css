@@ -39,7 +39,7 @@
   border-radius: 0.25rem;
   border: 1px solid var(--primary);
   background: var(--white);
-  color: var(--textSecondary);
+  color: var(--satoTextSecondary);
   font-size: 1rem;
   cursor: pointer;
   line-height: 120%;

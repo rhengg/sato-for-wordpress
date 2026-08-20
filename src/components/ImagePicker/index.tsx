@@ -181,7 +181,7 @@ const ImagePicker = ({
             position: "relative",
           }}
         >
-          <p className="body placeholder">{label}</p>
+          <p className="satoBody satoPlaceholder">{label}</p>
           {tooltipText && (
             <div
               style={{
@@ -204,7 +204,7 @@ const ImagePicker = ({
         </div>
 
         <div className="imageUpload-main">
-          <p className="label">
+          <p className="satoLabel">
             {uploadedUrl
               ? truncate(getFileName(uploadedUrl))
               : truncate(fileName.replace(/\s/g, "_"))}

@@ -137,7 +137,7 @@ const ImageRadioGroup = ({
             />
 
             <p
-              className="label"
+              className="satoLabel"
               style={{
                 marginTop: "1rem",
               }}

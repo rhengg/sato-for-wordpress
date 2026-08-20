@@ -15,7 +15,7 @@ const Error = (props: ErrorProps) => {
           background: "var(--surfaceVariant)",
         }}
       >
-        <p className="subtitle-two">{errorMessage}</p>
+        <p className="satoSubtitle-two">{errorMessage}</p>
       </div>
     </div>
   );

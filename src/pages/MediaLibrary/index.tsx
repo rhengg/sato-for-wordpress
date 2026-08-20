@@ -433,7 +433,7 @@ const MediaLibrary = (props: any) => {
 
         <div className="desktop-text-render">
           <p
-            className="subtitle-three"
+            className="satoSubtitle-three"
             style={{ marginTop: "1.5rem", marginBottom: "0.5rem" }}
           >
             Uploaded Videos
@@ -620,9 +620,9 @@ const MediaLibrary = (props: any) => {
                         color:
                           item.transcription_status === "failed" ||
                           transcriptionFailed === item.id
-                            ? "var(--negative)"
+                            ? "var(--satoNegative)"
                             : item.transcription_status === "completed"
-                              ? "var(--positive)"
+                              ? "var(--satoPositive)"
                               : "revert-layer",
                       }}
                       onClick={(e: any) => {
@@ -644,9 +644,9 @@ const MediaLibrary = (props: any) => {
                         <Loader borderColor="var(--primary)" />
                       ) : item.transcription_status === "failed" ||
                         transcriptionFailed === item.id ? (
-                        <Text color="var(--negative)">Failed</Text>
+                        <Text color="var(--satoNegative)">Failed</Text>
                       ) : item.transcription_status === "completed" ? (
-                        <Text color="var(--positive)">Generated</Text>
+                        <Text color="var(--satoPositive)">Generated</Text>
                       ) : (
                         <Text>Generate</Text>
                       )}

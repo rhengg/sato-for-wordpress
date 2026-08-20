@@ -829,7 +829,7 @@ const Index = ({ token }: { token: string }) => {
         </div>
       )}
       <div className="detail-container">
-        <div className="detail-sub-container-2 hide-scroll">
+        <div className="detail-sub-container-2 sato-hide-scroll">
           <div className="detail-sub-container-child">
             <SatoLogo />
 
@@ -849,8 +849,8 @@ const Index = ({ token }: { token: string }) => {
                   gap: "0.5rem",
                 }}
               >
-                <p className="subtitle-three">Player Name: </p>
-                <p className="body">{playerNameUpdate.value}</p>
+                <p className="satoSubtitle-three">Player Name: </p>
+                <p className="satoBody">{playerNameUpdate.value}</p>
                 <span
                   className="material-symbols-outlined m-icon"
                   style={{
@@ -913,8 +913,8 @@ const Index = ({ token }: { token: string }) => {
                   gap: "0.5rem",
                 }}
               >
-                <p className="subtitle-three">Player ID: </p>
-                <p className="body">{videoId}</p>
+                <p className="satoSubtitle-three">Player ID: </p>
+                <p className="satoBody">{videoId}</p>
                 <span
                   className="material-symbols-outlined m-icon"
                   style={{
@@ -944,12 +944,12 @@ const Index = ({ token }: { token: string }) => {
                 marginTop: "1.5rem",
                 boxSizing: "border-box",
                 border: "1px solid",
-                borderColor: "var(--stroke)",
+                borderColor: "var(--satoStroke)",
                 borderRadius: "0.25rem",
               }}
             >
               <div style={{ marginBottom: "0.5rem" }}>
-                <p className="subtitle-three">Video name</p>
+                <p className="satoSubtitle-three">Video name</p>
               </div>
               <div
                 className="upload-container"
@@ -1015,7 +1015,7 @@ const Index = ({ token }: { token: string }) => {
                     {media && media.length > 0 && (
                       <div>
                         <div className="desktop-text-render">
-                          <p className="subtitle-two">Uploaded Videos</p>
+                          <p className="satoSubtitle-two">Uploaded Videos</p>
                         </div>
 
                         <Table
@@ -1063,8 +1063,7 @@ const Index = ({ token }: { token: string }) => {
           </div>
         </div>
 
-        {/* right side */}
-        <div className="detail-sub-container-1 hide-scroll">
+        <div className="detail-sub-container-1 sato-hide-scroll">
           <form
             onSubmit={handleSubmit}
             style={{ position: "relative" }}
@@ -1083,7 +1082,7 @@ const Index = ({ token }: { token: string }) => {
               }}
             >
               <div style={{ marginBottom: "0.5rem" }}>
-                <p className="label">Save the changes to preview</p>
+                <p className="satoLabel">Save the changes to preview</p>
               </div>
               <div
                 style={{
@@ -1208,9 +1207,9 @@ const Index = ({ token }: { token: string }) => {
                       marginBottom: selectedTemplate !== "halcyon" ? "1rem" : 0,
                     }}
                   >
-                    <p className="body placeholder">Change Theme</p>
+                    <p className="satoBody satoPlaceholder">Change Theme</p>
                     <p
-                      className="body primary"
+                      className="satoBody primary"
                       style={{
                         cursor: "pointer",
                       }}
@@ -1389,7 +1388,7 @@ const Index = ({ token }: { token: string }) => {
                       marginBottom: "1rem",
                     }}
                   >
-                    <p className="subtitle-two">Primary Play Button</p>
+                    <p className="satoSubtitle-two">Primary Play Button</p>
                   </div>
 
                   <Toggle
@@ -1515,10 +1514,10 @@ const Index = ({ token }: { token: string }) => {
                     style={{
                       marginBottom: "1rem",
                       paddingTop: "1rem",
-                      borderTop: "1px solid var(--stroke)",
+                      borderTop: "1px solid var(--satoStroke)",
                     }}
                   >
-                    <p className="subtitle-two">
+                    <p className="satoSubtitle-two">
                       Control Icons (Mini Controls)
                     </p>
                   </div>
@@ -1570,25 +1569,6 @@ const Index = ({ token }: { token: string }) => {
                       setDisableSaveButton(false);
                     }}
                   />
-
-                  {/* <Toggle
-                    name={"caption"}
-                    label={"Caption"}
-                    disabled={!activePlan?.metadata?.premium_features?.caption}
-                    showCaptions={true}
-                    checked={videoconfigupdate.value.premium?.caption}
-                    onChange={(e: any) => {
-                      videoconfigupdate.value = {
-                        ...videoconfigupdate.value,
-                        premium: {
-                          ...videoconfigupdate.value.premium,
-                          caption: e.target.checked,
-                        },
-                      };
-
-                      setDisableSaveButton(false);
-                    }}
-                  /> */}
 
                   <SizePicker
                     label={"Size"}
@@ -1856,10 +1836,10 @@ const Index = ({ token }: { token: string }) => {
                     style={{
                       marginBottom: "1rem",
                       paddingTop: "1rem",
-                      borderTop: "1px solid var(--stroke)",
+                      borderTop: "1px solid var(--satoStroke)",
                     }}
                   >
-                    <p className="subtitle-two">Progress Bar Color</p>
+                    <p className="satoSubtitle-two">Progress Bar Color</p>
                   </div>
 
                   <ColorPicker
@@ -1939,10 +1919,10 @@ const Index = ({ token }: { token: string }) => {
                     style={{
                       marginBottom: "1rem",
                       paddingTop: "1rem",
-                      borderTop: "1px solid var(--stroke)",
+                      borderTop: "1px solid var(--satoStroke)",
                     }}
                   >
-                    <p className="subtitle-two">Tooltip Styling</p>
+                    <p className="satoSubtitle-two">Tooltip Styling</p>
                   </div>
 
                   <ColorPicker
@@ -2739,7 +2719,7 @@ const Index = ({ token }: { token: string }) => {
                       gap: "0.25rem",
                     }}
                   >
-                    <p className="body placeholder">Transcribe Video</p>
+                    <p className="satoBody satoPlaceholder">Transcribe Video</p>
 
                     <div
                       style={{
@@ -2749,9 +2729,6 @@ const Index = ({ token }: { token: string }) => {
                       }}
                     >
                       {!!videoTranscript.value && (
-                        // <span className="material-symbols-outlined positive">
-                        //   check_circle
-                        // </span>
                         <img
                           src={CompleteSvg}
                           alt="premium Illustration"
@@ -2809,7 +2786,7 @@ const Index = ({ token }: { token: string }) => {
                   height="44px"
                   width="44px"
                 />
-                <p className="label">Generating Caption...</p>
+                <p className="satoLabel">Generating Caption...</p>
 
                 <button
                   type="button"
@@ -2836,9 +2813,9 @@ const Index = ({ token }: { token: string }) => {
                   gap: "1rem",
                 }}
               >
-                <p className="heading">Speech-to-text</p>
+                <p className="satoHeading">Speech-to-text</p>
 
-                <p className="body">
+                <p className="satoBody">
                   {truncate(getFileName(videoUrlUpdate.value))}
                 </p>
 
@@ -2846,7 +2823,7 @@ const Index = ({ token }: { token: string }) => {
 
                 <p
                   className="error-text"
-                  style={{ color: "var(--textSecondary)" }}
+                  style={{ color: "var(--satoTextSecondary)" }}
                 >
                   But the video will play normally without captions.
                 </p>
@@ -2875,9 +2852,9 @@ const Index = ({ token }: { token: string }) => {
                       gap: "2rem",
                     }}
                   >
-                    <p className="heading">Speech-to-text</p>
+                    <p className="satoHeading">Speech-to-text</p>
 
-                    <p className="body">
+                    <p className="satoBody">
                       {truncate(getFileName(videoUrlUpdate.value))}
                     </p>
                     <button
@@ -2911,7 +2888,7 @@ const Index = ({ token }: { token: string }) => {
             {transcriptComplete && (
               <>
                 <p
-                  className="label"
+                  className="satoLabel"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -2971,7 +2948,7 @@ const Index = ({ token }: { token: string }) => {
               }}
             >
               <Premium smIcon={true} width="60" />
-              <p className="subtitle-one">{premiumModal.title}</p>
+              <p className="satoSubtitle-one">{premiumModal.title}</p>
 
               <button
                 className="large-primary-btn"
@@ -3007,9 +2984,9 @@ const Index = ({ token }: { token: string }) => {
             <div style={{ marginTop: "2rem" }}>
               <div
                 style={{
-                  background: "var(--surface)",
+                  background: "var(--satoSurface)",
                   borderRadius: "0.5rem",
-                  border: "1px solid var(--stroke)",
+                  border: "1px solid var(--satoStroke)",
                   padding: "1rem",
                   marginTop: "2rem",
                 }}
@@ -3048,7 +3025,7 @@ const Index = ({ token }: { token: string }) => {
             title={`Continue Change Theme ?`}
             size="sm"
           >
-            <p className="body">
+            <p className="satoBody">
               If you proceed, all customisations you might have made to this
               video player will replace with the selected theme.
             </p>
@@ -3075,7 +3052,7 @@ const Index = ({ token }: { token: string }) => {
             title={`Reset to default?`}
             size="sm"
           >
-            <p className="body">
+            <p className="satoBody">
               If you proceed, all customisations you might have made to this
               video player will reset to its default state.
             </p>

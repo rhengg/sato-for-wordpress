@@ -1,6 +1,6 @@
 .seo-card-container {
   /* padding: 1rem; */
-  /* background-color: var(--surface); */
+  /* background-color: var(--satoSurface); */
   margin-bottom: 1rem;
   box-sizing: border-box;
   width: 100%;
@@ -35,7 +35,7 @@
   /* padding: 0.5rem 1rem; */
   /* background-color: var(--white); */
   /* border: 1px solid; */
-  /* border-color: var(--stroke); */
+  /* border-color: var(--satoStroke); */
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

@@ -49,12 +49,15 @@ const Accordion: React.FC<AccordionProps> = ({
             {icon && (
               <span
                 className="material-symbols-outlined"
-                style={{ color: "var(--textSecondary)", fontWeight: "bold" }}
+                style={{
+                  color: "var(--satoTextSecondary)",
+                  fontWeight: "bold",
+                }}
               >
                 {icon}
               </span>
             )}
-            <p className="body textSecondary">{header}</p>
+            <p className="satoBody satoTextSecondary">{header}</p>
             {premium && (
               <div
                 style={{ display: "flex", alignItems: "center" }}
@@ -80,7 +83,7 @@ const Accordion: React.FC<AccordionProps> = ({
         className={`collapse ${isActive ? "show" : ""}`}
         style={{ height, overflow: "hidden", transition: "height 0.3s ease" }}
       >
-        <div className="accordion-body">{children}</div>
+        <div className="accordion-satoBody">{children}</div>
       </div>
     </div>
   );

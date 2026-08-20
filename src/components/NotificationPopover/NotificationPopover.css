@@ -30,7 +30,7 @@
   right: 0;
   width: 360px;
   background-color: var(--white);
-  border: 1px solid var(--stroke);
+  border: 1px solid var(--satoStroke);
   border-radius: 0.25rem;
   box-shadow: 4px 4px 10.5px 0 rgba(0, 0, 0, 0.13);
   z-index: 1000;
@@ -47,13 +47,13 @@
   gap: 0.75rem;
   padding: 0.75rem;
   margin-bottom: 0.5rem;
-  border: 1px solid var(--stroke);
+  border: 1px solid var(--satoStroke);
   border-radius: 0.25rem;
   cursor: pointer;
 }
 
 .notif-item:hover {
-  background: var(--surface);
+  background: var(--satoSurface);
 }
 
 .notif-icon {
@@ -72,12 +72,12 @@
 
 .notif-icon.success {
   background: #dff3c7;
-  color: var(--positive);
+  color: var(--satoPositive);
 }
 
 .notif-icon.error {
   background: #ffd8d2;
-  color: var(--negative);
+  color: var(--satoNegative);
 }
 
 .notif-icon.warning {

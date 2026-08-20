@@ -16,13 +16,13 @@ table {
 }
 
 th {
-  border-bottom: 1px solid var(--textSecondary);
+  border-bottom: 1px solid var(--satoTextSecondary);
   text-align: left;
   padding: 1rem;
 }
 
 td {
-  border-bottom: 1px solid var(--stroke);
+  border-bottom: 1px solid var(--satoStroke);
   text-align: left;
   padding: 1rem;
 }

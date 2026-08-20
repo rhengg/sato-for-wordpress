@@ -56,8 +56,8 @@ const VideoQuota: React.FC<VideoQuotaProps> = ({
             width: `${totalPercentage}%`,
             backgroundColor:
               parseInt(totalPercentage.toString()) < 80
-                ? "var(--positive)"
-                : "var(--negative)",
+                ? "var(--satoPositive)"
+                : "var(--satoNegative)",
           }}
         />
       </div>

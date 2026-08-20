@@ -311,7 +311,7 @@ const Login = () => {
               {loading ? <Loader /> : "Verify"}
             </button>
             <p
-              className="body"
+              className="satoBody"
               style={{
                 fontSize: "1rem",
                 textAlign: "center",
@@ -418,7 +418,7 @@ const Login = () => {
             </button>
 
             <p
-              className="body"
+              className="satoBody"
               style={{
                 fontSize: "1rem",
                 textAlign: "center",

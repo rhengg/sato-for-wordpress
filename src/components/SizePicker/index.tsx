@@ -43,19 +43,19 @@ const Index = (props: SizePickerProps) => {
   const renderUnit = () => {
     if (name?.includes("scale")) {
       return (
-        <p className="label" style={{ width: "1.5rem" }}>
+        <p className="satoLabel" style={{ width: "1.5rem" }}>
           x
         </p>
       );
     } else if (name?.includes("opacity")) {
       return (
-        <p className="label" style={{ width: "1.5rem" }}>
+        <p className="satoLabel" style={{ width: "1.5rem" }}>
           %
         </p>
       );
     } else {
       return (
-        <p className="label" style={{ width: "1.5rem" }}>
+        <p className="satoLabel" style={{ width: "1.5rem" }}>
           px
         </p>
       );
@@ -81,7 +81,7 @@ const Index = (props: SizePickerProps) => {
           position: "relative",
         }}
       >
-        <p className="body placeholder">{label}</p>
+        <p className="satoBody satoPlaceholder">{label}</p>
         {tooltipText && (
           <div
             style={{
@@ -116,7 +116,7 @@ const Index = (props: SizePickerProps) => {
         {rendericon()}
 
         <input
-          className="size-input body"
+          className="size-input satoBody"
           type="number"
           name={name}
           value={value ?? ""}

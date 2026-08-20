@@ -133,10 +133,10 @@ const VideoList = (props: VideoListProps) => {
       )}
       <div className="video-table">
         <div className={"video-table-header"}>
-          <span className="sato-link textPrimary">Video name</span>
-          <span className="sato-link textPrimary">Uploaded at</span>
+          <span className="sato-link satoTextPrimary">Video name</span>
+          <span className="sato-link satoTextPrimary">Uploaded at</span>
           <span
-            className="sato-link textPrimary"
+            className="sato-link satoTextPrimary"
             style={{
               display: "flex",
               alignItems: "center",
@@ -149,7 +149,7 @@ const VideoList = (props: VideoListProps) => {
             )}
             Speech-to-text
           </span>
-          <span className="sato-link textPrimary">More</span>
+          <span className="sato-link satoTextPrimary">More</span>
         </div>
 
         {data.map((video: any, idx: number) => (
@@ -286,7 +286,7 @@ const VideoList = (props: VideoListProps) => {
           title={`Delete Video?`}
           size="sm"
         >
-          <p className="body">
+          <p className="satoBody">
             Deleting this video will permanently remove it from your video
             library.
           </p>
@@ -343,7 +343,7 @@ const Content = (props: any) => {
     <>
       <div className="with-icon" onClick={onClickCopy}>
         <span className="material-symbols-outlined primary">content_copy</span>
-        <p className="body">Copy Video URL</p>
+        <p className="satoBody">Copy Video URL</p>
       </div>
 
       {transcriptionUrl && (
@@ -351,15 +351,15 @@ const Content = (props: any) => {
           <span className="material-symbols-outlined primary">
             content_copy
           </span>
-          <p className="body">Copy Transcribe URL</p>
+          <p className="satoBody">Copy Transcribe URL</p>
         </div>
       )}
 
       <div className="with-icon" onClick={onClickDelete}>
-        <span className="material-symbols-outlined negative">
+        <span className="material-symbols-outlined satoNegative">
           delete_forever
         </span>
-        <p className="body">Delete</p>
+        <p className="satoBody">Delete</p>
       </div>
     </>
   );

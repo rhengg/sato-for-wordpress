@@ -187,7 +187,7 @@ const AccountPage = ({ token }: { token: string }) => {
                 boxSizing: "border-box",
                 width: "100%",
                 borderRadius: "0.25rem",
-                border: "1px solid var(--stroke)",
+                border: "1px solid var(--satoStroke)",
                 padding: "1rem",
                 marginBottom: "2rem",
                 backgroundColor: "#f5fab3ff",
@@ -198,7 +198,7 @@ const AccountPage = ({ token }: { token: string }) => {
             >
               {(subscription?.status as string)?.toLowerCase() ===
                 "cancelled" && (
-                <p className="body">
+                <p className="satoBody">
                   Your subscription has been cancelled. To continue using Sato,
                   you must&nbsp;
                   <Link
@@ -215,7 +215,7 @@ const AccountPage = ({ token }: { token: string }) => {
               )}
               {(subscription?.status as string)?.toLowerCase() ===
                 "created" && (
-                <p className="body">
+                <p className="satoBody">
                   Subscription to {activePlan?.name} was abandoned.&nbsp;
                   <Link
                     to={"https://app.satoplayer.com/plans"}
@@ -232,7 +232,7 @@ const AccountPage = ({ token }: { token: string }) => {
             </div>
           ))}
 
-        <p className="subtitle-two">Your Profile</p>
+        <p className="satoSubtitle-two">Your Profile</p>
         <div
           style={{
             marginTop: "0.5rem",
@@ -240,31 +240,31 @@ const AccountPage = ({ token }: { token: string }) => {
         >
           <div className="profile-box">
             <div>
-              <p className="label textSecondary">Name</p>
-              <p className="body" style={{ marginTop: "0.5rem" }}>
+              <p className="satoLabel satoTextSecondary">Name</p>
+              <p className="satoBody" style={{ marginTop: "0.5rem" }}>
                 {user.name}
               </p>
             </div>
             <div>
-              <p className="label textSecondary">Email</p>
-              <p className="body" style={{ marginTop: "0.5rem" }}>
+              <p className="satoLabel satoTextSecondary">Email</p>
+              <p className="satoBody" style={{ marginTop: "0.5rem" }}>
                 {user.email}
               </p>
             </div>
             <div>
-              <p className="label textSecondary">Uploaded Videos</p>
-              <p className="body" style={{ marginTop: "0.5rem" }}>
+              <p className="satoLabel satoTextSecondary">Uploaded Videos</p>
+              <p className="satoBody" style={{ marginTop: "0.5rem" }}>
                 {loadingMedia ? <Loader /> : media.length}
               </p>
             </div>
             <div>
-              <p className="label textSecondary">
+              <p className="satoLabel satoTextSecondary">
                 Subscription:{" "}
                 <span
                   className={
                     (subscription?.status as string)?.toLowerCase() === "active"
-                      ? "positive"
-                      : "negative"
+                      ? "satoPositive"
+                      : "satoNegative"
                   }
                   style={{ display: "inline-block" }}
                 >
@@ -281,7 +281,7 @@ const AccountPage = ({ token }: { token: string }) => {
                     height: "5px",
                     margin: "0 0.5rem",
                     borderRadius: "50%",
-                    backgroundColor: "var(--textSecondary)",
+                    backgroundColor: "var(--satoTextSecondary)",
                   }}
                 ></span>
                 <span className="primary" style={{ cursor: "pointer" }}>
@@ -310,7 +310,7 @@ const AccountPage = ({ token }: { token: string }) => {
                     gap: "1rem",
                   }}
                 >
-                  <p className="body" style={{ marginTop: "0.5rem" }}>
+                  <p className="satoBody" style={{ marginTop: "0.5rem" }}>
                     {activePlan?.name} {activePlan?.currency}{" "}
                     {activePlan?.amount / 100}/{activePlan?.period.slice(0, -2)}
                   </p>
@@ -331,7 +331,7 @@ const AccountPage = ({ token }: { token: string }) => {
                     )}
                 </div>
               ) : (
-                <p className="body" style={{ marginTop: "0.5rem" }}>
+                <p className="satoBody" style={{ marginTop: "0.5rem" }}>
                   No Active Plan
                 </p>
               )}
@@ -347,11 +347,11 @@ const AccountPage = ({ token }: { token: string }) => {
         >
           {subscription && activePlan?.amount > 0 && (
             <div style={{ marginTop: "2rem" }}>
-              <p className="subtitle-two">Your Subscription Details</p>
+              <p className="satoSubtitle-two">Your Subscription Details</p>
               <div className="profile-box" style={{ marginBottom: "2rem" }}>
                 <div>
-                  <p className="label textSecondary">Billing Cycle</p>
-                  <p className="body" style={{ marginTop: "0.5rem" }}>
+                  <p className="satoLabel satoTextSecondary">Billing Cycle</p>
+                  <p className="satoBody" style={{ marginTop: "0.5rem" }}>
                     {formatDate(subscription.current_start)}&nbsp;-&nbsp;
                     {formatDate(subscription.current_end)}
                   </p>
@@ -375,12 +375,12 @@ const AccountPage = ({ token }: { token: string }) => {
                     width: "max-content",
                   }}
                 >
-                  <p className="subtitle-two">Your Payment Receipts</p>
+                  <p className="satoSubtitle-two">Your Payment Receipts</p>
                 </div>
               </div>
 
               <p
-                className="caption textSecondary"
+                className="satoCaption satoTextSecondary"
                 style={{
                   marginTop: "0.5rem",
                 }}
@@ -404,7 +404,7 @@ const AccountPage = ({ token }: { token: string }) => {
                           borderBottom:
                             index === invoices.length - 1
                               ? "none"
-                              : "1px solid var(--stroke)",
+                              : "1px solid var(--satoStroke)",
                           paddingBottom:
                             index === invoices.length - 1 ? "1rem" : "1rem",
                           paddingTop:
@@ -412,17 +412,17 @@ const AccountPage = ({ token }: { token: string }) => {
                         }}
                       >
                         <div className="plan-details">
-                          <span className="body">{inv.plan_name}</span>
+                          <span className="satoBody">{inv.plan_name}</span>
                           <span className="dot">•</span>
                           {inv.status === "paid" ? (
                             <span
-                              className="label"
-                              style={{ color: "var(--positive)" }}
+                              className="satoLabel"
+                              style={{ color: "var(--satoPositive)" }}
                             >
                               Paid on {formatDate(inv.paid_at)}
                             </span>
                           ) : (
-                            <span className="label">{inv.status}</span>
+                            <span className="satoLabel">{inv.status}</span>
                           )}
                         </div>
 
@@ -444,7 +444,7 @@ const AccountPage = ({ token }: { token: string }) => {
                 </div>
               ) : (
                 <div className="plan-list">
-                  <p className="body" style={{ padding: "1rem 0" }}>
+                  <p className="satoBody" style={{ padding: "1rem 0" }}>
                     No receipts found
                   </p>
                 </div>
@@ -469,7 +469,7 @@ const AccountPage = ({ token }: { token: string }) => {
           title={"Confirm Logout"}
           size="sm"
         >
-          <p className="body">
+          <p className="satoBody">
             Are you sure you want to logout? All unsaved changes will be lost
             and you will need to login again to access your account.
           </p>
@@ -515,7 +515,7 @@ const AccountPage = ({ token }: { token: string }) => {
           title={`Are you sure?`}
           size="sm"
         >
-          <p className="body">
+          <p className="satoBody">
             If you continue, your active subscription will be cancelled at the
             end of billing cycle.
           </p>

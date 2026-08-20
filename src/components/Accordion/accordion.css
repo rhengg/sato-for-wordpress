@@ -20,11 +20,11 @@
 }
 
 .accordion-toggle:hover {
-  background-color: var(--surface);
+  background-color: var(--satoSurface);
 }
 
 .accordion-toggle.active {
-  background-color: var(--surface);
+  background-color: var(--satoSurface);
 }
 
 .accordion-toggle.active .accordion-icon {
@@ -34,7 +34,7 @@
 .accordion-icon {
   position: relative;
   top: 2px;
-  color: var(--textSecondary);
+  color: var(--satoTextSecondary);
   transition: 0.35s;
   transform: rotate(180deg);
 }

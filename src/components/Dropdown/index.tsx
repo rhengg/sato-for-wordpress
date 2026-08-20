@@ -70,7 +70,7 @@ const Dropdown = ({
           position: "relative",
         }}
       >
-        <p className="body placeholder">{label}</p>
+        <p className="satoBody satoPlaceholder">{label}</p>
         {tooltipText && (
           <Tooltip text={tooltipText}>
             <span
@@ -126,7 +126,7 @@ const Dropdown = ({
                   setOpen(false);
                   handleChange(opt.value);
                 }}
-                className="dropdown-option body"
+                className="dropdown-option satoBody"
               >
                 {opt.label}
               </li>

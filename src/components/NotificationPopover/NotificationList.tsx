@@ -60,7 +60,7 @@ const NotificationList = ({ data, loading, onAction }: Props) => {
   if (!data.length) {
     return (
       <div className="notif-empty">
-        <p className="body">No notifications</p>
+        <p className="satoBody">No notifications</p>
       </div>
     );
   }

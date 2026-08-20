@@ -555,7 +555,7 @@ const Home = ({ token }: { token: string }) => {
                 }}
               >
                 <div>
-                  <p className="body">Player name</p>
+                  <p className="satoBody">Player name</p>
                   <input
                     className="input-main"
                     style={{
@@ -602,14 +602,14 @@ const Home = ({ token }: { token: string }) => {
 
               <div
                 style={{
-                  background: "var(--surface)",
+                  background: "var(--satoSurface)",
                   borderRadius: "0.5rem",
-                  border: "1px solid var(--stroke)",
+                  border: "1px solid var(--satoStroke)",
                   padding: "0.5rem 1rem",
                   marginTop: "2rem",
                 }}
               >
-                <p className="body" style={{ margin: "1rem 0" }}>
+                <p className="satoBody" style={{ margin: "1rem 0" }}>
                   Choose a player theme
                 </p>
 
@@ -640,7 +640,7 @@ const Home = ({ token }: { token: string }) => {
             width: "max-content",
           }}
         >
-          <p className="subtitle-three">Video Players</p>
+          <p className="satoSubtitle-three">Video Players</p>
         </div>
       </div>
 
@@ -871,9 +871,9 @@ const Home = ({ token }: { token: string }) => {
                     >
                       <div
                         style={{
-                          border: "1px solid var(--stroke)",
+                          border: "1px solid var(--satoStroke)",
                           borderRadius: "4px",
-                          background: "var(--surface)",
+                          background: "var(--satoSurface)",
                           padding: "10px",
                           fontFamily: "monospace",
                           whiteSpace: "nowrap",
@@ -945,7 +945,9 @@ const Home = ({ token }: { token: string }) => {
         </div>
       )}
 
-      <div style={{ borderTop: "1px solid var(--stroke)", marginTop: "1rem" }}>
+      <div
+        style={{ borderTop: "1px solid var(--satoStroke)", marginTop: "1rem" }}
+      >
         <MediaLibrary length={10} showNotice={showNotice} token={token} />
       </div>
     </div>

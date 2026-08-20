@@ -275,7 +275,7 @@ const VideoPicker = (props: VideoPickerProps) => {
 
         {sizeExceed && (
           <>
-            <p className="body negative">
+            <p className="satoBody satoNegative">
               Uploaded video is larger than 200 MB{" "}
             </p>
             <p className="error-text">Choose a smaller video or upgrade</p>
@@ -343,7 +343,7 @@ const VideoPicker = (props: VideoPickerProps) => {
         >
           <div
             style={{
-              background: "var(--surface)",
+              background: "var(--satoSurface)",
               borderRadius: "0.75rem",
               width: "100%",
               height: "100%",
@@ -362,7 +362,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                   alt="FilesIcons Illustration"
                   style={{ width: 44 }}
                 />
-                <p className="body">
+                <p className="satoBody">
                   {truncate(file?.name.replace(/\s/g, "_"))}
                 </p>
 
@@ -371,7 +371,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                     <div
                       style={{
                         height: "0.5rem",
-                        border: "1px solid var(--stroke)",
+                        border: "1px solid var(--satoStroke)",
                         borderRadius: "0.25rem",
                         overflow: "hidden",
                         maxWidth: "16rem",
@@ -387,7 +387,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                     </div>
 
                     <p
-                      className="body textPrimary"
+                      className="satoBody satoTextPrimary"
                       style={{ marginTop: "0.5rem" }}
                     >
                       {isUploading && `Uploading... ${progress ?? 0}%`}
@@ -412,7 +412,7 @@ const VideoPicker = (props: VideoPickerProps) => {
 
                         <p
                           className="error-text"
-                          style={{ color: "var(--textSecondary)" }}
+                          style={{ color: "var(--satoTextSecondary)" }}
                         >
                           But the video will play normally without captions.
                         </p>
@@ -472,7 +472,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                         style={{
                           width: "100%",
                           padding: "0.25rem 0.5rem",
-                          border: "1px solid var(--stroke)",
+                          border: "1px solid var(--satoStroke)",
                           background: "var(--white)",
                           boxSizing: "border-box",
                         }}
@@ -496,7 +496,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                           >
                             {!activePlan?.metadata?.premium_features
                               ?.caption && <Premium smIcon={true} width="16" />}
-                            <p className="body"> Speech-to-text</p>{" "}
+                            <p className="satoBody"> Speech-to-text</p>{" "}
                             <Tooltip
                               text={
                                 "Speech-only videos supported. AI-generated transcription may not be fully accurate."
@@ -526,7 +526,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                     </div>
 
                     <p
-                      className="label"
+                      className="satoLabel"
                       style={{
                         visibility:
                           !activePlan?.metadata?.premium_features?.caption &&
@@ -585,7 +585,10 @@ const VideoPicker = (props: VideoPickerProps) => {
                             padding: "0 1rem",
                           }}
                         >
-                          <p className="body" style={{ textAlign: "center" }}>
+                          <p
+                            className="satoBody"
+                            style={{ textAlign: "center" }}
+                          >
                             or{" "}
                             <span
                               className="sato-link-active"
@@ -622,9 +625,9 @@ const VideoPicker = (props: VideoPickerProps) => {
                     boxSizing: "border-box",
                   }}
                 >
-                  <p className="subtitle-two">Add a Video</p>
+                  <p className="satoSubtitle-two">Add a Video</p>
                   <div style={{ padding: "0 1rem" }}>
-                    <p className="label" style={{ textAlign: "center" }}>
+                    <p className="satoLabel" style={{ textAlign: "center" }}>
                       Browse device or select from your library
                     </p>
                   </div>
@@ -632,7 +635,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                 <label style={{ width: "100%" }} htmlFor={pickerId}>
                   <div className="videoUpload-button">Browse Device</div>
                   <p
-                    className="body textSecondary"
+                    className="satoBody satoTextSecondary"
                     style={{ marginTop: "0.5rem", textAlign: "center" }}
                   >
                     (supports .mp4 files)
