@@ -57,7 +57,7 @@
 .copy-icon {
   cursor: pointer;
   transition: all 0.4s ease-in-out;
-  color: var(--primary);
+  color: var(--satoPrimary);
 }
 
 .copy-icon:hover {

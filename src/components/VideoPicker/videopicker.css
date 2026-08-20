@@ -19,8 +19,8 @@
   justify-content: center;
   padding: 0.9rem 1.5rem;
   border-radius: 0.25rem;
-  border: 0px solid var(--primary);
-  background: var(--primary);
+  border: 0px solid var(--satoPrimary);
+  background: var(--satoPrimary);
   color: var(--white);
   font-size: 1rem;
   cursor: pointer;
@@ -37,7 +37,7 @@
   justify-content: center;
   /* padding: 0.9rem 1.5rem; */
   border-radius: 0.25rem;
-  border: 1px solid var(--primary);
+  border: 1px solid var(--satoPrimary);
   background: var(--white);
   color: var(--satoTextSecondary);
   font-size: 1rem;

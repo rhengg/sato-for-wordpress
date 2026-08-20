@@ -48,13 +48,13 @@ strong {
 }
 
 .toggle-button:checked + .toggle-circle:before {
-  /* background-color: var(--primary); */
+  /* background-color: var(--satoPrimary); */
   background-color: #ffffff;
 }
 
 .toggle-button:checked + .toggle-circle {
-  /* border: 1px solid var(--primary); */
-  background-color: var(--primary);
+  /* border: 1px solid var(--satoPrimary); */
+  background-color: var(--satoPrimary);
 }
 
 .toggle-button:checked + .toggle-circle:before {

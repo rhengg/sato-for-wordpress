@@ -29,7 +29,7 @@
 
 .upgrade-plan {
   margin-left: auto;
-  color: var(--primary);
+  color: var(--satoPrimary);
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;

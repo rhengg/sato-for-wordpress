@@ -557,7 +557,7 @@ const Home = ({ token }: { token: string }) => {
                 <div>
                   <p className="satoBody">Player name</p>
                   <input
-                    className="input-main"
+                    className="satoInput-main"
                     style={{
                       width: "100%",
                       boxSizing: "border-box",

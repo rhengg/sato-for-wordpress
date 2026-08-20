@@ -17,7 +17,7 @@
   cursor: pointer;
   padding: 0.9rem 1.5rem;
   border-radius: 0.25rem;
-  background: var(--primary);
+  background: var(--satoPrimary);
   color: var(--white);
   font-size: 1rem;
   font-family: "Satoshi-Medium";

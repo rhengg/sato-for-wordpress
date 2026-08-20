@@ -641,7 +641,7 @@ const MediaLibrary = (props: any) => {
                       }}
                     >
                       {transcriptLoadingId === item.id ? (
-                        <Loader borderColor="var(--primary)" />
+                        <Loader borderColor="var(--satoPrimary)" />
                       ) : item.transcription_status === "failed" ||
                         transcriptionFailed === item.id ? (
                         <Text color="var(--satoNegative)">Failed</Text>

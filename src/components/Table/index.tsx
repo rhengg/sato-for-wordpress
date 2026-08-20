@@ -217,7 +217,7 @@ const VideoList = (props: VideoListProps) => {
                 }}
               >
                 {transcriptLoadingId === video.id ? (
-                  <Loader borderColor="var(--primary)" />
+                  <Loader borderColor="var(--satoPrimary)" />
                 ) : video.transcription_status === "failed" ||
                   transcriptionFailed === video.id ? (
                   <img
@@ -342,13 +342,15 @@ const Content = (props: any) => {
   return (
     <>
       <div className="with-icon" onClick={onClickCopy}>
-        <span className="material-symbols-outlined primary">content_copy</span>
+        <span className="material-symbols-outlined satoPrimary">
+          content_copy
+        </span>
         <p className="satoBody">Copy Video URL</p>
       </div>
 
       {transcriptionUrl && (
         <div className="with-icon" onClick={onClickTranscribeCopy}>
-          <span className="material-symbols-outlined primary">
+          <span className="material-symbols-outlined satoPrimary">
             content_copy
           </span>
           <p className="satoBody">Copy Transcribe URL</p>

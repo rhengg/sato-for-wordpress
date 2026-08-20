@@ -77,7 +77,7 @@ const ImageRadioGroup = ({
               cursor: "pointer",
               border:
                 value === opt
-                  ? "1px solid var(--primary)"
+                  ? "1px solid var(--satoPrimary)"
                   : "1px solid transparent",
               boxShadow:
                 value === opt ? "0 2px 10px rgba(0, 0, 0, 0.1)" : "none",

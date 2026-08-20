@@ -1,5 +1,5 @@
 :root {
-  --primary: #fe6244;
+  --satoPrimary: #fe6244;
   --primaryHover: #fe2a01;
   --wp-components-color-accent: #fe6244;
   --wp-components-color-accent-darker-10: #fe2a01;
@@ -182,8 +182,8 @@
   display: none;
 }
 
-.primary {
-  color: var(--primary);
+.satoPrimary {
+  color: var(--satoPrimary);
 }
 
 .satoTextPrimary {
@@ -269,14 +269,6 @@
   font-family: "Satoshi-Regular";
 }
 
-.sato-topbar-icon {
-  font-size: 24px;
-  cursor: pointer;
-}
-.sato-topbar-icon:hover {
-  color: var(--primaryHover);
-}
-
 .sato-action-icon {
   font-size: 20px;
   cursor: pointer;
@@ -303,7 +295,7 @@
 
 .sato-link {
   font-size: 0.875rem;
-  color: var(--primary);
+  color: var(--satoPrimary);
   line-height: 120%;
   font-family: "Satoshi-Medium";
 }
@@ -321,7 +313,7 @@
 
 .sato-link-active {
   font-size: 0.875rem;
-  color: var(--primary);
+  color: var(--satoPrimary);
   line-height: 120%;
   font-family: "Satoshi-Regular";
 }
@@ -330,8 +322,8 @@
   padding: 0.5rem 1rem;
   height: 2.75rem;
   border-radius: 0.25rem;
-  border: 0px solid var(--primary);
-  background: var(--primary);
+  border: 0px solid var(--satoPrimary);
+  background: var(--satoPrimary);
   color: var(--white);
   font-size: 0.875rem;
   font-family: "Satoshi-Medium";
@@ -355,7 +347,7 @@
   color: var(--satoTextSecondary);
   background-color: var(--white);
   border-radius: 0.25rem;
-  border: 1px solid var(--primary);
+  border: 1px solid var(--satoPrimary);
   font-size: 0.875rem;
   font-family: "Satoshi-Medium";
   cursor: pointer;
@@ -398,109 +390,13 @@
   opacity: 0.6;
 }
 
-.fixed-button-style {
-  width: 50%;
-}
-
-.small-secondary-btn {
-  padding: 0.25rem 0.5rem;
-  color: var(--primary);
-  border-radius: 0.25rem;
-  border: 1px solid var(--primary);
-  background-color: var(--white);
-  font-size: 0.875rem;
-  font-family: "Satoshi-Regular";
-  cursor: pointer;
-}
-
-.small-secondary-btn:hover {
-  border: 1px solid var(--primaryHover);
-  transition: all 0.4s ease-in-out;
-}
-
-.large-navigation-btn {
-  height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  border: 1px solid var(--white);
-  color: var(--black);
-  font-size: 0.875rem;
-  font-family: "Satoshi-Regular";
-  cursor: pointer;
-  line-height: 1.225rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.large-navigation-btn:hover {
-  border: 1px solid var(--satoStroke);
-  transition: all 0.4s ease-in-out;
-}
-
-.get-help-container {
-  position: absolute;
-  left: 3rem;
-  bottom: 5rem;
-  height: 3rem;
-  z-index: 100;
-  box-sizing: border-box;
-}
-
-.large-gethelp-btn {
-  height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  border: 1px solid var(--black);
-  background: var(--black);
-  color: var(--white);
-  font-size: 0.875rem;
-  font-family: "Satoshi-Regular";
-  cursor: pointer;
-  line-height: 1.225rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  width: 90%;
-}
-
-.navigation-btn-active {
-  height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  border: 1px solid var(--satoStroke);
-  color: var(--black);
-  font-size: 0.875rem;
-  cursor: pointer;
-  line-height: 1.225rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.navigation-btn-mobile {
-  height: 2.5rem;
-  padding: 0.5rem 0;
-  border-radius: 0.25rem;
-  border: 0px solid var(--primary);
-  background: var(--white);
-  color: var(--black);
-  font-size: 0.875rem;
-  cursor: pointer;
-  line-height: 1.225rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.input-container {
+.satoInput-container {
   width: 17rem;
   position: relative;
   border-radius: 0.25rem;
 }
 
-.input-main {
+.satoInput-main {
   width: 17rem;
   height: 2.75rem;
   padding: 0.5rem 1rem;
@@ -514,16 +410,16 @@
   font-family: "Satoshi-Regular";
 }
 
-.input-main::placeholder {
+.satoInput-main::placeholder {
   color: var(--satoPlaceholder);
 }
 
-.input-main:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--primary) !important;
+.satoInput-main:focus {
+  border-color: var(--satoPrimary) !important;
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--satoPrimary) !important;
 }
 
-.input-secondary {
+.satoInput-secondary {
   box-sizing: border-box;
   width: 100%;
   height: 2.75rem;
@@ -537,29 +433,24 @@
   font-family: "Satoshi-Regular";
 }
 
-.input-secondary::placeholder {
+.satoInput-secondary::placeholder {
   color: var(--satoPlaceholder);
 }
 
-.input-secondary:disabled {
+.satoInput-secondary:disabled {
   background-color: var(--satoSurface);
   border-color: var(--satoSurface);
 }
-.input-secondary:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--primary) !important;
+.satoInput-secondary:focus {
+  border-color: var(--satoPrimary) !important;
+  box-shadow: 0 0 0 var(--wp-admin-border-width-focus, 1.5px) var(--satoPrimary) !important;
 }
 
-.input-title {
+.satoInput-title {
   display: block;
   color: var(--satoTextSecondary);
   font-size: 0.75rem;
   margin-bottom: 0.25rem;
-}
-
-.custom-input-width {
-  width: 34rem;
-  padding-left: 2.5rem;
 }
 
 .notnow-btn {
@@ -649,7 +540,7 @@
   height: 100%;
 }
 
-.v-p-conainer {
+.v-p-container {
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
@@ -678,7 +569,7 @@
   padding: 0rem 0.25rem;
 }
 
-.profile-box {
+.satoProfile-box {
   margin-top: 1rem;
   width: 100%;
   padding: 1.5rem;
@@ -693,7 +584,7 @@
   box-sizing: border-box;
 }
 
-.plan-list {
+.satoPlan-list {
   width: 100%;
   background-color: var(--surfaceVariant);
   border: 1px solid;
@@ -704,7 +595,7 @@
   margin-top: 1.25rem;
 }
 
-.plan-item {
+.satoPlan-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -712,7 +603,7 @@
   flex-wrap: wrap; /* Allows stacking on small screens */
 }
 
-.plan-details {
+.satoPlan-details {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -728,35 +619,28 @@
   .satoHeading {
     font-size: 1.5rem;
   }
-
   .satoSubtitle-one {
     font-size: 1.25rem;
   }
-
   .satoSubtitle-two {
     font-size: 1.125rem;
   }
-
   .satoLabel {
     font-size: 0.75rem;
     font-family: "Satoshi-Regular";
     color: var(--satoPlaceholder);
     line-height: 1.225rem;
   }
-
   .satoCaption {
     font-size: 0.625rem;
   }
-
   .satoBody {
     font-size: 0.8125rem;
   }
-
   .large-primary-btn {
     padding: 0.5rem 1rem;
     height: 2.75rem;
   }
-
   .large-secondary-btn {
     padding: 0.5rem 1rem;
     height: 2.75rem;
@@ -765,38 +649,22 @@
     padding: 0.5rem 1rem;
     height: 2.75rem;
   }
-  .input-main {
+  .satoInput-main {
     padding: 0.5rem 1rem;
     height: 2.75rem;
   }
-  .get-help-container {
-    left: 2.4rem;
-    height: 2rem;
-  }
-
-  .large-gethelp-btn {
-    width: 70%;
-  }
-
-  .input-secondary {
+  .satoInput-secondary {
     height: 2.75rem;
   }
-
   .detail-sub-container-2 {
     width: 75%;
     box-sizing: border-box;
   }
-
   .detail-sub-container-1 {
     width: 25%;
   }
   .detail-sub-container-child {
     padding: 0 3rem 0 0;
-  }
-
-  .custom-input-width {
-    width: 22rem;
-    padding-left: 2.5rem;
   }
 }
 
@@ -809,32 +677,22 @@
   .detail-sub-container-1 {
     width: 35%;
   }
-
-  .get-help-container {
-    height: 2rem;
-  }
-  .large-gethelp-btn {
-    height: 2rem;
-  }
 }
 
 @media only screen and (max-width: 1025px) {
   .sato-hide-scroll {
     flex-wrap: wrap;
   }
-
   .detail-main {
     justify-content: flex-start;
     align-items: flex-start;
     display: block;
   }
-
   .detail-container {
     width: 100%;
     display: block;
     overflow: scroll;
   }
-
   .detail-sub-container-1 {
     width: 100%;
     box-sizing: border-box;
@@ -845,21 +703,12 @@
   .toolkit-form {
     padding: 0;
   }
-
   .detail-sub-container-2 {
     width: 100%;
     height: auto;
   }
-
   .detail-sub-container-child {
     padding: 0;
-  }
-
-  .get-help-container {
-    height: 2.2rem;
-  }
-  .large-gethelp-btn {
-    height: 1.8rem;
   }
 }
 
@@ -867,11 +716,10 @@
   .plan-description-wrapper p {
     text-align: center;
   }
-
-  .plan-details {
+  .satoPlan-details {
     display: block;
   }
-  .plan-item {
+  .satoPlan-item {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -881,27 +729,16 @@
   .upload-container {
     flex-direction: column;
   }
-
-  .get-help-container {
-    height: 2rem;
-  }
-  .large-gethelp-btn {
-    height: 1.5rem;
-  }
   .w-100 {
     width: 100%;
   }
-  .w-100 .input-main {
+  .w-100 .satoInput-main {
     width: 100%;
   }
   .w-100 .m-100 {
     width: 100%;
   }
-  .custom-input-width {
-    width: 100%;
-    padding-left: 2.5rem;
-  }
-  .v-p-conainer {
+  .v-p-container {
     padding: 0;
   }
 }

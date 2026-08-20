@@ -14,9 +14,9 @@ const Index = (props: SEOcardProps) => {
     <>
       <div className="seo-card-container">
         <div>
-          <p className="input-title">Video Name</p>
+          <p className="satoInput-title">Video Name</p>
           <input
-            className="input-secondary"
+            className="satoInput-secondary"
             style={{ width: "100%" }}
             autoComplete="off"
             type="text"

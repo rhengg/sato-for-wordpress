@@ -336,7 +336,7 @@ const VideoPicker = (props: VideoPickerProps) => {
             justifyContent: "center",
             height: "max-content",
             borderRadius: "0.75rem",
-            border: "1px dashed var(--primary)",
+            border: "1px dashed var(--satoPrimary)",
             padding: "0.5rem",
             boxSizing: "border-box",
           }}
@@ -379,7 +379,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                     >
                       <div
                         style={{
-                          background: "var(--primary)",
+                          background: "var(--satoPrimary)",
                           width: `${progress}%`,
                           height: "100%",
                         }}
@@ -422,7 +422,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                           style={{
                             textDecoration: "none",
                           }}
-                          className="primary"
+                          className="satoPrimary"
                         >
                           Get help
                         </Link>
@@ -518,7 +518,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                             checked={transcript}
                             onChange={(e) => setTranscript(e.target.checked)}
                             style={{
-                              accentColor: "var(--primary)",
+                              accentColor: "var(--satoPrimary)",
                             }}
                           />
                         </label>
@@ -535,7 +535,10 @@ const VideoPicker = (props: VideoPickerProps) => {
                             : "hidden",
                       }}
                     >
-                      <span className="primary" style={{ cursor: "pointer" }}>
+                      <span
+                        className="satoPrimary"
+                        style={{ cursor: "pointer" }}
+                      >
                         <Link
                           to={"/plans"}
                           target="_blank"
@@ -543,7 +546,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                             textDecoration: "none",
                             fontWeight: "bold",
                           }}
-                          className="primary"
+                          className="satoPrimary"
                         >
                           Upgrade
                         </Link>

@@ -876,11 +876,11 @@ const Index = ({ token }: { token: string }) => {
                     }}
                   >
                     <div style={{ marginBottom: "0.5rem" }}>
-                      <p className="input-title">Player name</p>
+                      <p className="satoInput-title">Player name</p>
                     </div>
                     <input
                       style={{ width: "100%" }}
-                      className="input-secondary"
+                      className="satoInput-secondary"
                       type={"text"}
                       name={"videotitle"}
                       placeholder="Enter player name"
@@ -997,7 +997,7 @@ const Index = ({ token }: { token: string }) => {
                       overflowY: "scroll",
                     }}
                   >
-                    <div className="v-p-conainer">
+                    <div className="v-p-container">
                       <VideoPicker
                         token={token}
                         file={file}
@@ -1209,7 +1209,7 @@ const Index = ({ token }: { token: string }) => {
                   >
                     <p className="satoBody satoPlaceholder">Change Theme</p>
                     <p
-                      className="satoBody primary"
+                      className="satoBody satoPrimary"
                       style={{
                         cursor: "pointer",
                       }}
@@ -2159,9 +2159,9 @@ const Index = ({ token }: { token: string }) => {
                       width: "100%",
                     }}
                   >
-                    <p className="input-title">URL</p>
+                    <p className="satoInput-title">URL</p>
                     <input
-                      className="input-secondary"
+                      className="satoInput-secondary"
                       style={{
                         width: "100%",
                         cursor: !activePlan?.metadata?.premium_features
@@ -2203,9 +2203,9 @@ const Index = ({ token }: { token: string }) => {
                       width: "100%",
                     }}
                   >
-                    <p className="input-title">Heading</p>
+                    <p className="satoInput-title">Heading</p>
                     <input
-                      className="input-secondary"
+                      className="satoInput-secondary"
                       style={{
                         width: "100%",
                         cursor: !activePlan?.metadata?.premium_features
@@ -2249,9 +2249,9 @@ const Index = ({ token }: { token: string }) => {
                       width: "100%",
                     }}
                   >
-                    <p className="input-title">Description</p>
+                    <p className="satoInput-title">Description</p>
                     <input
-                      className="input-secondary"
+                      className="satoInput-secondary"
                       style={{
                         width: "100%",
                         cursor: !activePlan?.metadata?.premium_features
@@ -2295,9 +2295,9 @@ const Index = ({ token }: { token: string }) => {
                       width: "100%",
                     }}
                   >
-                    <p className="input-title">Button Text</p>
+                    <p className="satoInput-title">Button Text</p>
                     <input
-                      className="input-secondary"
+                      className="satoInput-secondary"
                       style={{
                         width: "100%",
                         cursor: !activePlan?.metadata?.premium_features
@@ -2782,7 +2782,7 @@ const Index = ({ token }: { token: string }) => {
                 }}
               >
                 <Loader
-                  borderColor="var(--primary)"
+                  borderColor="var(--satoPrimary)"
                   height="44px"
                   width="44px"
                 />
@@ -2833,7 +2833,7 @@ const Index = ({ token }: { token: string }) => {
                   style={{
                     textDecoration: "none",
                   }}
-                  className="primary"
+                  className="satoPrimary"
                 >
                   Get help
                 </Link>

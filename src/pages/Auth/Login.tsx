@@ -279,11 +279,11 @@ const Login = () => {
           <form onSubmit={loginWith2FA}>
             <p className="auth-header">2FA Authentication</p>
             <div>
-              <p className="input-title" style={{ marginBottom: "0.5rem" }}>
+              <p className="satoInput-title" style={{ marginBottom: "0.5rem" }}>
                 Enter 6-digit code from your authenticator app
               </p>
               <input
-                className="input-main"
+                className="satoInput-main"
                 onInput={(e) => {
                   const el = e.target as HTMLInputElement;
                   if (el.value.length > 6) {
@@ -340,9 +340,9 @@ const Login = () => {
         {renderElement === "login" && (
           <form onSubmit={handleLoginApiCall}>
             <p className="auth-header">Sign In</p>
-            <p className="input-title">Email</p>
+            <p className="satoInput-title">Email</p>
             <input
-              className="input-main"
+              className="satoInput-main"
               style={{ width: "100%" }}
               type="email"
               value={inputEmail}
@@ -352,10 +352,10 @@ const Login = () => {
             />
             <div style={{ minHeight: "0.5rem" }} />
 
-            <p className="input-title">Password</p>
-            <div className="input-container" style={{ width: "100%" }}>
+            <p className="satoInput-title">Password</p>
+            <div className="satoInput-container" style={{ width: "100%" }}>
               <input
-                className="input-main"
+                className="satoInput-main"
                 style={{ width: "100%" }}
                 autoComplete="off"
                 type={!visibility ? "password" : "text"}

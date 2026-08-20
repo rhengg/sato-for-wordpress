@@ -238,7 +238,7 @@ const AccountPage = ({ token }: { token: string }) => {
             marginTop: "0.5rem",
           }}
         >
-          <div className="profile-box">
+          <div className="satoProfile-box">
             <div>
               <p className="satoLabel satoTextSecondary">Name</p>
               <p className="satoBody" style={{ marginTop: "0.5rem" }}>
@@ -284,7 +284,7 @@ const AccountPage = ({ token }: { token: string }) => {
                     backgroundColor: "var(--satoTextSecondary)",
                   }}
                 ></span>
-                <span className="primary" style={{ cursor: "pointer" }}>
+                <span className="satoPrimary" style={{ cursor: "pointer" }}>
                   <Link
                     to={"https://app.satoplayer.com/plans"}
                     style={{
@@ -348,7 +348,7 @@ const AccountPage = ({ token }: { token: string }) => {
           {subscription && activePlan?.amount > 0 && (
             <div style={{ marginTop: "2rem" }}>
               <p className="satoSubtitle-two">Your Subscription Details</p>
-              <div className="profile-box" style={{ marginBottom: "2rem" }}>
+              <div className="satoProfile-box" style={{ marginBottom: "2rem" }}>
                 <div>
                   <p className="satoLabel satoTextSecondary">Billing Cycle</p>
                   <p className="satoBody" style={{ marginTop: "0.5rem" }}>
@@ -389,7 +389,7 @@ const AccountPage = ({ token }: { token: string }) => {
               </p>
 
               {invoices && invoices.length > 0 ? (
-                <div className="plan-list">
+                <div className="satoPlan-list">
                   {[...invoices]
                     .sort(
                       (a: any, b: any) =>
@@ -399,7 +399,7 @@ const AccountPage = ({ token }: { token: string }) => {
                     .map((inv: any, index: number) => (
                       <div
                         key={inv.id}
-                        className="plan-item"
+                        className="satoPlan-item"
                         style={{
                           borderBottom:
                             index === invoices.length - 1
@@ -411,7 +411,7 @@ const AccountPage = ({ token }: { token: string }) => {
                             index === invoices.length - 1 ? "1rem" : "1rem",
                         }}
                       >
-                        <div className="plan-details">
+                        <div className="satoPlan-details">
                           <span className="satoBody">{inv.plan_name}</span>
                           <span className="dot">•</span>
                           {inv.status === "paid" ? (
@@ -443,7 +443,7 @@ const AccountPage = ({ token }: { token: string }) => {
                     ))}
                 </div>
               ) : (
-                <div className="plan-list">
+                <div className="satoPlan-list">
                   <p className="satoBody" style={{ padding: "1rem 0" }}>
                     No receipts found
                   </p>
