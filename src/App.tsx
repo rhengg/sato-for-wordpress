@@ -1,9 +1,9 @@
+import React, { useEffect } from "react";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import Login from "./pages/Auth/Login";
 import MediaLibrary from "./pages/MediaLibrary";
 import AccountPage from "./pages/Account";
-import React, { useEffect } from "react";
 import Loader from "./components/Loader";
 
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
         const data = await res.json();
         setToken(data.token);
       } catch (error) {
-        console.error("error fetching token", error);
+        // console.error("error fetching token", error);
       } finally {
         setLoading(false);
       }

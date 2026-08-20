@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import "./style.css";
 import { BrowserRouter } from "react-router-dom";
+import "./style.css";
 import "@wordpress/components/build-style/style.css";
 import "@wordpress/dataviews/build-style/style.css";
 

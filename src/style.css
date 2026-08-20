@@ -615,6 +615,12 @@
   margin: 0 4px;
 }
 
+.desktop-text-render {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 @media only screen and (max-width: 1590px) {
   .satoHeading {
     font-size: 1.5rem;

@@ -31,16 +31,12 @@ const AccountPage = ({ token }: { token: string }) => {
   };
 
   const fetchUserDetail = async () => {
-    try {
-      const res = await axios.get("/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUser(res.data);
-    } catch (error) {
-      console.log("error fetching user detail", error);
-    }
+    const res = await axios.get("/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setUser(res.data);
   };
 
   const handleCancelSubscription = async (e: React.SyntheticEvent) => {
