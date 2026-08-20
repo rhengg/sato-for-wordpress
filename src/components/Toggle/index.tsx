@@ -81,9 +81,10 @@ const Toggle = ({
           className="toggle-button"
           type="checkbox"
           disabled={disabled}
-          defaultChecked={checked}
+          // defaultChecked={checked}
           checked={checked}
-          onClick={onChange}
+          // onClick={onChange}
+          onChange={onChange}
         />
         <span
           className="toggle-circle"
