@@ -225,35 +225,19 @@ const MediaLibrary = (props: any) => {
     }
   };
 
-  React.useEffect(() => {
-    if (!length) {
-      fetchSubscription();
-    }
-  }, []);
-
   const checkActivePlan = async () => {
-    try {
-      const res = await axios.get(`/subscriptions`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setActivePlan(plans.data?.plan);
-    } catch (e) {
-      // console.log("error", e);
-    }
+    const res = await axios.get(`/subscriptions`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const plans = await axios.get(`/plans/${res.data.subscription.plan_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setActivePlan(plans.data?.plan);
   };
-
-  React.useEffect(() => {
-    if (length) {
-      checkActivePlan();
-    }
-  }, []);
 
   const fetchMedia = async () => {
     try {
@@ -282,11 +266,6 @@ const MediaLibrary = (props: any) => {
     }
   };
 
-  React.useEffect(() => {
-    fetchMedia();
-    fetchUsage();
-  }, [refetch]);
-
   const deleteAssets = async (item: any) => {
     try {
       setActionLoading("delete-video");
@@ -306,6 +285,19 @@ const MediaLibrary = (props: any) => {
       setActionLoading(undefined);
     }
   };
+
+  React.useEffect(() => {
+    if (!length) {
+      fetchSubscription();
+    } else {
+      checkActivePlan();
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchMedia();
+    fetchUsage();
+  }, [refetch]);
 
   if (isLoading && !length && !activePlan && usageLoading)
     return (

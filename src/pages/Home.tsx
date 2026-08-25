@@ -415,18 +415,13 @@ const Home = ({ token }: { token: string }) => {
   };
 
   const fetchInvoice = async () => {
-    try {
-      setLoading(true);
-      await axios.get(`/subscriptions/invoices`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } catch (error) {
-      // console.log("error loading invoice", error);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    await axios.get(`/subscriptions/invoices`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setLoading(false);
   };
 
   React.useEffect(() => {

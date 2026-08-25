@@ -13,19 +13,14 @@ const App = () => {
 
   useEffect(() => {
     const loadToken = async () => {
-      try {
-        const res = await fetch(`${window.satoConfig.apiUrl}auth-token`, {
-          headers: {
-            "X-WP-Nonce": window.satoConfig.nonce,
-          },
-        });
-        const data = await res.json();
-        setToken(data.token);
-      } catch (error) {
-        // console.error("error fetching token", error);
-      } finally {
-        setLoading(false);
-      }
+      const res = await fetch(`${window.satoConfig.apiUrl}auth-token`, {
+        headers: {
+          "X-WP-Nonce": window.satoConfig.nonce,
+        },
+      });
+      const data = await res.json();
+      setToken(data.token);
+      setLoading(false);
     };
 
     loadToken();

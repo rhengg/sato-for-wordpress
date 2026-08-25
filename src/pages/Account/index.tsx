@@ -80,18 +80,13 @@ const AccountPage = ({ token }: { token: string }) => {
   };
 
   const fetchInvoice = async () => {
-    try {
-      const res = await axios.get(`/subscriptions/invoices`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setInvoices(res.data);
-    } catch (error) {
-      // console.log("error fetching media", error);
-    } finally {
-      setLoadingInvoices(false);
-    }
+    const res = await axios.get(`/subscriptions/invoices`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setInvoices(res.data);
+    setLoadingInvoices(false);
   };
 
   const fetchMedia = async () => {
