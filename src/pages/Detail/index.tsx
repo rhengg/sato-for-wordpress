@@ -322,10 +322,6 @@ const Index = ({ token }: { token: string }) => {
     }
   };
 
-  React.useEffect(() => {
-    videoUrlExtensionUpdate.value = selectedExtension as string;
-  }, [selectedExtension]);
-
   const fetchPlayer = async (plan: any) => {
     setLoadingPlayerData(true);
     try {
@@ -546,41 +542,19 @@ const Index = ({ token }: { token: string }) => {
     }
   };
 
-  React.useEffect(() => {
-    videoconfigupdate.value = {
-      ...videoconfigupdate.value,
-      premium: {
-        ...videoconfigupdate.value.premium,
-        layoutConfig: {
-          ...videoconfigupdate?.value?.premium?.layoutConfig,
-          name: selectedTemplate,
-        },
-      },
-    };
-  }, [selectedTemplate]);
-
   const fetchMedia = async () => {
-    try {
-      const res = await axios.get("/videos", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const sorted = res.data?.sort((a: any, b: any) => {
-        return (
-          new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-        );
-      });
-      setMedia(sorted);
-    } catch (error) {
-      // console.log("error fetching media", error);
-    }
+    const res = await axios.get("/videos", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const sorted = res.data?.sort((a: any, b: any) => {
+      return (
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+      );
+    });
+    setMedia(sorted);
   };
-
-  React.useEffect(() => {
-    fetchMedia();
-    fetchSource();
-  }, [refetch]);
 
   const addSource = async (sourceId?: string, mediaItem?: any) => {
     const transcriptionUrl = mediaItem?.transcription_url;
@@ -783,6 +757,28 @@ const Index = ({ token }: { token: string }) => {
       return null;
     }
   };
+
+  React.useEffect(() => {
+    videoUrlExtensionUpdate.value = selectedExtension as string;
+  }, [selectedExtension]);
+
+  React.useEffect(() => {
+    fetchMedia();
+    fetchSource();
+  }, [refetch]);
+
+  React.useEffect(() => {
+    videoconfigupdate.value = {
+      ...videoconfigupdate.value,
+      premium: {
+        ...videoconfigupdate.value.premium,
+        layoutConfig: {
+          ...videoconfigupdate?.value?.premium?.layoutConfig,
+          name: selectedTemplate,
+        },
+      },
+    };
+  }, [selectedTemplate]);
 
   React.useEffect(() => {
     const init = async () => {
