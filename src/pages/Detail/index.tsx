@@ -21,7 +21,7 @@ import ImageRadioGroup from "../../components/ImageRadioButton";
 import Dropdown from "../../components/Dropdown";
 import { fetchImage } from "../../utils/helper";
 import Premium from "../../components/PremiumIcon";
-import CompleteSvg from "../../assets/Complete.svg";
+import CompleteSvg from "../../assets/icons/Complete.svg";
 import { Button, Snackbar } from "@wordpress/components";
 import { Input } from "@wordpress/ui";
 import { NoticeType } from "../Home";

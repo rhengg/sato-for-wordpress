@@ -1,5 +1,5 @@
-import PremiumSmallSvg from "../../assets/PremiumSmall.svg";
-import UpgradeSvg from "../../assets/Upgrade.svg";
+import PremiumSmallSvg from "../../assets/icons/PremiumSmall.svg";
+import UpgradeSvg from "../../assets/icons/Upgrade.svg";
 
 type PremiumProps = {
   top?: string;

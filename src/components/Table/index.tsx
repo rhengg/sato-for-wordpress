@@ -9,10 +9,10 @@ import Popover from "../Popover";
 import Premium from "../PremiumIcon";
 import Loader from "../Loader";
 import { waitForVideoProcessing } from "../VideoPicker";
-import AddSvg from "../../assets/Add.svg";
-import FailedSvg from "../../assets/Failed.svg";
-import CompleteSvg from "../../assets/Complete.svg";
-import GenerateSvg from "../../assets/Generate.svg";
+import AddSvg from "../../assets/icons/Add.svg";
+import FailedSvg from "../../assets/icons/Failed.svg";
+import CompleteSvg from "../../assets/icons/Complete.svg";
+import GenerateSvg from "../../assets/icons/Generate.svg";
 import { NoticeType } from "../../pages/Home";
 import { Snackbar } from "@wordpress/components";
 

@@ -1,4 +1,4 @@
-import satoSvg from "../../assets/sato.svg";
+import satoSvg from "../../assets/icons/sato.svg";
 
 const SatoLogo = () => {
   return (

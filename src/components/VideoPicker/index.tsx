@@ -8,8 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Premium from "../PremiumIcon";
 import Tooltip from "../Tooltip";
 import { sanitizeFileNameForS3Key } from "../../utils/helper";
-import UploadErrorSvg from "../../assets/upload-error.svg";
-import FilesIconsSvg from "../../assets/FilesIcons.svg";
+import UploadErrorSvg from "../../assets/icons/upload-error.svg";
+import FilesIconsSvg from "../../assets/icons/FilesIcons.svg";
 import { NoticeType } from "../../pages/Home";
 import { Snackbar } from "@wordpress/components";
 

@@ -1,8 +1,8 @@
 import React from "react";
 import "./colorpicker.css";
 import Tooltip from "../Tooltip";
-import hideSvg from "../../assets/hide.svg";
-import unhideSvg from "../../assets/unhide.svg";
+import hideSvg from "../../assets/icons/hide.svg";
+import unhideSvg from "../../assets/icons/unhide.svg";
 import { ColorPicker as WpColorPicker } from "@wordpress/components";
 import PortalPopover from "../PortalPopover";
 
