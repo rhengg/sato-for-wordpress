@@ -22,6 +22,7 @@ import Tooltip from "../components/Tooltip";
 import NotificationPopover from "../components/NotificationPopover";
 import EmptyPlayersState from "../components/EmptyCard";
 import WaveLoader from "../components/Loader/WaveLoader/index";
+import { useAuth } from "../context/AuthContext";
 
 export interface Player {
   id: string;
@@ -143,7 +144,8 @@ export interface NoticeType {
   text: string;
 }
 
-const Home = ({ token }: { token: string }) => {
+const Home = () => {
+  const { token } = useAuth();
   const [data, setData] = React.useState<Player[]>();
   const [error, setError] = React.useState(false);
   const [refetch, setRefetch] = React.useState(0);
@@ -494,7 +496,7 @@ const Home = ({ token }: { token: string }) => {
               );
             }}
           />
-          <NotificationPopover token={token} />
+          <NotificationPopover />
         </div>
       </div>
       {notice && (
@@ -943,7 +945,7 @@ const Home = ({ token }: { token: string }) => {
       <div
         style={{ borderTop: "1px solid var(--satoStroke)", marginTop: "1rem" }}
       >
-        <MediaLibrary length={10} showNotice={showNotice} token={token} />
+        <MediaLibrary length={10} showNotice={showNotice} />
       </div>
     </div>
   );

@@ -7,11 +7,11 @@ import { Buffer } from "buffer";
 import Tooltip from "../Tooltip";
 import { sanitizeFileNameForS3Key } from "../../utils/helper";
 import { Button } from "@wordpress/components";
+import { useAuth } from "../../context/AuthContext";
 
 type ImagePickerType = {
   onChange: (val: string) => void;
   label: string;
-  token: string;
   setImageUploading?: any;
   tooltipText?: string;
   validationRequired?: boolean;
@@ -22,12 +22,12 @@ type ImagePickerType = {
 const ImagePicker = ({
   onChange,
   label,
-  token,
   setImageUploading,
   tooltipText,
   disabled = false,
   uploadedUrl,
 }: ImagePickerType) => {
+  const { token } = useAuth();
   const [fileName, setFileName] = React.useState("Choose File");
   const [pickerId, setPickerId] = React.useState<string>();
   const [isLoading, setLoading] = React.useState(false);

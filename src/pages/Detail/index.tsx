@@ -27,6 +27,7 @@ import { Input } from "@wordpress/ui";
 import { NoticeType } from "../Home";
 import LivePlayer from "../../components/LivePlayer";
 import EmptyPlayersState from "../../components/EmptyCard";
+import { useAuth } from "../../context/AuthContext";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -231,7 +232,8 @@ export const videoconfigupdate = signal<VideoConfigType>({
   },
 });
 
-const Index = ({ token }: { token: string }) => {
+const Index = () => {
+  const { token } = useAuth();
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.search);
   const videoId = params.get("video");
@@ -1003,11 +1005,11 @@ const Index = ({ token }: { token: string }) => {
                   >
                     <div className="v-p-container">
                       <VideoPicker
-                        token={token}
                         file={file}
                         setFile={setFile}
                         setRefetch={(u) => {
                           setRefetch(u);
+                          setLivePlayerKey((key) => key + 1);
                         }}
                         activePlan={activePlan}
                         setOpenModalUpload={setOpenModalUpload}
@@ -1023,7 +1025,6 @@ const Index = ({ token }: { token: string }) => {
                         </div>
 
                         <Table
-                          token={token}
                           data={media}
                           setRefetch={(u) => {
                             setRefetch(u);
@@ -1033,6 +1034,7 @@ const Index = ({ token }: { token: string }) => {
                             setOpenModalUpload(false);
                             await addSource(sourceId, item);
                             setRefetch(Math.random());
+                            setLivePlayerKey((key) => key + 1);
                           }}
                         />
                       </div>
@@ -2456,7 +2458,6 @@ const Index = ({ token }: { token: string }) => {
 
                   <div style={{ width: "100%" }}>
                     <ImagePicker
-                      token={token}
                       disabled={
                         !activePlan?.metadata?.premium_features?.playerCTA
                           ?.image
@@ -2606,7 +2607,6 @@ const Index = ({ token }: { token: string }) => {
 
                   <div style={{ width: "100%" }}>
                     <ImagePicker
-                      token={token}
                       onChange={(val: any) => {
                         handlePlayerThumbnailOnChange(val);
                         setDisableSaveButton(false);
@@ -2668,7 +2668,6 @@ const Index = ({ token }: { token: string }) => {
                 >
                   <div style={{ width: "100%" }}>
                     <ImagePicker
-                      token={token}
                       onChange={(val: any) => {
                         handlePlayerBrandingOnChange(val);
                         setDisableSaveButton(false);

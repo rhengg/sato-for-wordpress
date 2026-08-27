@@ -5,6 +5,7 @@ import NotificationList from "./NotificationList";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@wordpress/ui";
 import { bell, bellUnread } from "@wordpress/icons";
+import { useAuth } from "../../context/AuthContext";
 
 export type NotificationType = "success" | "error" | "warning" | "info";
 
@@ -31,7 +32,8 @@ export type Action = {
   label: string;
 };
 
-const NotificationPopover = ({ token }: { token: string }) => {
+const NotificationPopover = () => {
+  const { token } = useAuth();
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();

@@ -8,8 +8,10 @@ import SatoLogo from "../../components/SatoLogo";
 import config from "../../config";
 import { Button, Snackbar } from "@wordpress/components";
 import { NoticeType } from "../Home";
+import { useAuth } from "../../context/AuthContext";
 
-const AccountPage = ({ token }: { token: string }) => {
+const AccountPage = () => {
+  const { token } = useAuth();
   const navigate = useNavigate();
   const [subscription, setSubscription] = React.useState<any>();
   const [user, setUser] = React.useState<any>();

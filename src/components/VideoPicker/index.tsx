@@ -12,10 +12,11 @@ import UploadErrorSvg from "../../assets/icons/upload-error.svg";
 import FilesIconsSvg from "../../assets/icons/FilesIcons.svg";
 import { NoticeType } from "../../pages/Home";
 import { Snackbar } from "@wordpress/components";
+import { useAuth } from "../../context/AuthContext";
 
 export const waitForVideoProcessing = async (
   videoId: string,
-  token: string,
+  token: string | undefined,
 ) => {
   const maxRetries = 20;
   const delay = 3000;
@@ -47,7 +48,6 @@ export const waitForVideoProcessing = async (
 };
 
 type VideoPickerProps = {
-  token: string;
   file: any;
   setFile: React.Dispatch<React.SetStateAction<any>>;
   setVideoUrl?: React.Dispatch<React.SetStateAction<any>>;
@@ -61,7 +61,6 @@ type VideoPickerProps = {
 
 const VideoPicker = (props: VideoPickerProps) => {
   const {
-    token,
     file,
     setFile,
     setRefetch,
@@ -71,7 +70,7 @@ const VideoPicker = (props: VideoPickerProps) => {
     activePlan,
   } = props;
   const navigate = useNavigate();
-
+  const { token } = useAuth();
   const [pickerId, setPickerId] = React.useState<string>();
   const [progress, setProgress] = React.useState<number>();
   const [loading, setLoading] = React.useState<boolean>(false);

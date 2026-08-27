@@ -15,17 +15,18 @@ import CompleteSvg from "../../assets/icons/Complete.svg";
 import GenerateSvg from "../../assets/icons/Generate.svg";
 import { NoticeType } from "../../pages/Home";
 import { Snackbar } from "@wordpress/components";
+import { useAuth } from "../../context/AuthContext";
 
 type VideoListProps = {
   data: any;
   setRefetch: React.Dispatch<React.SetStateAction<number>>;
   handleClick?: any;
   activePlan?: any;
-  token: string;
 };
 
 const VideoList = (props: VideoListProps) => {
-  const { data, setRefetch, handleClick, activePlan, token } = props;
+  const { data, setRefetch, handleClick, activePlan } = props;
+  const { token } = useAuth();
   const [notice, setNotice] = React.useState<NoticeType>();
   const [openModalDelete, setOpenModalDelete] = React.useState<boolean>(false);
   const [assetId, setAssetId] = React.useState("");

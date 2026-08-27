@@ -7,16 +7,19 @@ import VideoPicker, {
 import Modal from "../../components/Modal";
 import VideoQuota from "../../components/VideoQuota";
 import Loader from "../../components/Loader";
-import { Button, Notice } from "@wordpress/components";
+import { Button, Notice, Snackbar } from "@wordpress/components";
 import { Text } from "@wordpress/ui";
 import { DataViews, View } from "@wordpress/dataviews";
 import { readableSizeFromMB, timeAgo } from "../../utils/helper";
 import config from "../../config";
 import EmptyPlayersState from "../../components/EmptyCard";
 import WaveLoader from "../../components/Loader/WaveLoader";
+import { useAuth } from "../../context/AuthContext";
+import { NoticeType } from "../Home";
 
 const MediaLibrary = (props: any) => {
-  const { length, showNotice, token } = props;
+  const { length, showNotice } = props;
+  const { token } = useAuth();
   const [openModalUpload, setOpenModalUpload] = React.useState<boolean>(false);
   const [media, setMedia] = React.useState<any[]>();
   const [refetch, setRefetch] = React.useState(0);
@@ -33,6 +36,7 @@ const MediaLibrary = (props: any) => {
   >(null);
   const [showPremiumNotice, setShowPremiumNotice] = React.useState(false);
   const [actionLoading, setActionLoading] = React.useState<string>();
+  const [notice, setNotice] = React.useState<NoticeType>();
   const [view, setView] = React.useState<View>({
     fields: ["storage", "uploaded_at", "speech-to-text"],
     filters: [],
@@ -45,6 +49,13 @@ const MediaLibrary = (props: any) => {
     titleField: "videoname",
     type: "table",
   });
+
+  const showPageNotice = (item: NoticeType) => {
+    setNotice(item);
+    setTimeout(() => {
+      setNotice(undefined);
+    }, 3000);
+  };
 
   const applyFilters = (
     data: any[],
@@ -266,25 +277,36 @@ const MediaLibrary = (props: any) => {
     }
   };
 
-  const deleteAssets = async (item: any) => {
-    try {
-      setActionLoading("delete-video");
-      await axios.delete(`/videos/${item.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      showNotice({ status: "success", text: "Video deleted!" });
-      setRefetch(Math.random());
-    } catch (error) {
-      showNotice({
-        status: "error",
-        text: "Error while deleting video",
-      });
-    } finally {
-      setActionLoading(undefined);
-    }
-  };
+  // const deleteAssets = async (item: any) => {
+  //   try {
+  //     setActionLoading("delete-video");
+  //     await axios.delete(`/videos/${item.id}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     if (!length) {
+  //       showPageNotice({ status: "success", text: "Video deleted!" });
+  //     } else {
+  //       showNotice({ status: "success", text: "Video deleted!" });
+  //     }
+  //     setRefetch(Math.random());
+  //   } catch (error) {
+  //     if (!length) {
+  //       showPageNotice({
+  //         status: "error",
+  //         text: "Error while deleting video",
+  //       });
+  //     } else {
+  //       showNotice({
+  //         status: "error",
+  //         text: "Error while deleting video",
+  //       });
+  //     }
+  //   } finally {
+  //     setActionLoading(undefined);
+  //   }
+  // };
 
   React.useEffect(() => {
     if (!length) {
@@ -319,6 +341,29 @@ const MediaLibrary = (props: any) => {
 
   return (
     <>
+      {notice && (
+        <div
+          style={{
+            position: "fixed",
+            top: "2%",
+            left: "50%",
+            zIndex: "9999",
+            transform: "translate(0%,50%)",
+          }}
+        >
+          <Snackbar
+            politeness="polite"
+            onDismiss={() => {
+              setNotice(undefined);
+            }}
+            onRemove={() => {
+              setNotice(undefined);
+            }}
+          >
+            {notice.text}
+          </Snackbar>
+        </div>
+      )}
       <div style={{ padding: "1rem 0" }}>
         <div
           style={{
@@ -356,7 +401,6 @@ const MediaLibrary = (props: any) => {
               >
                 <div className="v-picker-container">
                   <VideoPicker
-                    token={token}
                     file={file}
                     setFile={setFile}
                     setRefetch={setRefetch}
@@ -491,64 +535,78 @@ const MediaLibrary = (props: any) => {
                         config.VIDEO_CDN_URL,
                       ).toString();
                       navigator.clipboard.writeText(construct_video_url);
-                      showNotice({
-                        status: "success",
-                        text: "Video URL copied!",
-                      });
+                      if (!length) {
+                        showPageNotice({
+                          status: "success",
+                          text: "Video URL copied!",
+                        });
+                      } else {
+                        showNotice({
+                          status: "success",
+                          text: "Video URL copied!",
+                        });
+                      }
                     } catch (error) {
-                      showNotice({
-                        status: "error",
-                        text: "Error copying Video URL!",
-                      });
+                      if (!length) {
+                        showPageNotice({
+                          status: "error",
+                          text: "Error copying Video URL!",
+                        });
+                      } else {
+                        showNotice({
+                          status: "error",
+                          text: "Error copying Video URL!",
+                        });
+                      }
                     }
                   },
                 },
-                {
-                  RenderModal: ({ items, closeModal, onActionPerformed }) => (
-                    <>
-                      <Text variant="body-lg">
-                        Deleting this video will permanently remove it from your
-                        video library.
-                      </Text>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "1rem",
-                          marginTop: "1rem",
-                        }}
-                      >
-                        <Button
-                          variant="primary"
-                          isDestructive={true}
-                          __next40pxDefaultSize
-                          onClick={() => deleteAssets(items[0])}
-                          isBusy={
-                            actionLoading === "delete-video" ? true : false
-                          }
-                        >
-                          Delete permanently
-                        </Button>
-                        <Button
-                          onClick={closeModal}
-                          autoFocus
-                          __next40pxDefaultSize
-                          variant="tertiary"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </>
-                  ),
-                  id: "delete",
-                  isPrimary: false,
-                  label: "Delete item",
-                  modalFocusOnMount: "firstContentElement",
-                  modalHeader: () => {
-                    return "Delete video permanently?";
-                  },
-                  supportsBulk: false,
-                },
+                // {
+                //   RenderModal: ({ items, closeModal, onActionPerformed }) => (
+                //     <>
+                //       <Text variant="body-lg">
+                //         Deleting this video will permanently remove it from your
+                //         video library.
+                //       </Text>
+                //       <div
+                //         style={{
+                //           display: "flex",
+                //           alignItems: "center",
+                //           gap: "1rem",
+                //           marginTop: "1rem",
+                //         }}
+                //       >
+                //         <Button
+                //           variant="primary"
+                //           isDestructive={true}
+                //           __next40pxDefaultSize
+                //           onClick={() => deleteAssets(items[0])}
+                //           isBusy={
+                //             actionLoading === "delete-video" ? true : false
+                //           }
+                //         >
+                //           Delete permanently
+                //         </Button>
+                //         <Button
+                //           onClick={closeModal}
+                //           autoFocus
+                //           __next40pxDefaultSize
+                //           variant="tertiary"
+                //         >
+                //           Cancel
+                //         </Button>
+                //       </div>
+                //     </>
+                //   ),
+                //   id: "delete",
+                //   isPrimary: false,
+                //   label: "Delete item",
+                //   modalFocusOnMount: "firstContentElement",
+                //   modalHeader: () => {
+                //     return "Delete video permanently?";
+                //   },
+                //   supportsBulk: false,
+                // },
               ]}
               config={{
                 perPageSizes: [5, 10],
