@@ -123,7 +123,7 @@ const AccountPage = () => {
         "X-WP-Nonce": nonce,
       },
     });
-    window.location.reload();
+    window.location.href = `${window.location.pathname}?page=sato-signin`;
   };
 
   if (!user || !subscription || !activePlan || loadingMedia || loadingInvoices)

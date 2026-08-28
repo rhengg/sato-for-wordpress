@@ -57,7 +57,7 @@ const Login = () => {
       const res = await axios.post("/login", userdata);
       setTokenOnWpConfig(res.data.token);
       setLoading(false);
-      window.location.reload();
+      window.location.href = `${window.location.pathname}?page=sato-player`;
     } catch (error: any) {
       setLoading(false);
       if (error.response.status === 404) {
@@ -168,7 +168,7 @@ const Login = () => {
     try {
       const res = await axios.post("/login", userdata);
       setTokenOnWpConfig(res.data.token);
-      window.location.reload();
+      window.location.href = `${window.location.pathname}?page=sato-player`;
     } catch (error: any) {
       if (
         error.response.status === 401 &&
