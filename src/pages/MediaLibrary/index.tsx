@@ -35,7 +35,6 @@ const MediaLibrary = (props: any) => {
     string | null
   >(null);
   const [showPremiumNotice, setShowPremiumNotice] = React.useState(false);
-  const [actionLoading, setActionLoading] = React.useState<string>();
   const [notice, setNotice] = React.useState<NoticeType>();
   const [view, setView] = React.useState<View>({
     fields: ["storage", "uploaded_at", "speech-to-text"],
@@ -48,6 +47,10 @@ const MediaLibrary = (props: any) => {
     showMedia: false,
     titleField: "videoname",
     type: "table",
+    sort: {
+      field: "uploaded_at",
+      direction: "desc",
+    },
   });
 
   const showPageNotice = (item: NoticeType) => {

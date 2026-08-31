@@ -171,6 +171,10 @@ const Home = () => {
     showMedia: true,
     titleField: "name",
     type: "table",
+    sort: {
+      field: "updated_at",
+      direction: "desc",
+    },
   });
 
   const applyFilters = (
@@ -565,6 +569,7 @@ const Home = () => {
                     name={"player-name"}
                     placeholder="Enter player name"
                     maxLength={60}
+                    autoFocus
                   />
                 </div>
 

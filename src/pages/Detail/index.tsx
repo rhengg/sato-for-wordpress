@@ -28,6 +28,7 @@ import { NoticeType } from "../Home";
 import LivePlayer from "../../components/LivePlayer";
 import EmptyPlayersState from "../../components/EmptyCard";
 import { useAuth } from "../../context/AuthContext";
+import Tooltip from "../../components/Tooltip";
 
 export type VideoConfigType = {
   videotitle: string;
@@ -919,28 +920,43 @@ const Index = () => {
                   gap: "0.5rem",
                 }}
               >
-                <p className="satoSubtitle-three">Player ID: </p>
-                <p className="satoBody">{videoId}</p>
-                <span
-                  className="material-symbols-outlined m-icon"
-                  style={{
-                    fontSize: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    try {
-                      navigator.clipboard.writeText(`${videoId}`);
-                      showNotice({ status: "success", text: "Copied!" });
-                    } catch (error) {
-                      showNotice({
-                        status: "error",
-                        text: "Error copying!",
-                      });
-                    }
-                  }}
-                >
-                  content_copy
-                </span>
+                <p className="satoSubtitle-three">Short Code: </p>
+                <p className="satoBody">{`[sato_player id="${videoId}"]`}</p>
+
+                <Tooltip text="Copy shortcode">
+                  <span
+                    className="material-symbols-outlined m-icon"
+                    style={{
+                      fontSize: "20px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      try {
+                        navigator.clipboard.writeText(`${videoId}`);
+                        showNotice({ status: "success", text: "Copied!" });
+                      } catch (error) {
+                        showNotice({
+                          status: "error",
+                          text: "Error copying!",
+                        });
+                      }
+                    }}
+                  >
+                    content_copy
+                  </span>
+                </Tooltip>
+
+                <Tooltip text="Copy this shortcode and paste it into a WordPress Shortcode block to display this video player.">
+                  <span
+                    className="material-symbols-outlined m-icon"
+                    style={{
+                      fontSize: "20px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    help
+                  </span>
+                </Tooltip>
               </div>
             </div>
 
