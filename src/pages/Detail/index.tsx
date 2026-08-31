@@ -932,7 +932,9 @@ const Index = () => {
                     }}
                     onClick={() => {
                       try {
-                        navigator.clipboard.writeText(`${videoId}`);
+                        navigator.clipboard.writeText(
+                          `[sato_player id="${videoId}"]`,
+                        );
                         showNotice({ status: "success", text: "Copied!" });
                       } catch (error) {
                         showNotice({
