@@ -23,6 +23,7 @@ import NotificationPopover from "../components/NotificationPopover";
 import EmptyPlayersState from "../components/EmptyCard";
 import WaveLoader from "../components/Loader/WaveLoader/index";
 import { useAuth } from "../context/AuthContext";
+import thumbnailImg from "../assets/images/thumbnail.png";
 
 export interface Player {
   id: string;
@@ -802,11 +803,12 @@ const Home = () => {
                         cursor: "pointer",
                       }}
                       src={
-                        data.item.config.playerThumbnailImageUrl.replace(
-                          "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
-                          "skara-imagecontent-staging.b-cdn.net/",
-                        ) ||
-                        "https://sato-image-content.b-cdn.net/48d677f8-734a-496e-a2ec-ad6ef88411cc/6f75caa6-42d8-4bbf-9d0b-c9efba3083be/thumbnail.png"
+                        data.item.config?.playerThumbnailImageUrl
+                          ? data.item.config.playerThumbnailImageUrl.replace(
+                              "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
+                              "skara-imagecontent-staging.b-cdn.net/",
+                            )
+                          : thumbnailImg
                       }
                       alt={"no image found"}
                       className="card-thumbnail"
