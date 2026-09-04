@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/material-symbols-outlined": "^5.3.4",
     "@preact/signals": "^1.2.2",
     "@wordpress/components": "^35.0.1",
     "@wordpress/dataviews": "^16.0.1",

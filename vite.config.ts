@@ -8,6 +8,7 @@ export default defineConfig({
     exclude: ["skara-player"],
   },
   build: {
+    manifest: "manifest.json",
     terserOptions: {
       compress: {
         drop_console: true,
