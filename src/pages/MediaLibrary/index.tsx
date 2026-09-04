@@ -9,7 +9,7 @@ import VideoQuota from "../../components/VideoQuota";
 import Loader from "../../components/Loader";
 import { Button, Notice, Snackbar } from "@wordpress/components";
 import { Text } from "@wordpress/ui";
-import { DataViews, View } from "@wordpress/dataviews";
+import { DataViews, View } from "@wordpress/dataviews/wp";
 import { readableSizeFromMB, timeAgo } from "../../utils/helper";
 import config from "../../config";
 import EmptyPlayersState from "../../components/EmptyCard";

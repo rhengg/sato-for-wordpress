@@ -16,7 +16,7 @@ import { timeAgo } from "../utils/helper";
 import { Button, Snackbar } from "@wordpress/components";
 import { IconButton, Text } from "@wordpress/ui";
 import { help } from "@wordpress/icons";
-import { DataViews, View } from "@wordpress/dataviews";
+import { DataViews, View } from "@wordpress/dataviews/wp";
 import SatoLogo from "../components/SatoLogo";
 import Tooltip from "../components/Tooltip";
 import NotificationPopover from "../components/NotificationPopover";
@@ -803,12 +803,8 @@ const Home = () => {
                         cursor: "pointer",
                       }}
                       src={
-                        data.item.config?.playerThumbnailImageUrl
-                          ? data.item.config.playerThumbnailImageUrl.replace(
-                              "skara-imagecontent-alpha.s3.ap-south-1.amazonaws.com/",
-                              "skara-imagecontent-staging.b-cdn.net/",
-                            )
-                          : thumbnailImg
+                        data.item.config?.playerThumbnailImageUrl ||
+                        thumbnailImg
                       }
                       alt={"no image found"}
                       className="card-thumbnail"
