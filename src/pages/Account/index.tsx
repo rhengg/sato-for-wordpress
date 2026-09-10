@@ -11,7 +11,7 @@ import { NoticeType } from "../Home";
 import { useAuth } from "../../context/AuthContext";
 
 const AccountPage = () => {
-  const { token } = useAuth();
+  const { token, refreshToken } = useAuth();
   const navigate = useNavigate();
   const [subscription, setSubscription] = React.useState<any>();
   const [user, setUser] = React.useState<any>();
@@ -115,15 +115,18 @@ const AccountPage = () => {
     fetchMedia();
   }, []);
 
-  const handleLogout = async () => {
-    await fetch(`${apiUrl}logout`, {
+  const handleLogout = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const res = await fetch(`${apiUrl}logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-WP-Nonce": nonce,
       },
     });
-    window.location.href = `${window.location.pathname}?page=sato-signin`;
+    if (res.ok) {
+      await refreshToken();
+    }
   };
 
   if (!user || !subscription || !activePlan || loadingMedia || loadingInvoices)

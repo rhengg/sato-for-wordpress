@@ -5,6 +5,7 @@ import SatoLogo from "../../components/SatoLogo";
 import { Snackbar } from "@wordpress/components";
 import { Text } from "@wordpress/ui";
 import { NoticeType } from "../Home";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
   const [notice, setNotice] = React.useState<NoticeType>();
@@ -15,6 +16,7 @@ const Login = () => {
   const [loading, setLoading] = React.useState(false);
   const [visibility, setVisibility] = React.useState(false);
   const { nonce, apiUrl } = window.satoConfig;
+  const { refreshToken } = useAuth();
 
   const showNotice = (item: NoticeType) => {
     setNotice(item);
@@ -24,7 +26,7 @@ const Login = () => {
   };
 
   const setTokenOnWpConfig = async (token: string) => {
-    await fetch(`${apiUrl}auth-token`, {
+    const res = await fetch(`${apiUrl}auth-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,6 +36,9 @@ const Login = () => {
         token: token,
       }),
     });
+    if (res.ok) {
+      await refreshToken();
+    }
   };
 
   const loginWithout2FA = async () => {
@@ -55,7 +60,7 @@ const Login = () => {
     };
     try {
       const res = await axios.post("/login", userdata);
-      setTokenOnWpConfig(res.data.token);
+      await setTokenOnWpConfig(res.data.token);
       setLoading(false);
       window.location.href = `${window.location.pathname}?page=sato-player`;
     } catch (error: any) {
@@ -167,7 +172,7 @@ const Login = () => {
     };
     try {
       const res = await axios.post("/login", userdata);
-      setTokenOnWpConfig(res.data.token);
+      await setTokenOnWpConfig(res.data.token);
       window.location.href = `${window.location.pathname}?page=sato-player`;
     } catch (error: any) {
       if (

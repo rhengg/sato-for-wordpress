@@ -161,7 +161,6 @@
 * {
   padding: 0;
   margin: 0;
-  font-family: "Satoshi-Medium";
   line-height: 1.225rem;
 }
 
@@ -207,45 +206,56 @@
 }
 
 .satoPrimary {
+  font-family: "Satoshi-Medium";
   color: var(--satoPrimary);
 }
 
 .satoTextPrimary {
+  font-family: "Satoshi-Medium";
   color: var(--satoTextPrimary);
 }
 
 .satoTextSecondary {
+  font-family: "Satoshi-Medium";
   color: var(--satoTextSecondary);
 }
 .black {
+  font-family: "Satoshi-Medium";
   color: var(--black);
 }
 
 .white {
+  font-family: "Satoshi-Medium";
   color: var(--white);
 }
 
 .satoSurface {
+  font-family: "Satoshi-Medium";
   color: var(--satoSurface);
 }
 
 .satoStroke {
+  font-family: "Satoshi-Medium";
   color: var(--satoStroke);
 }
 
 .satoPlaceholder {
+  font-family: "Satoshi-Medium";
   color: var(--satoPlaceholder);
 }
 
 .satoPositive {
+  font-family: "Satoshi-Medium";
   color: var(--satoPositive);
 }
 
 .satoNegative {
+  font-family: "Satoshi-Medium";
   color: var(--satoNegative);
 }
 
 .satoHeading {
+  font-family: "Satoshi-Medium";
   font-size: 2rem;
   line-height: 120%;
   font-family: "Satoshi-Medium";
@@ -253,6 +263,7 @@
 }
 
 .satoSubtitle-one {
+  font-family: "Satoshi-Medium";
   font-size: 1.5rem;
   line-height: 120%;
   font-family: "Satoshi-Medium";
@@ -260,6 +271,7 @@
 }
 
 .satoSubtitle-two {
+  font-family: "Satoshi-Medium";
   font-size: 1.25rem;
   line-height: 120%;
   font-family: "Satoshi-Medium";
@@ -267,6 +279,7 @@
 }
 
 .satoSubtitle-three {
+  font-family: "Satoshi-Medium";
   font-size: 1rem;
   line-height: 120%;
   font-family: "Satoshi-Medium";
@@ -274,12 +287,14 @@
 }
 
 .satoBody {
+  font-family: "Satoshi-Medium";
   font-size: 0.8125rem;
   line-height: 120%;
   font-family: "Satoshi-Regular";
 }
 
 .satoLabel {
+  font-family: "Satoshi-Medium";
   font-size: 0.875rem;
   color: var(--satoTextSecondary);
   line-height: 120%;
@@ -287,6 +302,7 @@
 }
 
 .table-row-text {
+  font-family: "Satoshi-Medium";
   font-size: 0.8125rem;
   color: var(--satoTextPrimary);
   line-height: 120%;
