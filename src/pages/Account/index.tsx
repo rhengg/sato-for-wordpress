@@ -11,7 +11,7 @@ import { NoticeType } from "../Home";
 import { useAuth } from "../../context/AuthContext";
 
 const AccountPage = () => {
-  const { token, refreshToken } = useAuth();
+  const { token, setAuthToken } = useAuth();
   const navigate = useNavigate();
   const [subscription, setSubscription] = React.useState<any>();
   const [user, setUser] = React.useState<any>();
@@ -124,8 +124,17 @@ const AccountPage = () => {
         "X-WP-Nonce": nonce,
       },
     });
-    if (res.ok) {
-      await refreshToken();
+    if (!res.ok) {
+      throw new Error(`Logout failed: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    console.log("Logout response:", data);
+
+    if (data.success) {
+      // Immediately clear authentication state in React.
+      setAuthToken(undefined);
     }
   };
 

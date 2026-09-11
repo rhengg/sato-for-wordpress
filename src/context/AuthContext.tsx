@@ -9,6 +9,7 @@ import React, {
 type AuthContextType = {
   token?: string;
   loading: boolean;
+  setAuthToken: (token?: string) => void;
   refreshToken: () => Promise<void>;
 };
 
@@ -20,14 +21,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchToken = useCallback(async () => {
     try {
-      const res = await fetch(`${window.satoConfig.apiUrl}auth-token`, {
+      await fetch(`${window.satoConfig.apiUrl}auth-token?_cb=${Date.now()}`, {
+        method: "GET",
         headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
           "X-WP-Nonce": window.satoConfig.nonce,
         },
-      });
-
-      const data = await res.json();
-      setToken(data.token || undefined);
+        cache: "no-store",
+      })
+        .then((res) => res.json())
+        .then((data) => setToken(data.token || undefined));
     } catch (error) {
       setToken(undefined);
     } finally {
@@ -44,8 +48,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await fetchToken();
   }, [fetchToken]);
 
+  const setAuthToken = useCallback((newToken?: string) => {
+    setToken(newToken);
+    setLoading(false);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ token, loading, refreshToken }}>
+    <AuthContext.Provider
+      value={{ token, loading, setAuthToken, refreshToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

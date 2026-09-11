@@ -16,7 +16,7 @@ const Login = () => {
   const [loading, setLoading] = React.useState(false);
   const [visibility, setVisibility] = React.useState(false);
   const { nonce, apiUrl } = window.satoConfig;
-  const { refreshToken } = useAuth();
+  const { setAuthToken } = useAuth();
 
   const showNotice = (item: NoticeType) => {
     setNotice(item);
@@ -35,10 +35,13 @@ const Login = () => {
       body: JSON.stringify({
         token: token,
       }),
+      cache: "no-store",
     });
-    if (res.ok) {
-      await refreshToken();
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error("Failed to save authentication token");
     }
+    setAuthToken(token);
   };
 
   const loginWithout2FA = async () => {
