@@ -127,7 +127,7 @@ const NotificationPopover = () => {
               loading={isLoading}
               onAction={(item) => readNotification(item.id)}
             />
-            {data.length > 10 && (
+            {/* {data.length > 10 && (
               <div style={{ marginTop: "0.5rem", width: "100%" }}>
                 <button
                   className="notif-action-btn"
@@ -141,7 +141,7 @@ const NotificationPopover = () => {
                   See all
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       )}
