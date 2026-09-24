@@ -3016,9 +3016,14 @@ const Index = () => {
                   width: "100%",
                   marginTop: "1rem",
                 }}
-                onClick={() => {
+                onClick={(e) => {
                   updatePlayer();
-                  navigate("/plans");
+                  e.preventDefault();
+                  window.open(
+                    "https://app.satoplayer.com/plans",
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
                 }}
               >
                 <div
