@@ -1,7 +1,6 @@
 import Loader from "../Loader";
 import { NotificationItem, NotificationType } from ".";
 import { timeAgo } from "../../utils/helper";
-import { useNavigate } from "react-router-dom";
 import config from "../../config";
 import { Text } from "@wordpress/ui";
 
@@ -47,8 +46,6 @@ type Props = {
 };
 
 const NotificationList = ({ data, loading, onAction }: Props) => {
-  const navigate = useNavigate();
-
   if (loading) {
     return (
       <div className="notif-loading">
@@ -115,7 +112,8 @@ const NotificationList = ({ data, loading, onAction }: Props) => {
                         "noopener,noreferrer",
                       );
                     } else {
-                      navigate(url);
+                      // navigate(url);
+                      window.open(url, "_blank", "noopener,noreferrer");
                     }
                   }
                 }}

@@ -290,8 +290,13 @@ const VideoPicker = (props: VideoPickerProps) => {
           style={{
             marginTop: "2rem",
           }}
-          onClick={() => {
-            navigate({ pathname: "/plans" });
+          onClick={(e) => {
+            e.preventDefault();
+            window.open(
+              "https://app.satoplayer.com/plans",
+              "_blank",
+              "noopener,noreferrer",
+            );
           }}
         >
           Upgrade Your Plan
@@ -539,7 +544,7 @@ const VideoPicker = (props: VideoPickerProps) => {
                         style={{ cursor: "pointer" }}
                       >
                         <Link
-                          to={"/plans"}
+                          to={"https://app.satoplayer.com/plans"}
                           target="_blank"
                           style={{
                             textDecoration: "none",
